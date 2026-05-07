@@ -468,7 +468,7 @@ const NotificationCenter = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-auto px-2 py-1 text-xs bg-gray-200"
+                          className="h-auto px-2 py-1 text-xs bg-muted text-foreground hover:bg-muted/80 dark:bg-muted/70 dark:hover:bg-muted/90"
                           onClick={(e) => handleViewNotification(notification, e)}
                         >
                           {getViewButtonLabel(notification)} <ExternalLink className="h-3.5 w-3.5" />
