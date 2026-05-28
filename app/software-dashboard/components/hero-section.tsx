@@ -27,11 +27,14 @@ export function HeroSection() {
   /> */}
 
 
-<div style={{ width: '100%', height: '600px', position: 'relative' }}>
+<div style={{ width: '100%', height: '1000px', position: 'relative' }}>
   <DotGrid
-    dotSize={5}
+    dotSize={3}
+    edgeOpacity={0.05}       // nearly invisible at edges
+  centerOpacity={1}
+  falloffSharpness={3}  
     gap={15}
-    baseColor="#323037"
+    baseColor="#969095"
     activeColor="#06b6d4"
     proximity={120}
     shockRadius={250}
@@ -59,7 +62,10 @@ export function HeroSection() {
   </div>
 </div> */}
 
-<div className="fixed top-0 left-0 bg-black w-full px-4 pt-4 pb-1 mt-10 z-10">
+<div className="fixed top-0 left-0 w-full px-4 pt-4 pb-1 mt-10 z-10  bg-white/5
+      backdrop-blur-xl
+      shadow-[0_8px_32px_rgba(0,0,0,0.37)]
+      supports-[backdrop-filter]:bg-black/20">
   <SparkleNavbar
     color="#22d3ee"
     items={[
@@ -67,7 +73,7 @@ export function HeroSection() {
       { label: "About", href: "#about" },
       { label: "Features", href: "#features" },
 
-      { label: "Pricing", href: "#price" },
+      { label: "Pricing", href: "#pricing" },
       { label: "Faq", href: "#faq" },
       { label: "Contact", href: "#contact" },
     ]}
@@ -92,7 +98,7 @@ export function HeroSection() {
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+          <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
             Accelerate your development with our curated collection of blocks, templates, landing pages,
             and admin dashboards. From free components to complete solutions, built with shadcn/ui.
           </p>

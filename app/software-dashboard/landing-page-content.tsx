@@ -18,6 +18,7 @@ import { LandingThemeCustomizer, LandingThemeCustomizerTrigger } from './compone
 import Navbar from '@/components/Navbar'
 import { SessionProvider } from 'next-auth/react'
 import { AboutSection } from './components/about-section'
+import Footer from '@/components/Footer'
 
 export function LandingPageContent() {
   const [themeCustomizerOpen, setThemeCustomizerOpen] = React.useState(false)
@@ -46,7 +47,11 @@ export function LandingPageContent() {
       </main>
 
       {/* Footer */}
-      <LandingFooter />
+      {/* <LandingFooter /> */}
+      <SessionProvider>
+      <Footer/>
+      </SessionProvider>
+      
 
       {/* Theme Customizer */}
       <LandingThemeCustomizerTrigger onClick={() => setThemeCustomizerOpen(true)} />

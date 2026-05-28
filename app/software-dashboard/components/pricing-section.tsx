@@ -64,6 +64,7 @@ const plans = [
 export function PricingSection() {
   const [isYearly, setIsYearly] = useState(false)
 
+
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,6 +97,12 @@ export function PricingSection() {
                 className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 !rounded-full data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
               >
                 Annually
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="lifetime"
+                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 !rounded-full data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
+              >
+                Lifetime
               </ToggleGroupItem>
             </ToggleGroup>
           </div>

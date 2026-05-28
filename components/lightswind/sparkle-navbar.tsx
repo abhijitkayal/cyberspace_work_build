@@ -214,7 +214,7 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
           left: 0;
           top: 28px;
           height: 3px;
-          width: 56px;
+          width: 46px;
           border-radius: 2px;
           background-color: ${color};
           opacity: var(--active-element-show);
@@ -288,12 +288,11 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
             }}
             onClick={() => handleClick(index)}
             className="
-              text-xs
-              uppercase
-              tracking-[0.2em]
-              text-cyan-100/80
+              tracking-[0.1em]
+              text-white
               transition-colors
               hover:text-cyan-400
+              group flex items-center gap-1.5 text-sm font-medium whitespace-nowrap
             "
           >
             {item.label}
@@ -320,12 +319,11 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
               }}
               onClick={() => handleClick(index)}
               className="
-                text-xs
-                uppercase
-                tracking-[0.2em]
-                text-cyan-100/80
+                tracking-[0.1em]
+                text-white
                 transition-colors
                 hover:text-cyan-400
+                group flex items-center gap-1.5 text-sm font-medium whitespace-nowrap
               "
             >
               {item.label}
