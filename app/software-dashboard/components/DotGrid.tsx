@@ -510,20 +510,47 @@ const DotGrid: React.FC<DotGridProps> = ({
   ]);
 
   // ── Build grid + resize ────────────────────────────────────────────────
+  // useEffect(() => {
+  //   buildGrid();
+  //   let ro: ResizeObserver | null = null;
+  //   if ('ResizeObserver' in window) {
+  //     ro = new ResizeObserver(buildGrid);
+  //     wrapperRef.current && ro.observe(wrapperRef.current);
+  //   } else {
+  //     window.addEventListener('resize', buildGrid);
+  //   }
+  //   return () => {
+  //     if (ro) ro.disconnect();
+  //     else window.removeEventListener('resize', buildGrid);
+  //   };
+  // }, [buildGrid]);
   useEffect(() => {
-    buildGrid();
-    let ro: ResizeObserver | null = null;
-    if ('ResizeObserver' in window) {
-      ro = new ResizeObserver(buildGrid);
-      wrapperRef.current && ro.observe(wrapperRef.current);
-    } else {
-      window.addEventListener('resize', buildGrid);
+  buildGrid();
+
+  const handleResize = () => buildGrid();
+
+  let ro: ResizeObserver | null = null;
+
+  if (typeof ResizeObserver !== 'undefined') {
+    ro = new ResizeObserver(() => {
+      buildGrid();
+    });
+
+    if (wrapperRef.current) {
+      ro.observe(wrapperRef.current);
     }
-    return () => {
-      if (ro) ro.disconnect();
-      else window.removeEventListener('resize', buildGrid);
-    };
-  }, [buildGrid]);
+  } else {
+    window.addEventListener('resize', handleResize);
+  }
+
+  return () => {
+    if (ro) {
+      ro.disconnect();
+    } else {
+      window.removeEventListener('resize', handleResize);
+    }
+  };
+}, [buildGrid]);
 
   // ── Mouse interaction ─────────────────────────────────────────────────
   useEffect(() => {

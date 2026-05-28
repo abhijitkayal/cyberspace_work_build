@@ -62,8 +62,9 @@ const plans = [
 ]
 
 export function PricingSection() {
-  const [isYearly, setIsYearly] = useState(false)
+  // const [isYearly, setIsYearly] = useState(false)
 
+  const [billing, setBilling] = useState("monthly")
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/40">
@@ -82,8 +83,10 @@ export function PricingSection() {
           <div className="flex items-center justify-center mb-2">
             <ToggleGroup
               type="single"
-              value={isYearly ? "yearly" : "monthly"}
-              onValueChange={(value) => setIsYearly(value === "yearly")}
+              value={billing}
+onValueChange={(value) => {
+  if (value) setBilling(value)
+}}
               className="bg-secondary text-secondary-foreground border-none rounded-full p-1 cursor-pointer shadow-none"
             >
               <ToggleGroupItem
@@ -134,12 +137,16 @@ export function PricingSection() {
                   {/* Pricing */}
                   <div>
                     <div className="text-4xl font-bold mb-1">
-                      {plan.name === 'Lifetime' ? (
+                      {billing === 'Lifetime' ? (
                         `$${plan.monthlyPrice}`
                       ) : plan.name === 'Free' ? (
                         '$0'
                       ) : (
-                        `$${isYearly ? plan.yearlyPrice : plan.monthlyPrice}`
+                        `$${
+  billing === "yearly"
+    ? plan.yearlyPrice
+    : plan.monthlyPrice
+}`
                       )}
                     </div>
                     <div className="text-muted-foreground text-sm">
