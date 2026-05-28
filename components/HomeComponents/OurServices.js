@@ -10,19 +10,20 @@ import {
 } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import SpotlightCard, { Spotlight } from "../SpotlightCard";
+import Antigravity from "./Antigravity";
 
 /* ── dot-grid bg ── */
-const StyledPattern = styled.div`
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 0;
-  // background-image: radial-gradient(rgba(6,182,212,0.55) 1.5px, transparent 1.5px);
-    background-image: radial-gradient(rgba(14,116,144,0.55) 1.5px, transparent 1.5px);
+// const StyledPattern = styled.div`
+//   position: absolute; inset: 0; width: 100%; height: 100%;
+//   pointer-events: none; z-index: 0;
+//   // background-image: radial-gradient(rgba(6,182,212,0.55) 1.5px, transparent 1.5px);
+//     background-image: radial-gradient(rgba(14,116,144,0.55) 1.5px, transparent 1.5px);
 
-  background-size: 22px 22px; opacity: 0.75;
-  mask-image: linear-gradient(to bottom,transparent 0%,black 18%,black 82%,transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom,transparent 0%,black 18%,black 82%,transparent 100%);
-`;
-const Pattern = () => <StyledPattern />;
+//   background-size: 22px 22px; opacity: 0.75;
+//   mask-image: linear-gradient(to bottom,transparent 0%,black 18%,black 82%,transparent 100%);
+//   -webkit-mask-image: linear-gradient(to bottom,transparent 0%,black 18%,black 82%,transparent 100%);
+// `;
+// const Pattern = () => <StyledPattern />;
 
 /* ── services ── */
 const TOP_SERVICES = [
@@ -618,10 +619,29 @@ export default function OurServicesWithWires() {
   return (
     <section
       ref={containerRef}
-      className="relative z-0 w-full overflow-hidden bg-[#030508]"
+      className="relative z-0 w-full overflow-hidden bg-black"
       style={{ paddingTop: "30px", paddingBottom: "72px" }}
     >
-      <Pattern />
+      {/* <Pattern /> */}
+      <div className="absolute inset-0 z-0">
+  <Antigravity
+    count={300}
+    magnetRadius={2.5}
+    ringRadius={3}
+    waveSpeed={0.4}
+    waveAmplitude={1}
+    particleSize={1.5}
+    lerpSpeed={0.05}
+    color="#06B6D4"
+    autoAnimate
+    particleVariance={1}
+    rotationSpeed={0}
+    depthFactor={1}
+    pulseSpeed={3}
+    particleShape="capsule"
+    fieldStrength={10}
+  />
+</div>
 
       {/* Top fade — blends section edge into whatever is above */}
       <div className="absolute top-0 left-0 w-full pointer-events-none" style={{

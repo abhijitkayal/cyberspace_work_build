@@ -3,7 +3,45 @@ import { Controller } from "react-hook-form"
 
 type FormProps = React.FormHTMLAttributes<HTMLFormElement>
 
-export function Form({ children, ...props }: FormProps) {
+type FormRHFProps = {
+  control?: unknown
+  subscribe?: unknown
+  trigger?: unknown
+  register?: unknown
+  watch?: unknown
+  reset?: unknown
+  unregister?: unknown
+  getValues?: unknown
+  setValue?: unknown
+  getFieldState?: unknown
+  setError?: unknown
+  clearErrors?: unknown
+  setFocus?: unknown
+  resetField?: unknown
+  formState?: unknown
+  handleSubmit?: unknown
+}
+
+export function Form({
+  children,
+  control,
+  subscribe,
+  trigger,
+  register,
+  watch,
+  reset,
+  unregister,
+  getValues,
+  setValue,
+  getFieldState,
+  setError,
+  clearErrors,
+  setFocus,
+  resetField,
+  formState,
+  handleSubmit,
+  ...props
+}: FormProps & FormRHFProps) {
   return <form {...props}>{children}</form>
 }
 

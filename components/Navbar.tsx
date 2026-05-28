@@ -577,7 +577,7 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench } from "lucide-react"
+import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2 } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
@@ -597,6 +597,8 @@ import {
 } from "react-icons/fa"
 import { SiGoogleanalytics } from "react-icons/si"
 import SiteNav from "./nav-animation"
+import SparkleNavbar from "./lightswind/sparkle-navbar"
+// import { usePathname } from 'next/navigation'
 
 // ─── Rainbow border animation styles ──────────────────────────────────────────
 const RAINBOW_STYLES = `
@@ -738,8 +740,8 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
 
 
 
-  const items    = { left: [{ label: "Services", href: "/services", icon: Wrench }, { label: "About", href: "/about-us", icon: Info }], right: [] }
-  const navitems = { left: [{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
+  const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }], right: [] }
+  const navitems = { left: [{ label: "Product", href: "#products", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
 
   const socialLinks1 = [
     { name: "Call",     icon: <FaPhoneAlt />, link: "tel:7980715765" },
@@ -752,6 +754,17 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
     { name: "Facebook",  icon: <FaFacebookF />, link: "[facebook.com](https://www.facebook.com/profile.php?id=100086774724799)" },
   ]
 
+  const headerQuickLinks = [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about-us" },
+    { label: "Features", href: "/features" },
+  ]
+   const headerQuickLinks2 = [
+    { label: "Pricing", href: "/" },
+    { label: "Faq", href: "/about-us" },
+    { label: "Contact", href: "/features" },
+  ]
+
   const services = [
     { name: "AI & Intelligent Systems", icon: <FaBrain />,          subtext: "Automation, ML & LLM solutions", href: "/services/ai-intelligent-systems" },
     { name: "Web Development",          icon: <FaLaptopCode />,      subtext: "Custom, scalable web apps",      href: "/services/web-development" },
@@ -761,6 +774,16 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
     { name: "Graphic Design",           icon: <FaBrush />,           subtext: "Creative branding visuals",      href: "/services/graphic-design" },
     { name: "Digital Marketing",        icon: <FaBullhorn />,        subtext: "Boost your brand visibility",    href: "/services/digital-marketing" },
     { name: "Research & Analytics",     icon: <SiGoogleanalytics />, subtext: "Data-driven insights",           href: "/services/research-and-analytics" },
+  ]
+    const products = [
+    { name: "CyberPayroll", icon: <IdCardLanyard />,          subtext: "Smart HR Management Software.", href: "/software-dashboard" },
+    { name: "CyberDine",          icon: <ChefHat />,      subtext: "A Robust Restaurant Management System.",      href: "/software-dashboard" },
+    { name: "CyberPharma",          icon: <Pill />,       subtext: "Smart Medicine & Pharmacy Management System.", href: "/software-dashboard" },
+    { name: "CyberClinic",     icon: <Stethoscope />,            subtext: "Smart & Robust Patient Management Solution.",  href: "/software-dashboard" },
+    { name: "CyberRetail",             icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",     href: "/software-dashboard" },
+    { name: "CyberLedger",           icon: <NotebookTabs />,           subtext: "Smart Tally Software.",      href: "/software-dashboard" },
+    { name: "CyberInvoice",        icon: <ReceiptIndianRupee />,        subtext: "Simplifying GST, Billing & Business Accounting.",    href: "/software-dashboard" },
+    { name: "CyberProjects",     icon: <SquareKanban />, subtext: "A Robust Project Management Software",           href: "/software-dashboard" },
   ]
 
   const handleDropdownClose = () => {
@@ -852,13 +875,13 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
         </div>
 
         {/* ── Left sidebar ── */}
-        <div className="rainbow-line-host flex-1 h-10 bg-black z-20 relative min-w-0">
-          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <div className="rainbow-line-host flex-1 h-10 z-20 relative min-w-0">
+          <svg className="absolute bg-black inset-0 w-full h-full" preserveAspectRatio="none">
             <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
             <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
           </svg>
-          <div className="hidden lg:flex space-x-6 font-bold px-6 py-1 rounded-xl shadow-xl items-center  absolute left-6 top-1/2 -translate-y-1/2">
-            <div className="flex items-center space-x-5">
+          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-6 py-1 rounded-xl shadow-xl absolute left-6 top-1/2 -translate-y-1/2 ${ pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+            <div className="flex items-center justify-center space-x-5 w-full">
               {socialLinks1.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
                   <Link href={item.link} className="text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer size-5">
@@ -867,6 +890,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
                 </div>
               ))}
             </div>
+            
           </div>
         </div>
 
@@ -952,16 +976,60 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
               {/* Desktop right nav */}
               <div className="hidden md:flex items-center gap-5 shrink-0 text-white ml-auto">
                 <nav className="flex items-center gap-8">
-                  {navitems.left.map(item => (
+                  {/* {navitems.left.map(item => (
+                    
                     <NavLink key={item.label} {...item} active={isActive(item.href)} />
-                  ))}
+                    
+                  ))} */}
+                  {navitems.left.map(item => {
+                    if (item.label === "Product") {
+                      return (
+                        <div
+                          key={item.label}
+                          className="relative"
+                          onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
+                          onMouseLeave={handleDropdownClose}
+                        >
+                          <Link
+                            href={item.href}
+                            aria-current={isActive(item.href) ? "page" : undefined}
+                            className={`group flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap
+                              ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400"}`}
+                          >
+                            <item.icon className={`w-4 h-4 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white group-hover:text-cyan-400"}`} />
+                            <span>{item.label}</span>
+                            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} />
+                          </Link>
+
+                          {openDropdown === item.label && (
+                            <div
+                              className="sparkle-nav__dropdown"
+                              onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
+                              onMouseLeave={handleDropdownClose}
+                            >
+                              {products.map(sub => (
+                                <Link key={sub.name} href={sub.href} className="sparkle-nav__dropdown-item">
+                                  {sub.icon && <span className="sparkle-nav__dropdown-icon">{sub.icon}</span>}
+                                  <span className="sparkle-nav__dropdown-text">
+                                    <span className="sparkle-nav__dropdown-name">{sub.name}</span>
+                                    {sub.subtext && <span className="sparkle-nav__dropdown-subtext">{sub.subtext}</span>}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    }
+                    return <NavLink key={item.label} {...item} active={isActive(item.href)} />
+                  })}
                 </nav>
-                <HoverBorderGradient
+                {/* <HoverBorderGradient
                   style={{ background: "#0f172a", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", border: "none", color: "#fff", fontWeight: "600" }}
                   className="shrink-0 ml-2"
                 >
                   Quick Enquiry
-                </HoverBorderGradient>
+                </HoverBorderGradient> */}
               </div>
 
               {/* Mobile: hamburger */}
@@ -1003,16 +1071,37 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
             <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
             <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
           </svg>
-          <div className="hidden lg:flex space-x-6 font-bold px-6 py-1 rounded-xl shadow-xl items-center  absolute right-6 top-1/2 -translate-y-1/2">
-            <div className="flex items-center space-x-5">
+          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-6 py-1 rounded-xl shadow-xl absolute right-6 top-1/2 -translate-y-1/2 ${pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+            <div className="flex items-center justify-center space-x-5 w-full">
               {socialLinks2.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
-                  <Link href={item.link} className="text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer size-5">
+                  <Link href={item.link} className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">
                     {item.icon}
                   </Link>
                 </div>
               ))}
             </div>
+           {/* {pathname === "/software-dashboard" && (
+  <div className="border-t border-cyan-400/20 pt-2 flex justify-center">
+  <SparkleNavbar
+  color="#22d3ee"
+  items={[
+    {
+      label: "Pricing",
+      href: "#pricing",
+    },
+    {
+      label: "Faq",
+      href: "#faq",
+    },
+    {
+      label: "Contact",
+      href: "#contact",
+    },
+  ]}
+/>
+  </div>
+)} */}
           </div>
         </div>
 

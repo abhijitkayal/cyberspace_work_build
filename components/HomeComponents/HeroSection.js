@@ -112,6 +112,7 @@ function updateStars() {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-2">
           <Meteors />
         </div>
+       
         <div
           className="absolute bottom-0 left-0 w-full pointer-events-none"
           style={{

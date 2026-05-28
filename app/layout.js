@@ -220,6 +220,7 @@ import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ThemeProvider } from "next-themes";
+import { usePathname } from "next/navigation";
 
 const GTM_ID = "GTM-KCNJRZVR";
 
@@ -231,6 +232,8 @@ const rubik = Rubik({
 
 export default function RootLayout({ children }) {
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+  const isSoftwareDashboardRoute = pathname?.startsWith("/software-dashboard");
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
@@ -310,7 +313,7 @@ export default function RootLayout({ children }) {
       > */}
          <body
   className={`${rubik.variable} antialiased relative min-h-screen bg-background text-foreground`}
-  style={{ cursor: "url('/cursor.png') 16 16, default" }}>
+  style={{ cursor: "url('') 16 16, default" }}>
         {/* GTM noscript */}
         <noscript>
           <iframe
@@ -322,24 +325,37 @@ export default function RootLayout({ children }) {
         </noscript>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SessionProvider>
-            <NotificationProvider>
+          {isSoftwareDashboardRoute ? (
+            <div className="relative min-h-screen flex flex-col">
               {loading && (
                 <div className="fixed inset-0 z-9999 flex items-center justify-center bg-background">
                   <Loader />
                 </div>
               )}
 
-              {!loading && (
-                <div className="relative min-h-screen flex flex-col">
-                  <Navbar />
-                  <main className="flex-1 relative z-10 w-full">{children}</main>
-                  <Footer />
-                  <BackToTopButton />
-                </div>
-              )}
-            </NotificationProvider>
-          </SessionProvider>
+              {!loading && <main className="flex-1 relative z-10 w-full">{children}</main>}
+            </div>
+          ) : (
+            <SessionProvider>
+              <NotificationProvider>
+                {loading && (
+                  <div className="fixed inset-0 z-9999 flex items-center justify-center bg-background">
+                    <Loader />
+                  </div>
+                )}
+
+                {!loading && (
+                  <div className="relative min-h-screen flex flex-col">
+                    
+                    <Navbar />
+                    <main className="flex-1 relative z-10 w-full">{children}</main>
+                    <Footer />
+                    <BackToTopButton />
+                  </div>
+                )}
+              </NotificationProvider>
+            </SessionProvider>
+          )}
         </ThemeProvider>
 
         <Analytics />

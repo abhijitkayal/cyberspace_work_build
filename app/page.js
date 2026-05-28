@@ -8,6 +8,7 @@ import Testimonial from "@/components/HomeComponents/Testimonial";
 import OurPartners from "@/components/HomeComponents/OurPartners";
 import ContactForm from "@/components/HomeComponents/ContactForm";
 import DynamicCanonical from "@/components/DynamicCanonical";
+import SoftwareShowcase from "@/components/HomeComponents/CutoutCard";
 
 export const metadata = {
   // ✅ THIS fixes localhost showing — tells Next.js the production domain
@@ -61,6 +62,7 @@ export default function HomePage() {
       <DynamicCanonical />
       <main className="relative min-h-screen bg-black overflow-hidden">
         <HeroSection />
+        <SoftwareShowcase/>
         <WhyChooseUs />
         <OurClients />
         <Achivements />
