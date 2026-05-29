@@ -577,7 +577,7 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2, Heart, User2Icon, ShoppingCart } from "lucide-react"
+import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2, Heart, User2Icon, ShoppingCart, Users, ArrowRight, Rocket } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
@@ -588,6 +588,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 import { HomeIcon, Cog6ToothIcon, InformationCircleIcon, PhoneIcon } from "@heroicons/react/24/solid"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Drawer } from "@base-ui/react/drawer"
 
 import { HoverBorderGradient } from "./ui/hover-border-gradient"
 import {
@@ -723,6 +724,9 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [showEmailForm, setShowEmailForm] = useState(false)
+const [email, setEmail] = useState("")
+const [submitted, setSubmitted] = useState(false)
 
   // ── Notch measurement state ──
   const [notchMetrics, setNotchMetrics] = useState<{
@@ -739,7 +743,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
 
  const hideNavbar = pathname?.startsWith("/dashboard") || pathname===("/schedule") || pathname===("/login");
 
-
+      const [open, setOpen] = useState(false)
 
   const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }], right: [] }
   const navitems = { left: [{ label: "Product", href: "#products", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
@@ -864,6 +868,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
 
 
 
+
   return (
     <>
       <style jsx global>{RAINBOW_STYLES}</style>
@@ -897,11 +902,170 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
                 </div>
               ))}
               {/* <button>Quick Enquiry</button> */}
-              <AnimatedBadge
+              {/* <AnimatedBadge
   text="Quick Enquiry"
   color="#22d3ee"
   href="/docs/components/animated-badge"
-/>
+/> */}
+ 
+
+
+
+<Drawer.Root open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setShowEmailForm(false); setEmail(""); setSubmitted(false); } }}>
+  <div onClick={() => setOpen(true)} className="inline-block cursor-pointer">
+    <AnimatedBadge text="Quick Enquiry" color="#22d3ee" href="#" />
+  </div>
+
+  <Drawer.Portal>
+    {/* Backdrop */}
+    <Drawer.Backdrop className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+
+    {/* Panel */}
+    <Drawer.Popup className="fixed top-0 right-0 z-[2001] h-screen w-full max-w-[560px] bg-[#0d0d0f] flex flex-col shadow-[−32px_0_80px_rgba(0,0,0,0.8)] data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] overflow-hidden">
+      <Drawer.Content className="flex flex-col h-full overflow-y-auto">
+
+        {/* ── Header ─────────────────────────────────────────────────── */}
+        <div className="flex items-start justify-between px-8 pt-2 pb-2 border-b border-white/[0.07]">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <Image src="/logo2.png" alt="Logo" width={36} height={36} className="h-9 w-9 object-contain" />
+          </div>
+
+          {/* Close button */}
+          <Drawer.Close className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs font-semibold tracking-widest text-white/60 hover:bg-white/[0.08] hover:text-white/90 transition-all duration-200 cursor-pointer">
+            <X size={13} strokeWidth={2.5} />
+            CLOSE
+          </Drawer.Close>
+        </div>
+
+        {/* ── Intro ──────────────────────────────────────────────────── */}
+        <div className="px-8 pt-8 pb-6">
+          {/* Available badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 mb-7">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+            </span>
+            <span className="text-[13px] text-white/60 font-medium">Available for new projects</span>
+          </div>
+
+          <h2 className="text-[2rem] font-semibold tracking-tight text-white leading-tight mb-3">
+            How can we help you?
+          </h2>
+          <p className="text-[15px] text-white/40 leading-relaxed">
+            Choose how you&apos;d like to work with us.
+          </p>
+        </div>
+
+        {/* ── Cards ──────────────────────────────────────────────────── */}
+        <div className="px-8 grid grid-cols-2 gap-4 flex-1">
+
+          {/* Start a Project */}
+          <div className="group relative flex flex-col rounded-2xl p-6 border border-white/[0.08] bg-white/[0.03] hover:border-white/[0.16] hover:bg-white/[0.05] transition-all duration-300 ">
+            {/* Icon */}
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1a1f3a] border border-[#2a3060] text-[#6c8aff] mb-8">
+              <Rocket size={22} strokeWidth={1.8} />
+            </div>
+
+            <div className="mt-0">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[1.15rem] font-semibold text-white">Start a Project</h3>
+                <ArrowRight size={16} className="text-white/30 group-hover:text-white/70 group-hover:translate-x-1 transition-all duration-200" />
+              </div>
+              <p className="text-[13px] text-white/40 leading-relaxed">
+                Hire us for web, mobile, backend, SEO or custom software solutions.
+              </p>
+            </div>
+
+            <button className="mt-6 text-[11px] cursor-pointer font-bold tracking-widest text-[#6c8aff] flex items-center gap-2 hover:gap-3 transition-all duration-200" onClick={() => setShowEmailForm(true)}>
+              GET STARTED <ArrowRight size={13} />
+            </button>
+          </div>
+
+          {/* Join the Team */}
+          <div className="group relative flex flex-col rounded-2xl p-6 border border-[#3a1f60]/60 bg-[#1a0a2e]/40 hover:border-purple-500/50 hover:bg-[#1a0a2e]/70 transition-all duration-300">
+            {/* Icon */}
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2a1040] border border-purple-500/30 text-purple-400 mb-10">
+              <Users size={22} strokeWidth={1.8} />
+            </div>
+
+            <div className="mt-0">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[1.15rem] font-semibold text-white">Join the Team</h3>
+                <ArrowRight size={16} className="text-white/30 group-hover:text-purple-400 group-hover:translate-x-1 transition-all duration-200" />
+              </div>
+              <p className="text-[13px] text-white/40 leading-relaxed">
+                Developer or designer? Apply to collaborate or join our team.
+              </p>
+            </div>
+
+            <button className="mt-6 cursor-alias text-[11px] font-bold tracking-widest text-purple-400 flex items-center gap-2 hover:gap-3 transition-all duration-200" onClick={() => setShowEmailForm(true)}>
+              APPLY NOW <ArrowRight size={13} />
+            </button>
+          </div>
+        </div>
+
+        {/* ── Email form (shown after Get Started click) ──────────────── */}
+        {showEmailForm && (
+          <div className="mx-8 mt-5 rounded-2xl border border-[#2a3060]/80 bg-[#0f1428]/60 p-6 animate-[fadeSlideUp_0.3s_ease_forwards]">
+            <style>{`
+              @keyframes fadeSlideUp {
+                from { opacity: 0; transform: translateY(12px); }
+                to   { opacity: 1; transform: translateY(0); }
+              }
+            `}</style>
+
+            {submitted ? (
+              <div className="flex flex-col items-center gap-3 py-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-2xl">✓</div>
+                <p className="text-white font-semibold text-sm">We&apos;ll be in touch soon!</p>
+                <p className="text-white/40 text-xs text-center">Check your inbox. We respond within 24 hours.</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-[13px] font-semibold text-white mb-1">Get in touch</p>
+                <p className="text-[12px] text-white/40 mb-4">Enter your email and we&apos;ll reach out to discuss your project.</p>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="flex-1 rounded-xl bg-white/[0.05] border border-white/10 px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#6c8aff]/60 focus:bg-white/[0.07] transition-all duration-200"
+                  />
+                  <button
+                    onClick={() => email && setSubmitted(true)}
+                    className="px-5 py-3 rounded-xl bg-[#6c8aff] text-white text-sm font-semibold hover:bg-[#7c98ff] active:scale-95 transition-all duration-200 whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
+                    disabled={!email}
+                  >
+                    Send →
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ── Footer ─────────────────────────────────────────────────── */}
+        <div className="px-8 py-7 mt-4 border-t border-white/[0.06]">
+          <div className="flex items-center justify-center gap-8">
+            {[
+              { dot: "bg-emerald-400", text: "Responds in 24 hrs" },
+              { dot: "bg-emerald-400", text: "Secure & confidential" },
+              { dot: "bg-emerald-400", text: "No commitment" },
+            ].map(({ dot, text }) => (
+              <div key={text} className="flex items-center gap-2">
+                <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+                <span className="text-[12px] text-white/30 font-medium">{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </Drawer.Content>
+    </Drawer.Popup>
+  </Drawer.Portal>
+</Drawer.Root>
             </div>
             
           </div>

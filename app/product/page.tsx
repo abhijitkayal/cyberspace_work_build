@@ -5,6 +5,8 @@ import SoftwareShowcase from '@/components/HomeComponents/CutoutCard'
 import AboutPage from './about/page'
 // import { BentoDemo } from '@/components/ui/bento-grid'
 import FeaturesSection from './feature-section/page'
+import TestimonialsSection from './testimonials-section/page'
+import ContactSection from '@/components/HomeComponents/ContactForm'
 
 const page = () => {
   return (
@@ -13,6 +15,8 @@ const page = () => {
       <SoftwareShowcase/>
       <AboutPage/>
       <FeaturesSection/>
+      <TestimonialsSection/>
+      <ContactSection/>
     </div>
   )
 }

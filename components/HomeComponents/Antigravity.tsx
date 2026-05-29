@@ -11,7 +11,6 @@ interface AntigravityProps {
   particleSize?: number;
   lerpSpeed?: number;
   color?: string;
-  glowColor?: string;
   autoAnimate?: boolean;
   particleVariance?: number;
   rotationSpeed?: number;
@@ -21,276 +20,205 @@ interface AntigravityProps {
   fieldStrength?: number;
 }
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
-function easeOutQuad(t: number) {
-  return 1 - (1 - t) * (1 - t);
-}
-
-// ─── Inner Scene ──────────────────────────────────────────────────────────────
 const AntigravityInner: React.FC<AntigravityProps> = ({
-  count        = 480,
-  magnetRadius = 999,   // attract everything on screen
-  ringRadius   = 24,    // world-unit ring radius
-  waveSpeed    = 0.28,
-  waveAmplitude = 1.6,
-  particleSize = 3.2,
-  lerpSpeed    = 0.048,
-  color        = '#00bcd4',
-  glowColor    = '#00bcd4',
-  autoAnimate  = true,
+  count = 300,
+  magnetRadius = 10,
+  ringRadius = 10,
+  waveSpeed = 0.4,
+  waveAmplitude = 1,
+  particleSize = 1.35,
+  lerpSpeed = 0.1,
+  color = '#FF9FFC',
+  autoAnimate = false,
   particleVariance = 1,
-  rotationSpeed    = 0.14,
-  depthFactor      = 0.55,
-  pulseSpeed       = 2.2,
-  particleShape    = 'capsule',
-  fieldStrength    = 10,
+  rotationSpeed = 0,
+  depthFactor = 1,
+  pulseSpeed = 3,
+  particleShape = 'capsule',
+  fieldStrength = 10
 }) => {
-  const meshRef   = useRef<THREE.InstancedMesh>(null);
-  const glowRef   = useRef<THREE.InstancedMesh>(null);   // second, larger, translucent pass
-  const { viewport, gl, size } = useThree();
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const { viewport, gl } = useThree();
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
+  const lastMousePos = useRef({ x: 0, y: 0 });
   const lastMouseMoveTime = useRef(0);
-  const lastMousePos      = useRef({ x: 0, y: 0 });
-  const virtualMouse      = useRef({ x: 0, y: 0 });
-  const mouseRef          = useRef({ x: 0, y: 0, active: false });
+  const virtualMouse = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: 0, y: 0, active: false });
 
-  // ── Mouse tracking ─────────────────────────────────────────────────────────
   React.useEffect(() => {
     const canvas = gl?.domElement;
-    const onMove = (e: MouseEvent) => {
+
+    const handleMouseMove = (event: MouseEvent) => {
       if (canvas) {
-        const r = canvas.getBoundingClientRect();
-        mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, active: true };
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        mouseRef.current = { x, y, active: true };
       } else {
-        mouseRef.current = { x: e.clientX, y: e.clientY, active: true };
+        mouseRef.current = { x: event.clientX, y: event.clientY, active: true };
       }
     };
-    const onLeave = () => { mouseRef.current.active = false; };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    window.addEventListener('mouseleave', onLeave);
+
+    const handleMouseLeave = () => {
+      mouseRef.current.active = false;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("mouseleave", handleMouseLeave);
+
     return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [gl]);
 
-  // ── Particle init ──────────────────────────────────────────────────────────
- const particles = useMemo(() => {
-  // Increase overall spread area
-  const vw = (viewport.width || 30) * 2.4;
-  const vh = (viewport.height || 20) * 2.4;
+  const particles = useMemo(() => {
+    const temp = [];
+    const width = (viewport.width || 100) * 0.7;
+    const height = (viewport.height || 100) * 0.7;
 
-  const arr = [];
+    for (let i = 0; i < count; i++) {
+      const t = Math.random() * 100;
+      const factor = 10 + Math.random() * 60;
+      const speed = 0.01 + Math.random() / 200;
+      const xFactor = -50 + Math.random() * 100;
+      const yFactor = -50 + Math.random() * 100;
+      const zFactor = -50 + Math.random() * 100;
 
-  for (let i = 0; i < count; i++) {
-    // Wider initial distribution
-    const x = (Math.random() - 0.5) * vw;
-    const y = (Math.random() - 0.5) * vh;
-    const z = (Math.random() - 0.5) * 20;
+      const x = (Math.random() - 0.5) * width;
+      const y = (Math.random() - 0.5) * height;
+      const z = (Math.random() - 0.5) * 20;
 
-    // Better angular spacing
-    const angleStep = (Math.PI * 2) / count;
+      const randomRadiusOffset = (Math.random() - 0.5) * 2;
 
-    // Add controlled randomness while preserving spacing
-    const homeAngle =
-      i * angleStep +
-      (Math.random() - 0.5) * 0.15;
+      temp.push({
+        t,
+        factor,
+        speed,
+        xFactor,
+        yFactor,
+        zFactor,
+        mx: x,
+        my: y,
+        mz: z,
+        cx: x,
+        cy: y,
+        cz: z,
+        vx: 0,
+        vy: 0,
+        vz: 0,
+        randomRadiusOffset
+      });
+    }
+    return temp;
+  }, [count, viewport.width, viewport.height]);
 
-    /**
-     * Increase radius spread
-     * Creates multiple orbit bands with spacing
-     */
-    const band = Math.floor(i % 6);
-
-    const bandSpacing = 4.5;
-
-    const homeRadius =
-      ringRadius +
-      band * bandSpacing +
-      Math.random() * 2.5;
-
-    // Individual motion offsets
-    const phaseOffset = Math.random() * Math.PI * 2;
-
-    const speed =
-      0.0025 + Math.random() / 400;
-
-    arr.push({
-      t: Math.random() * 100,
-      speed,
-      homeAngle,
-      homeRadius,
-      phaseOffset,
-
-      mx: x,
-      my: y,
-      mz: z,
-
-      cx: x,
-      cy: y,
-      cz: z,
-    });
-  }
-
-  return arr;
-}, [count, viewport.width, viewport.height, ringRadius]);
-
-  // ── Frame loop ─────────────────────────────────────────────────────────────
   useFrame(state => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    const { viewport: v } = state;
+    const { viewport: v, size } = state;
 
-    // NDC mouse
-    const nx = mouseRef.current.active
-      ? (mouseRef.current.x / size.width)  *  2 - 1
-      : state.pointer.x;
-    const ny = mouseRef.current.active
-      ? -(mouseRef.current.y / size.height) * 2 + 1
-      : state.pointer.y;
+    const nx = mouseRef.current.active ? (mouseRef.current.x / size.width) * 2 - 1 : state.pointer.x;
+    const ny = mouseRef.current.active ? -(mouseRef.current.y / size.height) * 2 + 1 : state.pointer.y;
 
-    const moved = Math.hypot(nx - lastMousePos.current.x, ny - lastMousePos.current.y);
-    if (moved > 0.001) {
+    const mouseDist = Math.sqrt(Math.pow(nx - lastMousePos.current.x, 2) + Math.pow(ny - lastMousePos.current.y, 2));
+
+    if (mouseDist > 0.001) {
       lastMouseMoveTime.current = Date.now();
-      lastMousePos.current      = { x: nx, y: ny };
+      lastMousePos.current = { x: nx, y: ny };
     }
 
-    let destX = (nx * v.width)  / 2;
+    let destX = (nx * v.width) / 2;
     let destY = (ny * v.height) / 2;
 
-    // Idle auto-animation: smooth figure-8
-    if (autoAnimate && Date.now() - lastMouseMoveTime.current > 1800) {
-      const et = state.clock.getElapsedTime();
-      destX = Math.sin(et * 0.38) * (v.width  / 3.8);
-      destY = Math.cos(et * 0.65) * (v.height / 3.8);
+    if (autoAnimate && Date.now() - lastMouseMoveTime.current > 2000) {
+      const time = state.clock.getElapsedTime();
+      destX = Math.sin(time * 0.5) * (v.width / 4);
+      destY = Math.cos(time * 0.5 * 2) * (v.height / 4);
     }
 
-    // Smoothly follow mouse
-    virtualMouse.current.x += (destX - virtualMouse.current.x) * 0.05;
-    virtualMouse.current.y += (destY - virtualMouse.current.y) * 0.05;
+    const smoothFactor = 0.05;
+    virtualMouse.current.x += (destX - virtualMouse.current.x) * smoothFactor;
+    virtualMouse.current.y += (destY - virtualMouse.current.y) * smoothFactor;
 
-    const tx = virtualMouse.current.x;
-    const ty = virtualMouse.current.y;
+    const targetX = virtualMouse.current.x;
+    const targetY = virtualMouse.current.y;
 
-    const et = state.clock.getElapsedTime();
-    const globalSpin = et * rotationSpeed;
+    const globalRotation = state.clock.getElapsedTime() * rotationSpeed;
 
-    particles.forEach((p, i) => {
-      p.t += p.speed / 2;
-      const t = p.t;
+    particles.forEach((particle, i) => {
+      let { t, speed, mx, my, mz, cz, randomRadiusOffset } = particle;
 
-      // Depth parallax
-      const projFactor  = 1 - p.cz / 65;
-      const ptx = tx * projFactor;
-      const pty = ty * projFactor;
+      t = particle.t += speed / 2;
 
-      // Spinning home angle (global rotation)
-      const angle = p.homeAngle + globalSpin;
+      const projectionFactor = 1 - cz / 50;
+      const projectedTargetX = targetX * projectionFactor;
+      const projectedTargetY = targetY * projectionFactor;
 
-      // Wave ripple on radius — makes ring undulate
-      const wave    = Math.sin(t * waveSpeed + angle * 2 + p.phaseOffset) * waveAmplitude * 0.6;
-      const radJitter = Math.sin(t * 0.4 + p.phaseOffset * 2) * 1.2;   // slow breathing
+      const dx = mx - projectedTargetX;
+      const dy = my - projectedTargetY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-      const r = p.homeRadius + wave + radJitter;
+      let targetPos = { x: mx, y: my, z: mz * depthFactor };
 
-      // Target: orbit position around virtual cursor
-      const tgtX = ptx + r * Math.cos(angle);
-      const tgtY = pty + r * Math.sin(angle);
-      const tgtZ = p.mz * depthFactor + Math.sin(t * 0.7 + p.phaseOffset) * waveAmplitude * depthFactor * 0.4;
+      if (dist < magnetRadius) {
+        const angle = Math.atan2(dy, dx) + globalRotation;
 
-      // Lerp with inertia
-      p.cx += (tgtX - p.cx) * lerpSpeed;
-      p.cy += (tgtY - p.cy) * lerpSpeed;
-      p.cz += (tgtZ - p.cz) * lerpSpeed;
+        const wave = Math.sin(t * waveSpeed + angle) * (0.5 * waveAmplitude);
+        const deviation = randomRadiusOffset * (5 / (fieldStrength + 0.1));
 
-      dummy.position.set(p.cx, p.cy, p.cz);
+        const currentRingRadius = ringRadius + wave + deviation;
 
-      // Orient capsule radially: long axis points from cursor outward
-      dummy.lookAt(ptx, pty, p.cz);
+        targetPos.x = projectedTargetX + currentRingRadius * Math.cos(angle);
+        targetPos.y = projectedTargetY + currentRingRadius * Math.sin(angle);
+        targetPos.z = mz * depthFactor + Math.sin(t) * (1 * waveAmplitude * depthFactor);
+      }
+
+      particle.cx += (targetPos.x - particle.cx) * lerpSpeed;
+      particle.cy += (targetPos.y - particle.cy) * lerpSpeed;
+      particle.cz += (targetPos.z - particle.cz) * lerpSpeed;
+
+      dummy.position.set(particle.cx, particle.cy, particle.cz);
+
+      dummy.lookAt(projectedTargetX, projectedTargetY, particle.cz);
       dummy.rotateX(Math.PI / 2);
 
-      // ── Scale: peaks at ringRadius, falls off sharply inside and gently outside ──
-      const dist = Math.hypot(p.cx - ptx, p.cy - pty);
-      const norm = dist / ringRadius;   // 1.0 = exactly on ring
+      const currentDistToMouse = Math.sqrt(
+        Math.pow(particle.cx - projectedTargetX, 2) + Math.pow(particle.cy - projectedTargetY, 2)
+      );
 
-      let scaleFactor: number;
-      if (norm < 0.5) {
-        // Very close to center: nearly invisible (void area)
-        scaleFactor = norm * 0.3;
-      } else if (norm < 1.0) {
-        // Approaching ring: ramp up with ease
-        scaleFactor = easeOutQuad((norm - 0.5) / 0.5) * 0.95 + 0.05;
-      } else {
-        // Beyond ring: taper off — use p.radialNorm so outer particles remain tiny
-        const overshoot = (norm - 1.0) / 1.8;
-        scaleFactor = Math.max(0.02, 1.0 - easeOutQuad(Math.min(1, overshoot)));
-      }
+      const distFromRing = Math.abs(currentDistToMouse - ringRadius);
+      let scaleFactor = 1 - distFromRing / 10;
 
-      // Pulse alive
-      const pulse = 0.78 + Math.sin(t * pulseSpeed + p.phaseOffset) * 0.22 * particleVariance;
-      const finalS = scaleFactor * pulse * particleSize;
+      scaleFactor = Math.max(0, Math.min(1, scaleFactor));
 
-      // Capsule: narrow width, tall height — matches video proportions
-      dummy.scale.set(finalS * 0.48, finalS, finalS * 0.48);
+      const finalScale = scaleFactor * (0.8 + Math.sin(t * pulseSpeed) * 0.2 * particleVariance) * particleSize;
+      dummy.scale.set(finalScale, finalScale, finalScale);
+
       dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
 
-      // Glow pass (bigger, softer)
-      if (glowRef.current) {
-        const gs = finalS * 1.55;
-        dummy.scale.set(gs * 0.48, gs, gs * 0.48);
-        dummy.updateMatrix();
-        glowRef.current.setMatrixAt(i, dummy.matrix);
-      }
+      mesh.setMatrixAt(i, dummy.matrix);
     });
 
     mesh.instanceMatrix.needsUpdate = true;
-    if (glowRef.current) glowRef.current.instanceMatrix.needsUpdate = true;
   });
 
-  const geo = (
-    <>
-      {particleShape === 'capsule'     && <capsuleGeometry args={[0.1, 0.62, 4, 8]} />}
-      {particleShape === 'sphere'      && <sphereGeometry args={[0.22, 16, 16]} />}
-      {particleShape === 'box'         && <boxGeometry args={[0.28, 0.28, 0.28]} />}
-      {particleShape === 'tetrahedron' && <tetrahedronGeometry args={[0.28]} />}
-    </>
-  );
-
   return (
-    <>
-      {/* ── Glow halo layer (rendered first, behind) ── */}
-      <instancedMesh ref={glowRef} args={[undefined, undefined, count]} renderOrder={0}>
-        {particleShape === 'capsule'     && <capsuleGeometry args={[0.1, 0.62, 4, 8]} />}
-        {particleShape === 'sphere'      && <sphereGeometry args={[0.22, 16, 16]} />}
-        {particleShape === 'box'         && <boxGeometry args={[0.28, 0.28, 0.28]} />}
-        {particleShape === 'tetrahedron' && <tetrahedronGeometry args={[0.28]} />}
-        <meshBasicMaterial color={glowColor} transparent opacity={0.18} depthWrite={false} />
-      </instancedMesh>
-
-      {/* ── Core particle layer ── */}
-      <instancedMesh ref={meshRef} args={[undefined, undefined, count]} renderOrder={1}>
-        {geo}
-        <meshBasicMaterial color={color} />
-      </instancedMesh>
-    </>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      {particleShape === 'capsule' && <capsuleGeometry args={[0.07, 0.3, 4, 8]} />}
+      {particleShape === 'sphere' && <sphereGeometry args={[0.14, 16, 16]} />}
+      {particleShape === 'box' && <boxGeometry args={[0.2, 0.2, 0.2]} />}
+      {particleShape === 'tetrahedron' && <tetrahedronGeometry args={[0.2]} />}
+      <meshBasicMaterial color={color} />
+    </instancedMesh>
   );
 };
 
-// ─── Bloom post-processing wrapper (optional) ─────────────────────────────────
-// We simulate bloom by rendering two passes: a glow layer (larger, translucent)
-// and the sharp core layer. No extra packages needed.
-
-// ─── Root ────────────────────────────────────────────────────────────────────
-const Antigravity: React.FC<AntigravityProps> = (props) => {
+const Antigravity: React.FC<AntigravityProps> = props => {
   return (
-    <Canvas
-      camera={{ position: [0, 0, 50], fov: 35 }}
-      style={{ background: 'radial-gradient(ellipse at 50% 50%, #0f0a1e 0%, #07060f 60%, #030207 100%)' }}
-      gl={{ antialias: true, alpha: false }}
-    >
+    <Canvas camera={{ position: [0, 0, 50], fov: 35 }}>
       <AntigravityInner {...props} />
     </Canvas>
   );
