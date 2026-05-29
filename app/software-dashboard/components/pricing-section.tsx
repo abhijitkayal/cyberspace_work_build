@@ -462,11 +462,35 @@ export function PricingSection() {
                     </Drawer.Trigger>
 
                     <Drawer.Portal>
-                      <Drawer.Backdrop className="fixed inset-0 bg-black/50 z-50" />
+                     <Drawer.Backdrop
+  className="
+    fixed inset-0 z-50 bg-black/50
+
+    data-[open]:animate-in
+    data-[closed]:animate-out
+
+    data-[closed]:fade-out-0
+    data-[open]:fade-in-0
+
+    duration-500
+  "
+/>
 
                       <Drawer.Viewport className="fixed inset-0 z-50 flex justify-end">
-                        <Drawer.Popup className="h-full w-full max-w-md bg-background border-l shadow-2xl">
-                          <Drawer.Content className="h-full p-6 flex flex-col">
+                      <Drawer.Popup
+  className="
+    h-full w-full max-w-md border-l bg-background shadow-2xl
+
+    data-[open]:animate-in
+    data-[closed]:animate-out
+
+    data-[closed]:slide-out-to-right
+    data-[open]:slide-in-from-right
+
+    duration-500 ease-in-out
+  "
+>
+                          <Drawer.Content className="h-full p-6 flex flex-col border-l border-white">
                             <div className="flex items-center justify-between mb-6">
                               <div>
                                 <Drawer.Title className="text-2xl font-bold">
