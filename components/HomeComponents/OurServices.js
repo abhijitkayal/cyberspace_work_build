@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import SpotlightCard, { Spotlight } from "../SpotlightCard";
-import Antigravity from "./Antigravity";
+import Antigravity from "../Antigravity";
 import SoftwareShowcase from "./CutoutCard";
 
 /* ── dot-grid bg ── */
@@ -624,7 +624,7 @@ export default function OurServicesWithWires() {
       style={{ paddingTop: "30px", paddingBottom: "72px" }}
     >
       {/* <Pattern /> */}
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
   <Antigravity
     count={300}
     magnetRadius={1.2}
@@ -642,7 +642,28 @@ export default function OurServicesWithWires() {
   particleShape="capsule"
     fieldStrength={6}
 />
-</div>
+</div> */}
+{/* import Antigravity from './Antigravity'; */}
+
+   <div className="absolute inset-0 z-0">
+        <Antigravity
+          count={320}
+          magnetRadius={7}
+          ringRadius={1.4}
+          waveSpeed={0.4}
+          waveAmplitude={1}
+          particleSize={0.6}
+          lerpSpeed={0.08}
+          color="#00ced4"
+          autoAnimate
+          particleVariance={1}
+          rotationSpeed={0}
+          depthFactor={1}
+          pulseSpeed={3}
+          particleShape="capsule"
+          fieldStrength={18}
+      />
+      </div>
 
       {/* Top fade — blends section edge into whatever is above */}
       <div className="absolute top-0 left-0 w-full pointer-events-none" style={{

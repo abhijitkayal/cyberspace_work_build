@@ -7,9 +7,10 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import Antigravity from './Antigravity';
+import Antigravity from '../Antigravity';
 import { useRouter } from "next/navigation";
 import { ChefHat, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ReceiptText, ShoppingBag, SquareKanban, Stethoscope } from "lucide-react";
+import OurServicesWithWires from "./OurServices";
 
 /* ═══════════════════════════════════════════════════════
    CUTOUT HELPERS
@@ -324,7 +325,7 @@ function CutoutCard({
                   ? `${accent}18`
                   : "transparent",
               }}
-              onClick={() => router.push("/software-dashboard")}
+              onClick={() => router.push("/products")}
             >
               View More
             </button>
@@ -344,26 +345,27 @@ export default function SoftwareShowcase() {
   return (
     <div id="products" className="relative min-h-screen overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
         <Antigravity
-          count={300}
-          magnetRadius={1.2}
-          ringRadius={2}
+          count={620}
+          magnetRadius={12}
+          ringRadius={4}
           waveSpeed={0.4}
           waveAmplitude={1}
-          particleSize={1.5}
+          particleSize={0.75}
           lerpSpeed={0.08}
-          color="#06B6D4"
+          color="#00ced4"
           autoAnimate
           particleVariance={1}
           rotationSpeed={0}
           depthFactor={1}
           pulseSpeed={3}
           particleShape="capsule"
-          fieldStrength={6}
-        />
-      </div>
-
+          fieldStrength={16}
+      />
+      </div> */}
+      
+    {/* <OurServicesWithWires/> */}
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 py-20">

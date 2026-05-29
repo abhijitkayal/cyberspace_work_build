@@ -746,7 +746,7 @@ const [submitted, setSubmitted] = useState(false)
       const [open, setOpen] = useState(false)
 
   const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }], right: [] }
-  const navitems = { left: [{ label: "Product", href: "#products", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
+  const navitems = { left: [{ label: "Product", href: "/product", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
 
   const socialLinks1 = [
     { name: "Shop",     icon: <ShoppingBag />, link: "tel:7980715765" },
@@ -787,14 +787,15 @@ const [submitted, setSubmitted] = useState(false)
     { name: "Research & Analytics",     icon: <SiGoogleanalytics />, subtext: "Data-driven insights",           href: "/services/research-and-analytics" },
   ]
     const products = [
-    { name: "CyberPayroll", icon: <IdCardLanyard />,          subtext: "Smart HR Management Software.", href: "/software-dashboard" },
-    { name: "CyberDine",          icon: <ChefHat />,      subtext: "A Robust Restaurant Management System.",      href: "/software-dashboard" },
-    { name: "CyberPharma",          icon: <Pill />,       subtext: "Smart Medicine & Pharmacy Management System.", href: "/software-dashboard" },
-    { name: "CyberClinic",     icon: <Stethoscope />,            subtext: "Smart & Robust Patient Management Solution.",  href: "/software-dashboard" },
-    { name: "CyberRetail",             icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",     href: "/software-dashboard" },
-    { name: "CyberLedger",           icon: <NotebookTabs />,           subtext: "Smart Tally Software.",      href: "/software-dashboard" },
-    { name: "CyberInvoice",        icon: <ReceiptIndianRupee />,        subtext: "Simplifying GST, Billing & Business Accounting.",    href: "/software-dashboard" },
-    { name: "CyberProjects",     icon: <SquareKanban />, subtext: "A Robust Project Management Software",           href: "/software-dashboard" },
+    { name: "CyberPayroll", icon: <IdCardLanyard />,          subtext: "Smart HR Management Software.", href: "/products/hrms" },
+    { name: "CyberDine",          icon: <ChefHat />,      subtext: "A Robust Restaurant Management System.",      href: "/products/restaurant" },
+    { name: "CyberPharma",          icon: <Pill />,       subtext: "Smart Medicine & Pharmacy Management System.", href: "/products/pharmacy" },
+    { name: "CyberClinic",     icon: <Stethoscope />,            subtext: "Smart & Robust Patient Management Solution.",  href: "/products/clinic" },
+    { name: "CyberRetail",             icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",     href: "/products/store" },
+    { name: "CyberLedger",           icon: <NotebookTabs />,           subtext: "Smart Tally Software.",      href: "/products/tally" },
+  
+    { name: "CyberInvoice",        icon: <ReceiptIndianRupee />,        subtext: "Simplifying GST, Billing & Business Accounting.",    href: "/products/gst&billing" },
+    { name: "CyberProjects",     icon: <SquareKanban />, subtext: "A Robust Project Management Software",           href: "/products/project" },
   ]
 
   const handleDropdownClose = () => {
@@ -991,7 +992,7 @@ const [submitted, setSubmitted] = useState(false)
 
             <div className="mt-0">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[1.15rem] font-semibold text-white">Join the Team</h3>
+                <h3 className="text-[1.15rem] font-semibold text-white">Purchase a software</h3>
                 <ArrowRight size={16} className="text-white/30 group-hover:text-purple-400 group-hover:translate-x-1 transition-all duration-200" />
               </div>
               <p className="text-[13px] text-white/40 leading-relaxed">
