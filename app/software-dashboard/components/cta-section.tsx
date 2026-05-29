@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 
 export function CTASection() {
   return (
-    <section className='py-16 lg:py-24 bg-muted/80'>
+    <section className='py-16 lg:py-24 bg-[#0A0A0A]'>
       <div className='container mx-auto px-4 lg:px-8'>
         <div className='mx-auto max-w-4xl'>
           <div className='text-center'>

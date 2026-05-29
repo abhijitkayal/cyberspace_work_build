@@ -620,7 +620,7 @@ export default function OurServicesWithWires() {
   return (
     <section
       ref={containerRef}
-      className="relative z-0 w-full overflow-hidden bg-black"
+      className="relative z-0 w-full overflow-hidden"
       style={{ paddingTop: "30px", paddingBottom: "72px" }}
     >
       {/* <Pattern /> */}
@@ -632,16 +632,16 @@ export default function OurServicesWithWires() {
     waveSpeed={0.4}
     waveAmplitude={1}
     particleSize={1.5}
-    lerpSpeed={0.08}
-    color="#06B6D4"
-    autoAnimate
+  lerpSpeed={0.08}
+  color="#06B6D4"
+  autoAnimate
     particleVariance={1}
-    rotationSpeed={0}
+  rotationSpeed={0}
     depthFactor={1}
     pulseSpeed={3}
-    particleShape="capsule"
+  particleShape="capsule"
     fieldStrength={6}
-  />
+/>
 </div>
 
       {/* Top fade — blends section edge into whatever is above */}

@@ -54,8 +54,8 @@ export function LandingPageContent() {
       
 
       {/* Theme Customizer */}
-      <LandingThemeCustomizerTrigger onClick={() => setThemeCustomizerOpen(true)} />
-      <LandingThemeCustomizer open={themeCustomizerOpen} onOpenChange={setThemeCustomizerOpen} />
+      {/* <LandingThemeCustomizerTrigger onClick={() => setThemeCustomizerOpen(true)} />
+      <LandingThemeCustomizer open={themeCustomizerOpen} onOpenChange={setThemeCustomizerOpen} /> */}
     </div>
   )
 }
