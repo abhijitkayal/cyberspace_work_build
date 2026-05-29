@@ -210,9 +210,12 @@
 "use client"
 
 import { useState } from "react"
+import type { FormEvent } from "react"
 import { Check } from "lucide-react"
 
 import { Drawer } from "@base-ui/react/drawer"
+import { Field } from "@base-ui/react/field"
+import { Input } from "@base-ui/react/input"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -256,11 +259,11 @@ const plans = [
     includesPrevious: "All Free features, plus",
   },
   {
-    name: "Lifetime",
+    name: "Enterprise",
     description:
       "One-time payment for lifetime access to everything",
-    monthlyPrice: "Custom Payment",
-    yearlyPrice: "Custom Payment",
+    monthlyPrice: "Custom",
+    yearlyPrice: "Custom",
     features: [
       "Lifetime updates and support",
       "Private Discord channel",
@@ -278,49 +281,69 @@ const plans = [
 export function PricingSection() {
   const [billing, setBilling] = useState("monthly")
   const [selectedPlan, setSelectedPlan] = useState<any>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  address: "",
-  businessName: "",
-  description: "",
-})
-const handleSubmit = async () => {
-  try {
-    const response = await fetch("/api/place-order", {
-      method: "POST",
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    businessName: "",
+    description: "",
+  })
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        ...formData,
-        planName: selectedPlan?.name,
-      }),
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      businessName: "",
+      description: "",
     })
-
-    const data = await response.json()
-
-    if (data.success) {
-      alert("Order Submitted Successfully")
-
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        businessName: "",
-        description: "",
-      })
-    } else {
-      alert(data.message)
-    }
-  } catch (error) {
-    console.log(error)
   }
-}
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!selectedPlan) {
+      alert("Please choose a plan first.")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch("/api/place-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          planName: selectedPlan.name,
+        }),
+      })
+
+      const contentType = response.headers.get("content-type") || ""
+      const payload = contentType.includes("application/json")
+        ? await response.json()
+        : { success: false, message: await response.text() }
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.message || "Order submission failed.")
+      }
+
+      alert("Order submitted successfully")
+      resetForm()
+      setDrawerOpen(false)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to submit order."
+      alert(message)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <section id="pricing" className="py-24 sm:py-32 bg-muted/40">
@@ -353,21 +376,21 @@ const handleSubmit = async () => {
             >
               <ToggleGroupItem
                 value="monthly"
-                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 !rounded-full data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
+                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 rounded-full! data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
               >
                 Monthly
               </ToggleGroupItem>
 
               <ToggleGroupItem
                 value="yearly"
-                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 !rounded-full data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
+                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 rounded-full! data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
               >
                 Annually
               </ToggleGroupItem>
 
               <ToggleGroupItem
                 value="lifetime"
-                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 !rounded-full data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
+                className="data-[state=on]:bg-background data-[state=on]:border-border border-transparent border px-6 rounded-full! data-[state=on]:text-foreground hover:bg-transparent cursor-pointer transition-colors"
               >
                 Lifetime
               </ToggleGroupItem>
@@ -426,21 +449,16 @@ const handleSubmit = async () => {
                   </div>
 
                   {/* Drawer */}
-                  <Drawer.Root swipeDirection="right">
-                    <Drawer.Trigger>
-                      <Button
-                        onClick={() => setSelectedPlan(plan)}
-                        className={`w-full cursor-pointer my-2 ${
-                          plan.popular
-                            ? "shadow-md border-[0.5px] border-white/25 shadow-black/20 bg-primary ring-1 ring-primary/15 text-primary-foreground hover:bg-primary/90"
-                            : "shadow-sm shadow-black/15 border border-transparent bg-background ring-1 ring-foreground/10 hover:bg-muted/50"
-                        }`}
-                        variant={
-                          plan.popular ? "default" : "secondary"
-                        }
-                      >
-                        {plan.cta}
-                      </Button>
+                  <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen} swipeDirection="right">
+                    <Drawer.Trigger
+                      onClick={() => setSelectedPlan(plan)}
+                      className={`group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 w-full cursor-pointer my-2 ${
+                        plan.popular
+                          ? "shadow-md border-[0.5px] border-white/25 shadow-black/20 bg-primary ring-1 ring-primary/15 text-primary-foreground hover:bg-primary/90"
+                          : "shadow-sm shadow-black/15 border border-transparent bg-background ring-1 ring-foreground/10 hover:bg-muted/50"
+                      }`}
+                    >
+                      {plan.cta}
                     </Drawer.Trigger>
 
                     <Drawer.Portal>
@@ -460,147 +478,123 @@ const handleSubmit = async () => {
                                 </Drawer.Description>
                               </div>
 
-                              <Drawer.Close>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                >
-                                  Close
-                                </Button>
+                              <Drawer.Close className="inline-flex h-7 items-center justify-center rounded-lg border border-border bg-background px-2.5 text-[0.8rem] font-medium whitespace-nowrap transition-all outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:border-input dark:bg-input/30 dark:hover:bg-input/50">
+                                Close
                               </Drawer.Close>
                             </div>
 
-                            {/* <div className="space-y-6">
-                              <div className="rounded-xl border p-4">
-                                <h3 className="font-semibold mb-2">
+                            <form className="space-y-4 overflow-y-auto pr-1" onSubmit={handleSubmit}>
+                              <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
+                                <p className="text-sm font-medium text-muted-foreground">
                                   Selected Plan
-                                </h3>
-
-                                <p className="text-sm text-muted-foreground mb-4">
+                                </p>
+                                <p className="mt-1 text-2xl font-bold">{selectedPlan?.name}</p>
+                                <p className="mt-1 text-sm text-muted-foreground">
                                   {selectedPlan?.description}
                                 </p>
-
-                                <div className="text-3xl font-bold">
-                                  {selectedPlan?.name ===
-                                  "Lifetime"
-                                    ? `${selectedPlan?.monthlyPrice}`
-                                    : billing === "yearly"
-                                    ? `$${selectedPlan?.yearlyPrice}`
-                                    : `$${selectedPlan?.monthlyPrice}`}
-                                </div>
                               </div>
 
-                              <div>
-                                <h4 className="font-medium mb-3">
-                                  Features Included
-                                </h4>
+                              <Field.Root name="name" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Full Name</Field.Label>
+                                <Input
+                                  required
+                                  value={formData.name}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      name: event.target.value,
+                                    })
+                                  }
+                                  className="h-11 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Enter your name"
+                                />
+                              </Field.Root>
 
-                                <ul className="space-y-3">
-                                  {selectedPlan?.features?.map(
-                                    (
-                                      feature: string,
-                                      i: number
-                                    ) => (
-                                      <li
-                                        key={i}
-                                        className="flex items-center gap-3 text-sm"
-                                      >
-                                        <Check className="size-4 text-primary" />
-                                        {feature}
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
+                              <Field.Root name="email" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Email Address</Field.Label>
+                                <Input
+                                  type="email"
+                                  required
+                                  value={formData.email}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      email: event.target.value,
+                                    })
+                                  }
+                                  className="h-11 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Enter your email"
+                                />
+                              </Field.Root>
 
-                              <Button className="w-full">
-                                Continue Payment
+                              <Field.Root name="phone" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Phone Number</Field.Label>
+                                <Input
+                                  value={formData.phone}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      phone: event.target.value,
+                                    })
+                                  }
+                                  className="h-11 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Enter your phone"
+                                />
+                              </Field.Root>
+
+                              <Field.Root name="businessName" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Business Name</Field.Label>
+                                <Input
+                                  value={formData.businessName}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      businessName: event.target.value,
+                                    })
+                                  }
+                                  className="h-11 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Enter business name"
+                                />
+                              </Field.Root>
+
+                              <Field.Root name="address" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Address</Field.Label>
+                                <textarea
+                                  value={formData.address}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      address: event.target.value,
+                                    })
+                                  }
+                                  className="min-h-25 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Enter your address"
+                                />
+                              </Field.Root>
+
+                              <Field.Root name="description" className="space-y-2">
+                                <Field.Label className="text-sm font-medium">Project Description</Field.Label>
+                                <textarea
+                                  value={formData.description}
+                                  onChange={(event) =>
+                                    setFormData({
+                                      ...formData,
+                                      description: event.target.value,
+                                    })
+                                  }
+                                  className="min-h-35 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                                  placeholder="Describe your project"
+                                />
+                              </Field.Root>
+
+                              <Button
+                                type="submit"
+                                className="w-full h-12 rounded-xl"
+                                disabled={isSubmitting}
+                              >
+                                {isSubmitting ? "Submitting..." : "Submit Order"}
                               </Button>
-                            </div> */}
-                            <div className="space-y-3">
-  <input
-    type="text"
-    placeholder="Your Name"
-    value={formData.name}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        name: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background"
-  />
-
-  <input
-    type="email"
-    placeholder="Email Address"
-    value={formData.email}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        email: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background"
-  />
-
-  <input
-    type="text"
-    placeholder="Phone Number"
-    value={formData.phone}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        phone: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background"
-  />
-
-  <input
-    type="text"
-    placeholder="Business Name"
-    value={formData.businessName}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        businessName: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background"
-  />
-
-  <textarea
-    placeholder="Address"
-    value={formData.address}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        address: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background min-h-[100px]"
-  />
-
-  <textarea
-    placeholder="Project Description"
-    value={formData.description}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        description: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg px-4 py-3 bg-background min-h-[120px]"
-  />
-
-  <Button
-    onClick={handleSubmit}
-    className="w-full"
-  >
-    Submit Order
-  </Button>
-</div>
+                            </form>
                           </Drawer.Content>
                         </Drawer.Popup>
                       </Drawer.Viewport>
@@ -623,7 +617,7 @@ const handleSubmit = async () => {
                             className="flex items-center gap-3"
                           >
                             <Check
-                              className="text-muted-foreground size-4 flex-shrink-0"
+                              className="text-muted-foreground size-4 shrink-0"
                               strokeWidth={2.5}
                             />
 
