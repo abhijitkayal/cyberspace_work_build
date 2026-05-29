@@ -427,7 +427,7 @@ const handleSubmit = async () => {
 
                   {/* Drawer */}
                   <Drawer.Root swipeDirection="right">
-                    <Drawer.Trigger asChild>
+                    <Drawer.Trigger>
                       <Button
                         onClick={() => setSelectedPlan(plan)}
                         className={`w-full cursor-pointer my-2 ${
@@ -460,7 +460,7 @@ const handleSubmit = async () => {
                                 </Drawer.Description>
                               </div>
 
-                              <Drawer.Close asChild>
+                              <Drawer.Close>
                                 <Button
                                   variant="outline"
                                   size="sm"
