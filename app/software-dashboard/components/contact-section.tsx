@@ -48,11 +48,34 @@ export function ContactSection() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    // Here you would typically send the form data to your backend
-    console.log(values)
-    // You could also show a success message or redirect
-    form.reset()
+  async function onSubmit(values: z.infer<typeof contactFormSchema>) {
+    console.log("Submitting contact form with values:", values)
+    try {
+      const response = await fetch("/api/contact-software", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to send message")
+      }
+
+      alert("Message sent successfully")
+      form.reset()
+    } catch (error) {
+      console.log(error)
+      alert(error instanceof Error ? error.message : "Something went wrong")
+    }
+  }
+
+  function onInvalid(errors: Record<string, { message?: string }>) {
+    const firstErrorMessage = Object.values(errors)[0]?.message
+    alert(firstErrorMessage || "Please complete all required fields before submitting.")
   }
 
   return (
@@ -61,7 +84,7 @@ export function ContactSection() {
         <div className="mx-auto max-w-2xl text-center mb-16">
           <Badge variant="outline" className="mb-4">Get In Touch</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Need help or have questions?
+            Need help or have suggestion or questions?
           </h2>
           <p className="text-lg text-muted-foreground">
             Our team is here to help you get the most out of ShadcnStore. Choose the best way to reach out to us.
@@ -140,7 +163,7 @@ export function ContactSection() {
               </CardHeader>
               <CardContent>
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} noValidate className="space-y-6">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <FormField
                         control={form.control}

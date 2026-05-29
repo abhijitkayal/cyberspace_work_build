@@ -80,8 +80,8 @@ export function FeaturesSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
           {/* Left Image */}
           <Image3D
-            lightSrc="/Screenshot 2026-05-28 122853.png"
-            darkSrc="/Screenshot 2026-05-28 122853.png"
+            lightSrc="/Screenshot 2026-05-29 100006.png"
+            darkSrc="/Screenshot 2026-05-29 100006.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -170,8 +170,8 @@ export function FeaturesSection() {
 
           {/* Right Image */}
           <Image3D
-            lightSrc="/Screenshot 2026-05-28 122853.png"
-            darkSrc="/Screenshot 2026-05-28 122853.png"
+            lightSrc="/Screenshot 2026-05-29 100006.png"
+            darkSrc="/Screenshot 2026-05-29 100006.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

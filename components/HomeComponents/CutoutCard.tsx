@@ -5,196 +5,11 @@ import {
   useRef,
   useCallback,
   useEffect,
+  ReactNode,
 } from "react";
 import Antigravity from './Antigravity';
 import { useRouter } from "next/navigation";
-/* ═══════════════════════════════════════════════════════
-   ANTIGRAVITY BACKGROUND
-═══════════════════════════════════════════════════════ */
-
-function AntigravityBg() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) return;
-
-    let raf: number;
-
-    const COUNT = 260;
-    const MAGNET_R = 95;
-    const RING_R = 70;
-
-    const particles = Array.from(
-      { length: COUNT },
-      () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-
-        ox: Math.random() * window.innerWidth,
-        oy: Math.random() * window.innerHeight,
-
-        t: Math.random() * 100,
-        speed: 0.004 + Math.random() * 0.006,
-
-        rOff: (Math.random() - 0.5) * 16,
-        len: 3 + Math.random() * 5,
-
-        alpha: 0.2 + Math.random() * 0.5,
-      })
-    );
-
-    let vx = window.innerWidth / 2;
-    let vy = window.innerHeight / 2;
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    resize();
-
-    window.addEventListener("resize", resize);
-
-    function tick(ts: number) {
-      const W = canvas.width;
-      const H = canvas.height;
-
-      ctx.clearRect(0, 0, W, H);
-
-      const t = ts * 0.001;
-
-      vx +=
-        (W / 2 + Math.sin(t * 0.5) * W * 0.22 - vx) *
-        0.05;
-
-      vy +=
-        (H / 2 + Math.cos(t * 0.9) * H * 0.17 - vy) *
-        0.05;
-
-      particles.forEach((p) => {
-        p.t += p.speed;
-
-        const dx = p.ox - vx;
-        const dy = p.oy - vy;
-
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        let tx = p.ox;
-        let ty = p.oy;
-
-        if (dist < MAGNET_R) {
-          const a = Math.atan2(dy, dx);
-
-          const r =
-            RING_R +
-            Math.sin(p.t * 0.8 + a) * 4 +
-            p.rOff;
-
-          tx = vx + r * Math.cos(a);
-          ty = vy + r * Math.sin(a);
-        }
-
-        p.x += (tx - p.x) * 0.08;
-        p.y += (ty - p.y) * 0.08;
-
-        const scale = Math.max(
-          0,
-          1 -
-            Math.abs(
-              Math.sqrt(
-                (p.x - vx) ** 2 + (p.y - vy) ** 2
-              ) - RING_R
-            ) /
-              18
-        );
-
-        const alpha =
-          p.alpha *
-          (0.3 + scale * 0.7) *
-          (0.75 + Math.sin(p.t * 2.5) * 0.25);
-
-        const a2 = Math.atan2(
-          ty - p.y + 0.001,
-          tx - p.x + 0.001
-        );
-
-        ctx.save();
-
-        ctx.translate(p.x, p.y);
-
-        ctx.rotate(a2 + Math.PI / 2);
-
-        ctx.globalAlpha = alpha;
-
-        const grd = ctx.createLinearGradient(
-          0,
-          -p.len,
-          0,
-          p.len
-        );
-
-        grd.addColorStop(
-          0,
-          "rgba(6,182,212,0)"
-        );
-
-        grd.addColorStop(
-          0.5,
-          "rgba(6,182,212,1)"
-        );
-
-        grd.addColorStop(
-          1,
-          "rgba(6,182,212,0)"
-        );
-
-        ctx.fillStyle = grd;
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-          0,
-          0,
-          1.2 * (0.6 + scale * 0.4),
-          p.len * (0.5 + scale * 0.5),
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        ctx.fill();
-
-        ctx.restore();
-      });
-
-      raf = requestAnimationFrame(tick);
-    }
-
-    raf = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(raf);
-
-      window.removeEventListener(
-        "resize",
-        resize
-      );
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 w-full h-full pointer-events-none z-0"
-    />
-  );
-}
+import { ChefHat, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ReceiptText, ShoppingBag, SquareKanban, Stethoscope } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════
    CUTOUT HELPERS
@@ -319,6 +134,16 @@ function CornerMark({
    CUTOUT CARD
 ═══════════════════════════════════════════════════════ */
 
+// interface CardProps {
+//   label: string;
+//   title: string;
+//   description: string;
+//   tag?: string;
+//   accent?: string;
+//   cut?: number;
+//   duration?: string;
+// }
+
 interface CardProps {
   label: string;
   title: string;
@@ -327,8 +152,8 @@ interface CardProps {
   accent?: string;
   cut?: number;
   duration?: string;
+  icon?: ReactNode;
 }
-
 function CutoutCard({
   label,
   title,
@@ -337,6 +162,7 @@ function CutoutCard({
   accent = "#e8ff47",
   cut = CUT,
   duration = "3s",
+  icon,
 }: CardProps) {
   const cardRef =
     useRef<HTMLDivElement>(null);
@@ -450,15 +276,21 @@ function CutoutCard({
 
             <div className="flex items-start justify-between">
               <span
-                className="border px-2 py-1 text-[9px] uppercase tracking-[0.2em]"
-                style={{
-                  color: accent,
-                  borderColor: `${accent}35`,
-                  background: `${accent}18`,
-                }}
-              >
-                {label}
-              </span>
+  className="inline-flex items-center gap-2 border px-2 py-1 text-[9px] uppercase tracking-[0.2em]"
+  style={{
+    color: accent,
+    borderColor: `${accent}35`,
+    background: `${accent}18`,
+  }}
+>
+  {icon && (
+    <span className="flex items-center justify-center size-5">
+      {icon}
+    </span>
+  )}
+
+  {label}
+</span>
 
               {tag && (
                 <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
@@ -478,7 +310,7 @@ function CutoutCard({
             </div>
 
             <button
-              className="mt-auto flex items-center justify-center gap-2 border px-4 py-3 text-[10px] uppercase tracking-[0.2em] transition-all duration-300"
+              className="mt-auto flex items-center justify-center gap-2 border px-4 py-3 text-[10px] uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer"
               style={{
                 borderColor: mouse.inside
                   ? accent
@@ -510,31 +342,31 @@ function CutoutCard({
 export default function SoftwareShowcase() {
   const router = useRouter();
   return (
-    <div id="products" className="relative min-h-screen overflow-hidden bg-black">
+    <div id="products" className="relative min-h-screen overflow-hidden">
       {/* Background */}
+      <div className="absolute inset-0 z-0">
+        <Antigravity
+          count={300}
+          magnetRadius={1.2}
+          ringRadius={2}
+          waveSpeed={0.4}
+          waveAmplitude={1}
+          particleSize={1.5}
+          lerpSpeed={0.08}
+          color="#06B6D4"
+          autoAnimate
+          particleVariance={1}
+          rotationSpeed={0}
+          depthFactor={1}
+          pulseSpeed={3}
+          particleShape="capsule"
+          fieldStrength={6}
+        />
+      </div>
 
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 py-20">
-        <div className="absolute inset-0 z-0">
-  <Antigravity
-    count={300}
-    magnetRadius={2.5}
-    ringRadius={3}
-    waveSpeed={0.4}
-    waveAmplitude={1}
-    particleSize={1.5}
-    lerpSpeed={0.05}
-    color="#06B6D4"
-    autoAnimate
-    particleVariance={1}
-    rotationSpeed={0}
-    depthFactor={1}
-    pulseSpeed={3}
-    particleShape="capsule"
-    fieldStrength={10}
-  />
-</div>
         {/* Heading */}
         <div className="mb-14 text-center">
           <p className="mb-3 text-[10px] uppercase tracking-[0.35em] text-cyan-400/60">
@@ -562,34 +394,38 @@ export default function SoftwareShowcase() {
           /> */}
 
           <CutoutCard
-            label="PMS"
+            label="Project Management Software"
             title="CyberProjects"
             description="Payroll, attendance, leave and employee management platform."
             tag="v2.4"
             accent="#0f766e"
+              icon={<SquareKanban className="size-3" />}
           />
 
           <CutoutCard
-            label="GST & Billing"
+            label="GST and Billing Software"
             title="CyberInvoice"
             description="Barcode billing, GST invoicing and inventory management."
             tag="v4.0"
             accent="#0e7490"
+              icon={<ReceiptIndianRupee className="size-3" />}
           />
 
           <CutoutCard
-            label="Tally"
+            label="Tally Software"
             title="CyberLedger"
             description="Hospital ERP with billing, EMR and pharmacy integration."
             tag="v2.0"
             accent="#0369a1"
+              icon={<NotebookTabs className="size-3" />}
           />
           <CutoutCard
-            label="HRMS"
+            label="HR Management Software"
             title="CyberPayroll"
             description="Hospital ERP with billing, EMR and pharmacy integration."
             tag="v2.0"
             accent="#1d4ed8"
+              icon={<IdCardLanyard className="size-3" />}
           />
         </div>
          <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
@@ -602,34 +438,38 @@ export default function SoftwareShowcase() {
           /> */}
 
           <CutoutCard
-            label="SMS"
+            label="Store Management System"
             title="CyberRetail"
             description="Payroll, attendance, leave and employee management platform."
             tag="v2.4"
             accent="#4338ca"
+              icon={<ShoppingBag className="size-3" />}
           />
 
           <CutoutCard
-            label="CMS"
+            label="Clinic Management System"
             title="CyberClinic"
             description="Barcode billing, GST invoicing and inventory management."
             tag="v4.0"
             accent="#6d28d9"
+              icon={<Stethoscope className="size-3" />}
           />
 
           <CutoutCard
-            label="PMS"
+            label="Pharmacy Management System"
             title="CyberPharma"
             description="Hospital ERP with billing, EMR and pharmacy integration."
             tag="v2.0"
             accent="#7e22ce"
+              icon={<Pill className="size-3" />}
           />
           <CutoutCard
-            label="Resturant"
+            label="Resturant Management System"
             title="CyberDine"
             description="Hospital ERP with billing, EMR and pharmacy integration."
             tag="v2.0"
             accent="#38bdf8"
+              icon={<ChefHat className="size-3" />}
           />
         </div>
         {/* <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4">

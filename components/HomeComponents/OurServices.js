@@ -11,6 +11,7 @@ import {
 import { SiGoogleanalytics } from "react-icons/si";
 import SpotlightCard, { Spotlight } from "../SpotlightCard";
 import Antigravity from "./Antigravity";
+import SoftwareShowcase from "./CutoutCard";
 
 /* ── dot-grid bg ── */
 // const StyledPattern = styled.div`
@@ -626,12 +627,12 @@ export default function OurServicesWithWires() {
       <div className="absolute inset-0 z-0">
   <Antigravity
     count={300}
-    magnetRadius={2.5}
-    ringRadius={3}
+    magnetRadius={1.2}
+    ringRadius={2}
     waveSpeed={0.4}
     waveAmplitude={1}
     particleSize={1.5}
-    lerpSpeed={0.05}
+    lerpSpeed={0.08}
     color="#06B6D4"
     autoAnimate
     particleVariance={1}
@@ -639,7 +640,7 @@ export default function OurServicesWithWires() {
     depthFactor={1}
     pulseSpeed={3}
     particleShape="capsule"
-    fieldStrength={10}
+    fieldStrength={6}
   />
 </div>
 
@@ -808,7 +809,7 @@ export default function OurServicesWithWires() {
         </motion.div>
 
       </div>
-
+          <SoftwareShowcase/>
       <style>{`
         @keyframes chipPulse {
           0%,100% { opacity: 0.55 }

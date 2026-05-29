@@ -577,7 +577,7 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2 } from "lucide-react"
+import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2, Heart, User2Icon, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
@@ -598,6 +598,7 @@ import {
 import { SiGoogleanalytics } from "react-icons/si"
 import SiteNav from "./nav-animation"
 import SparkleNavbar from "./lightswind/sparkle-navbar"
+import AnimatedBadge from "./ui/animated-badge"
 // import { usePathname } from 'next/navigation'
 
 // ─── Rainbow border animation styles ──────────────────────────────────────────
@@ -744,11 +745,17 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const navitems = { left: [{ label: "Product", href: "#products", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
 
   const socialLinks1 = [
+    { name: "Shop",     icon: <ShoppingBag />, link: "tel:7980715765" },
+    { name: "Wishlist",     icon: <Heart />, link: "tel:7980715765" },
+    { name: "Cart",     icon: <ShoppingCart />, link: "mailto:cyberspaceworksofficial@gmail.com" },
+    { name: "Accounts",     icon: <User2Icon />, link: "tel:7980715765" },
+    
+    // { name: "Quick Enquiry", icon: "Quick Enquiry", link: "[wa.me](https://wa.me/7980715765)" },
+  ]
+  const socialLinks2 = [
     { name: "Call",     icon: <FaPhoneAlt />, link: "tel:7980715765" },
     { name: "Mail",     icon: <FaEnvelope />, link: "mailto:cyberspaceworksofficial@gmail.com" },
     { name: "WhatsApp", icon: <FaWhatsapp />, link: "[wa.me](https://wa.me/7980715765)" },
-  ]
-  const socialLinks2 = [
     { name: "Instagram", icon: <FaInstagram />, link: "[instagram.com](https://www.instagram.com/cyberspaceworks)" },
     { name: "LinkedIn",  icon: <FaLinkedin />,  link: "[linkedin.com](https://www.linkedin.com/company/cyberspace-works)" },
     { name: "Facebook",  icon: <FaFacebookF />, link: "[facebook.com](https://www.facebook.com/profile.php?id=100086774724799)" },
@@ -880,15 +887,21 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
             <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
             <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
           </svg>
-          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-6 py-1 rounded-xl shadow-xl absolute left-6 top-1/2 -translate-y-1/2 ${ pathname.startsWith('/software-dashboard') ? '' : ''}`}>
-            <div className="flex items-center justify-center space-x-5 w-full">
+          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute left-2 top-1/2 -translate-y-1/2 ${ pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+            <div className="flex items-center justify-center space-x-3 w-full">
               {socialLinks1.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
-                  <Link href={item.link} className="text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer size-5">
+                  <Link href={item.link}  className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">
                     {item.icon}
                   </Link>
                 </div>
               ))}
+              {/* <button>Quick Enquiry</button> */}
+              <AnimatedBadge
+  text="Quick Enquiry"
+  color="#22d3ee"
+  href="/docs/components/animated-badge"
+/>
             </div>
             
           </div>
@@ -1071,8 +1084,8 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
             <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
             <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
           </svg>
-          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-6 py-1 rounded-xl shadow-xl absolute right-6 top-1/2 -translate-y-1/2 ${pathname.startsWith('/software-dashboard') ? '' : ''}`}>
-            <div className="flex items-center justify-center space-x-5 w-full">
+          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute right-2 top-1/2 -translate-y-1/2 ${pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+            <div className="flex items-center justify-center space-x-3 w-full">
               {socialLinks2.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
                   <Link href={item.link} className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">

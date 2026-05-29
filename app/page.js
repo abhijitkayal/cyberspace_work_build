@@ -62,7 +62,7 @@ export default function HomePage() {
       <DynamicCanonical />
       <main className="relative min-h-screen bg-black overflow-hidden">
         <HeroSection />
-        <SoftwareShowcase/>
+        {/* <SoftwareShowcase/> */}
         <WhyChooseUs />
         <OurClients />
         <Achivements />

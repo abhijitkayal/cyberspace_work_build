@@ -42,7 +42,7 @@ export function Form({
   handleSubmit,
   ...props
 }: FormProps & FormRHFProps) {
-  return <form {...props}>{children}</form>
+  return <>{children}</>
 }
 
 export function FormField({ name, control, render, ...props }: any) {

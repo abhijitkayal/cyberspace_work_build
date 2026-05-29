@@ -111,15 +111,19 @@ Sent via website contact form
     // -------------------------------
     await transporter.sendMail(mailOptions);
 
-    await connectToDatabase();
-    const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
+    try {
+      await connectToDatabase();
+      const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
 
-    if (adminIds.length) {
-      emitToUsers(adminIds, "notification", {
-        type: "request",
-        title: "New project request",
-        text: `${name} requested ${service} via the contact form.`,
-      });
+      if (adminIds.length) {
+        emitToUsers(adminIds, "notification", {
+          type: "request",
+          title: "New project request",
+          text: `${name} requested ${service} via the contact form.`,
+        });
+      }
+    } catch (dbError) {
+      console.error("Contact notification DB error:", dbError);
     }
 
     return new Response(

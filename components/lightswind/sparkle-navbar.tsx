@@ -172,7 +172,7 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
     <>
       <style>{`
         .navigation-menu {
-          margin: -10px 0px 20px 0px;
+          margin: 0px 0px 20px 0px;
           position: relative;
           z-index: 1;
         }
@@ -275,7 +275,7 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
         <div className="flex items-center justify-between w-full">
 
   {/* Left Menu */}
-  <ul className="flex gap-10">
+  <ul className="flex gap-10 mt-4 ">
     {items.slice(0, 3).map((item, index) => (
       <li
         key={item.label}

@@ -62,7 +62,7 @@ export function HeroSection() {
   </div>
 </div> */}
 
-<div className="fixed top-0 left-0 w-full px-4 pt-4 pb-1 mt-10 z-10  bg-white/5
+<div className="fixed top-0 w-full px-4 pt-4 pb-1 mt-10 z-10  bg-white/5
       backdrop-blur-xl
       shadow-[0_8px_32px_rgba(0,0,0,0.37)]
       supports-[backdrop-filter]:bg-black/20">
@@ -74,7 +74,7 @@ export function HeroSection() {
       { label: "Features", href: "#features" },
 
       { label: "Pricing", href: "#pricing" },
-      { label: "Faq", href: "#faq" },
+      { label: "FAQ", href: "#faq" },
       { label: "Contact", href: "#contact" },
     ]}
   />
@@ -124,12 +124,12 @@ export function HeroSection() {
         <div className="mx-auto mt-20 max-w-6xl">
           <div className="relative group">
             {/* Top background glow effect - positioned above the image */}
-            <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-[90%] mx-auto h-24 lg:h-80 bg-cyan-300 rounded-full blur-3xl"></div>
+            <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-[90%] mx-auto h-24 lg:h-80 bg-cyan-500 rounded-full blur-3xl"></div>
 
             <div className="relative rounded-xl border bg-card shadow-2xl">
               {/* Light mode dashboard image */}
               <Image
-                src="/Screenshot 2026-05-28 122853.png"
+                src="/Screenshot 2026-05-29 100006.png"
                 alt="Dashboard Preview - Light Mode"
                 width={1200}
                 height={800}
@@ -139,7 +139,7 @@ export function HeroSection() {
 
               {/* Dark mode dashboard image */}
               <Image
-                src="/Screenshot 2026-05-28 122853.png"
+                src="/Screenshot 2026-05-29 100006.png"
                 alt="Dashboard Preview - Dark Mode"
                 width={1200}
                 height={800}
@@ -151,7 +151,7 @@ export function HeroSection() {
               <div className="absolute bottom-0 left-0 w-full h-32 md:h-40 lg:h-48 bg-gradient-to-b from-background/0 via-background/70 to-background rounded-b-xl"></div>
 
               {/* Overlay play button for demo */}
-              <div className="absolute inset-0 flex items-center justify-center">
+              {/* <div className="absolute inset-0 flex items-center justify-center">
                 <Button
                   size="lg"
                   className="rounded-full h-16 w-16 p-0 cursor-pointer hover:scale-105 transition-transform"
@@ -161,7 +161,7 @@ export function HeroSection() {
                     <Play className="h-6 w-6 fill-current" />
                   </a>
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
