@@ -1,6 +1,7 @@
 import { HeroParallax } from '@/components/ui/hero-parallax'
 import React from 'react'
-import HomePage from './hero-section/page'
+// import HomePage from './hero-section/page'
+import HeroParallaxDemo from './hero-section/page'
 import SoftwareShowcase from '@/components/HomeComponents/CutoutCard'
 import AboutPage from './about/page'
 // import { BentoDemo } from '@/components/ui/bento-grid'
@@ -11,7 +12,7 @@ import ContactSection from '@/components/HomeComponents/ContactForm'
 const page = () => {
   return (
     <div>
-      <HomePage/>
+      <HeroParallaxDemo/>
       <SoftwareShowcase/>
       <AboutPage/>
       <FeaturesSection/>

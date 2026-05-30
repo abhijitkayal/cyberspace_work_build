@@ -571,25 +571,28 @@
 
 
 
-
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, User, Calendar, CreditCard, Menu, X, Sun, Moon, ChevronDown, Settings2, Info, Phone, Contact, Wrench, ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs, SquareKanban, ReceiptIndianRupee, ShoppingBag, Package, Building2, Heart, User2Icon, ShoppingCart, Users, ArrowRight, Rocket } from "lucide-react"
+import {
+  Menu, X, Sun, Moon, ChevronDown, Info, Contact, Wrench,
+  ChefHat, Pill, Stethoscope, IdCardLanyard, NotebookTabs,
+  SquareKanban, ReceiptIndianRupee, ShoppingBag, Package,
+  Building2, Heart, User2Icon, ShoppingCart, Users, ArrowRight,
+  Rocket, ChevronLeft, CheckCircle2,
+} from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
 import { IoReorderThree } from "react-icons/io5"
 import { IoMailOutline } from "react-icons/io5"
-import { XMarkIcon } from "@heroicons/react/24/outline"
-import { HomeIcon, Cog6ToothIcon, InformationCircleIcon, PhoneIcon } from "@heroicons/react/24/solid"
+import { HomeIcon, Cog6ToothIcon, PhoneIcon } from "@heroicons/react/24/solid"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Drawer } from "@base-ui/react/drawer"
-
 import { HoverBorderGradient } from "./ui/hover-border-gradient"
 import {
   FaLaptopCode, FaMobileAlt, FaCode, FaPalette, FaBullhorn,
@@ -598,50 +601,34 @@ import {
 } from "react-icons/fa"
 import { SiGoogleanalytics } from "react-icons/si"
 import SiteNav from "./nav-animation"
-import SparkleNavbar from "./lightswind/sparkle-navbar"
 import AnimatedBadge from "./ui/animated-badge"
-// import { usePathname } from 'next/navigation'
 
-// ─── Rainbow border animation styles ──────────────────────────────────────────
-const RAINBOW_STYLES = `
+// ─── Styles ───────────────────────────────────────────────────────────────────
+const GLOBAL_STYLES = `
   .sparkle-nav__dropdown {
-    position: fixed;
-    top: 65px;
-    left: 14vw;
-    right: 0;
-    width: 70vw;
-    background: #000000;
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border-top: 1px solid rgba(0,255,252,0.15);
-    border-bottom: 1px solid rgba(0,255,252,0.10);
+    position: fixed; top: 65px; left: 14vw; right: 0; width: 70vw;
+    background: #000; backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+    border-top: 1px solid rgba(0,255,252,0.15); border-bottom: 1px solid rgba(0,255,252,0.10);
     box-shadow: 0 30px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,255,255,0.05);
-    z-index: 9999;
-    padding: 28px 48px 32px;
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 4px;
-    border-radius: 20px;
-    animation: dropdownFadeIn 0.18s ease forwards;
-    overflow: hidden;
+    z-index: 9999; padding: 28px 48px 32px;
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 4px;
+    border-radius: 20px; animation: dropdownFadeIn 0.18s ease forwards; overflow: hidden;
   }
   .sparkle-nav__dropdown::before {
-    content:''; position:absolute; top:0; left:0;
-    width:300px; height:300px;
+    content:''; position:absolute; top:0; left:0; width:300px; height:300px;
     transform:translate(-128px,-128px);
     background:radial-gradient(circle,#06b6d4 0%,transparent 100%);
     filter:blur(160px); opacity:0.6; pointer-events:none; z-index:0;
   }
   .sparkle-nav__dropdown::after {
-    content:''; position:absolute; bottom:0; right:0;
-    width:300px; height:300px;
+    content:''; position:absolute; bottom:0; right:0; width:300px; height:300px;
     transform:translate(128px,128px);
     background:radial-gradient(circle,#6366f1 0%,transparent 100%);
     filter:blur(160px); opacity:0.6; pointer-events:none; z-index:0;
   }
   @keyframes dropdownFadeIn {
     from { opacity:0; transform:translateY(-6px); }
-    to   { opacity:1; transform:translateY(0);    }
+    to   { opacity:1; transform:translateY(0); }
   }
   .sparkle-nav__dropdown-item {
     display:flex; flex-direction:row; align-items:flex-start; gap:14px;
@@ -649,42 +636,38 @@ const RAINBOW_STYLES = `
     transition:background 0.18s ease; border:1px solid transparent;
     position:relative; z-index:1;
   }
-  .sparkle-nav__dropdown-item:hover {
-    background:rgba(0,255,252,0.05);
-    border-color:rgba(0,255,252,0.12);
-  }
+  .sparkle-nav__dropdown-item:hover { background:rgba(0,255,252,0.05); border-color:rgba(0,255,252,0.12); }
   .sparkle-nav__dropdown-icon {
     flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
-    width:42px; height:42px;
-    background:rgba(0,255,252,0.08);
+    width:42px; height:42px; background:rgba(0,255,252,0.08);
     border-radius:8px; border:1px solid rgba(0,255,252,0.18);
   }
   .sparkle-nav__dropdown-icon svg { width:22px; height:22px; color:#00BCD4; stroke:#00BCD4; }
-  .sparkle-nav__dropdown-text  { display:flex; flex-direction:column; gap:4px; }
-  .sparkle-nav__dropdown-name  { font-size:14px; font-weight:700; color:#fff; letter-spacing:0.01em; line-height:1.3; }
+  .sparkle-nav__dropdown-text { display:flex; flex-direction:column; gap:4px; }
+  .sparkle-nav__dropdown-name { font-size:14px; font-weight:700; color:#fff; letter-spacing:0.01em; line-height:1.3; }
   .sparkle-nav__dropdown-subtext { font-size:12px; color:#00BCD4; line-height:1.5; font-weight:400; opacity:0.85; }
-  .nav-left-slice-bg { clip-path: path('M0 0 H55 V63 C25 64 23 38 -7 40 Z'); }
+  .nav-left-slice-bg  { clip-path: path('M0 0 H55 V63 C25 64 23 38 -7 40 Z'); }
   .nav-right-slice-bg { clip-path: path('M0 0 H51 V41 C27 45 35 65 -9 64 Z'); }
-  @keyframes pulseGlowRing {
-    0%, 100% { transform: translateY(-4px) scale(0.75); opacity: 0.7; filter: blur(10px); }
-    50% { transform: translateY(-4px) scale(0.75); opacity: 1; filter: blur(15px); }
+
+  /* Drawer slide animations */
+  .drawer-panel[data-starting-style] { transform: translateX(100%); }
+  .drawer-panel[data-ending-style]   { transform: translateX(100%); }
+
+  /* Form slide */
+  @keyframes formSlideIn {
+    from { opacity:0; transform:translateX(24px); }
+    to   { opacity:1; transform:translateX(0); }
   }
-  .animate-pulseGlowRing { animation: pulseGlowRing 1.8s ease-in-out infinite; }
-  .pulseGlowRingBackdrop {
-    background: conic-gradient(from 0deg, #0ea5e9, #06b6d4, #0ea5e9);
-    filter: blur(16px);
-    opacity: 0.9;
-    z-index: -1;
-    transform: translateY(-8px);
-    pointer-events: none;
+  .form-slide-in { animation: formSlideIn 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+  @keyframes cardsFadeIn {
+    from { opacity:0; transform:translateX(-16px); }
+    to   { opacity:1; transform:translateX(0); }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-pulseGlowRing { animation: none; opacity: 0.8; filter: blur(16px); }
-  }
+  .cards-fade-in { animation: cardsFadeIn 0.3s cubic-bezier(0.22,1,0.36,1) both; }
 `
 
-// ─── Sub-components ────────────────────────────────────────────────────────────
-
+// ─── Sub-components ───────────────────────────────────────────────────────────
 const MobileThemeToggle = () => {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -716,64 +699,434 @@ const NavLink = ({ href, icon: Icon, label, active }: {
   </Link>
 )
 
-// ─── Navbar ────────────────────────────────────────────────────────────────────
+// ─── Software options ─────────────────────────────────────────────────────────
+const SOFTWARE_OPTIONS = [
+  { id: "payroll",  label: "CyberPayroll",  desc: "Smart HR Management",           icon: <IdCardLanyard size={18} /> },
+  { id: "dine",     label: "CyberDine",     desc: "Restaurant Management",         icon: <ChefHat size={18} /> },
+  { id: "pharma",   label: "CyberPharma",   desc: "Pharmacy Management",           icon: <Pill size={18} /> },
+  { id: "clinic",   label: "CyberClinic",   desc: "Patient Management",            icon: <Stethoscope size={18} /> },
+  { id: "retail",   label: "CyberRetail",   desc: "Store Management",              icon: <ShoppingBag size={18} /> },
+  { id: "ledger",   label: "CyberLedger",   desc: "Smart Tally Software",          icon: <NotebookTabs size={18} /> },
+  { id: "invoice",  label: "CyberInvoice",  desc: "GST, Billing & Accounting",     icon: <ReceiptIndianRupee size={18} /> },
+  { id: "projects", label: "CyberProjects", desc: "Project Management",            icon: <SquareKanban size={18} /> },
+]
 
+const SERVICE_CATEGORIES = [
+  "Web Development", "Mobile App", "Software Development",
+  "UI/UX Design", "Digital Marketing", "AI & Automation",
+  "Graphic Design", "Research & Analytics",
+]
+
+// ─── Enquiry Drawer ───────────────────────────────────────────────────────────
+type DrawerView = "home" | "project" | "software" | "success"
+
+function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+  const [view, setView] = useState<DrawerView>("home")
+  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
+  const [form, setForm] = useState({ name: "", email: "", service: "", description: "" })
+
+  const reset = () => {
+    setView("home")
+    setSelectedSoftware([])
+    setForm({ name: "", email: "", service: "", description: "" })
+  }
+
+  const toggleSoftware = (id: string) => {
+    setSelectedSoftware(prev =>
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+    )
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setView("success")
+  }
+
+  const inputClass = `
+    w-full rounded-2xl bg-white/[0.05] border border-white/[0.09]
+    px-4 py-3 text-[14px] text-white placeholder-white/25
+    focus:outline-none focus:border-white/25 focus:bg-white/[0.07]
+    transition-all duration-200
+  `
+  const labelClass = "block text-[12px] font-semibold text-white/50 mb-1.5 uppercase tracking-wider"
+
+  return (
+    <Drawer.Root
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o)
+        if (!o) setTimeout(reset, 400)
+      }}
+    >
+      <Drawer.Portal>
+        {/* ── Backdrop ── */}
+        <Drawer.Backdrop className="fixed inset-0 z-[2000] bg-black/70 backdrop-blur-[6px] transition-opacity duration-400 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
+
+        {/* ── Panel ── */}
+        <Drawer.Popup className="drawer-panel fixed top-0 right-0 z-[2001] h-screen w-full max-w-[540px] bg-[#111113] flex flex-col overflow-hidden transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+          <Drawer.Content className="flex flex-col h-full">
+
+            {/* ════ TOP BAR ════ */}
+            <div className="flex items-center justify-between px-7 py-5 border-b border-white/[0.07] shrink-0">
+              <div className="flex items-center gap-3">
+                {/* Back button — shown on sub-views */}
+                {(view === "project" || view === "software") && (
+                  <button
+                    onClick={() => setView("home")}
+                    className="flex items-center justify-center w-9 h-9 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white/60 hover:text-white transition-all duration-200 cursor-pointer"
+                  >
+                    <ChevronLeft size={16} strokeWidth={2.5} />
+                    
+                  </button>
+                )}
+               
+                {!(view === "project" || view === "software") && (<div className="flex items-center gap-2">
+                  <Image src="/logo2.png" alt="Logo" width={32} height={32} className="h-8 w-8 object-contain" />
+                  <span className="text-white/70 text-[13px] font-semibold tracking-wide">Cyberspace Works</span>
+                </div>
+                )}
+              </div>
+             
+
+              {/* Close */}
+              <Drawer.Close
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.09] bg-white/[0.04] text-[11px] font-bold tracking-[0.1em] text-white/50 hover:bg-white/[0.08] hover:text-white/80 transition-all duration-200 cursor-pointer"
+              >
+                <X size={12} strokeWidth={2.5} />
+                CLOSE
+              </Drawer.Close>
+            </div>
+
+            {/* ════ VIEWS ════ */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+
+              {/* ── HOME VIEW ── */}
+              {view === "home" && (
+                <div className="cards-fade-in">
+                  {/* Hero section — matches image: rounded dark card */}
+                  <div className="mx-6 mt-6 rounded-3xl bg-[#18181b]/80 border border-white/[0.06] p-8 pb-9">
+                    {/* Available badge */}
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 mb-6">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                      </span>
+                      <span className="text-[13px] text-white/55 font-medium">Available for new projects</span>
+                    </div>
+
+                    <h2 className="text-[2.1rem] font-bold tracking-tight text-white leading-[1.15] mb-3">
+                      How can we help you?
+                    </h2>
+                    <p className="text-[15px] text-white/40 leading-relaxed">
+                      Choose how you&apos;d like to work with us.
+                    </p>
+                  </div>
+
+                  {/* Two cards — matching image layout exactly */}
+                  <div className="px-6 pt-5 pb-6 grid grid-cols-2 gap-4">
+
+                    {/* Card 1: Start a Project */}
+                    <div
+                      onClick={() => setView("project")}
+                      className="group flex flex-col rounded-2xl p-6 border border-white/[0.08] bg-[#18181b]/60 hover:border-white/[0.18] hover:bg-[#1e1e22] transition-all duration-300 cursor-pointer min-h-[240px]"
+                    >
+                      {/* Icon box — blue tint like image */}
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1e2340] border border-[#2d3560] text-[#5b7cff] mb-6">
+                        <Rocket size={24} strokeWidth={1.7} />
+                      </div>
+
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-[1.05rem] font-bold text-white leading-tight">Start a Project</h3>
+                        <ArrowRight size={16} className="text-white/25 group-hover:text-white/60 group-hover:translate-x-0.5 transition-all duration-200 mt-0.5 shrink-0" />
+                      </div>
+                      <p className="text-[12.5px] text-white/40 leading-relaxed mb-auto">
+                        Hire us for web, mobile, backend, SEO or custom software solutions.
+                      </p>
+                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-[#5b7cff] flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
+                        GET STARTED <ArrowRight size={12} />
+                      </button>
+                    </div>
+
+                    {/* Card 2: Purchase a Software — purple tint like image */}
+                    <div
+                      onClick={() => setView("software")}
+                      className="group flex flex-col rounded-2xl p-6 border border-purple-500/[0.2] bg-[#16102a]/60 hover:border-purple-400/40 hover:bg-[#1c1438]/80 transition-all duration-300 cursor-pointer min-h-[240px]"
+                    >
+                      {/* Icon box — purple tint like image */}
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#281848] border border-purple-500/30 text-purple-400 mb-6">
+                        <Package size={24} strokeWidth={1.7} />
+                      </div>
+
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-[1.05rem] font-bold text-white leading-tight">Purchase a Software</h3>
+                        <ArrowRight size={16} className="text-white/25 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all duration-200 mt-0.5 shrink-0" />
+                      </div>
+                      <p className="text-[12.5px] text-white/40 leading-relaxed mb-auto">
+                        Explore our 8 ready-made software products for your business needs.
+                      </p>
+                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-purple-400 flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
+                        BROWSE SOFTWARE <ArrowRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Footer trust row */}
+                  <div className="px-6 pt-2 pb-6 border-t border-white/[0.05] mx-6 rounded-b">
+                    <div className="flex items-center justify-center gap-6 pt-4">
+                      {["Responds in 24 hrs", "Secure & confidential", "No commitment"].map(text => (
+                        <div key={text} className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                          <span className="text-[11.5px] text-white/30 font-medium">{text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── PROJECT FORM VIEW ── */}
+              {(view === "project" || view === "software") && (
+                <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
+                  <div>
+                    <h3 className="text-[1.4rem] font-bold text-white mb-1">Start a Project</h3>
+                    <p className="text-[13px] text-white/40">Fill in the details and we&apos;ll get back to you within 24 hours.</p>
+                  </div>
+
+                  {/* Name */}
+                  <div>
+                    <label className={labelClass}>Full Name</label>
+                    <input
+                      type="text" required placeholder="John Doe"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className={labelClass}>Email Address</label>
+                    <input
+                      type="email" required placeholder="you@company.com"
+                      value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  {/* Service category */}
+               <div>
+  <label className={labelClass}>Service Category</label>
+
+  <select
+    value={form.service}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        service: e.target.value,
+      }))
+    }
+    className="
+      w-full
+      rounded-xl
+      bg-white/[0.03]
+      border border-white/[0.08]
+      px-4 py-3
+      text-sm text-white
+      outline-none
+      focus:border-[#5b7cff]/60
+      focus:ring-2 focus:ring-[#5b7cff]/20
+      transition-all duration-200
+    "
+  >
+    <option value="" className="bg-[#0d0d0f] text-white/50">
+      Select a Service
+    </option>
+
+    {SERVICE_CATEGORIES.map((cat) => (
+      <option
+        key={cat}
+        value={cat}
+        className="bg-[#0d0d0f] text-white"
+      >
+        {cat}
+      </option>
+    ))}
+  </select>
+</div>
+
+                  {/* Description */}
+                  <div>
+                    <label className={labelClass}>Project Description</label>
+                    <textarea
+                      rows={4} placeholder="Tell us about your project..."
+                      value={form.description}
+                      onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 rounded-2xl bg-[#5b7cff] hover:bg-[#6d8dff] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(91,124,255,0.3)]"
+                  >
+                    Submit Enquiry →
+                  </button>
+                </form>
+              )}
+
+              {/* ── SOFTWARE PURCHASE VIEW ── */}
+              {/* {view === "software" && (
+                <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
+                  <div>
+                    <h3 className="text-[1.4rem] font-bold text-white mb-1">Purchase a Software</h3>
+                    <p className="text-[13px] text-white/40">Select the software(s) you&apos;re interested in and leave your details.</p>
+                  </div>
+
+                
+                  <div>
+                    <label className={labelClass}>Select Software <span className="normal-case text-white/30">(pick one or more)</span></label>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      {SOFTWARE_OPTIONS.map(sw => {
+                        const selected = selectedSoftware.includes(sw.id)
+                        return (
+                          <button
+                            key={sw.id} type="button"
+                            onClick={() => toggleSoftware(sw.id)}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-2xl border text-left transition-all duration-200 ${
+                              selected
+                                ? "bg-purple-500/15 border-purple-400/50 text-white"
+                                : "bg-white/[0.03] border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white/70"
+                            }`}
+                          >
+                            <span className={`shrink-0 ${selected ? "text-purple-400" : "text-white/30"}`}>{sw.icon}</span>
+                            <div>
+                              <p className="text-[12.5px] font-semibold leading-tight">{sw.label}</p>
+                              <p className="text-[11px] text-white/35 leading-tight mt-0.5">{sw.desc}</p>
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  
+                  <div>
+                    <label className={labelClass}>Full Name</label>
+                    <input
+                      type="text" required placeholder="John Doe"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+
+                 
+                  <div>
+                    <label className={labelClass}>Email Address</label>
+                    <input
+                      type="email" required placeholder="you@company.com"
+                      value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  
+                  <div>
+                    <label className={labelClass}>Additional Notes</label>
+                    <textarea
+                      rows={3} placeholder="Any specific requirements or questions..."
+                      value={form.description}
+                      onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={selectedSoftware.length === 0}
+                    className="w-full py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(147,51,234,0.3)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Submit Enquiry →
+                  </button>
+                </form>
+              )} */}
+
+              {/* ── SUCCESS VIEW ── */}
+              {view === "success" && (
+                <div className="form-slide-in flex flex-col items-center justify-center h-full min-h-[400px] px-8 text-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-400/30 mb-6">
+                    <CheckCircle2 size={36} className="text-emerald-400" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[1.6rem] font-bold text-white mb-3">We&apos;ll be in touch!</h3>
+                  <p className="text-[14px] text-white/40 leading-relaxed max-w-xs">
+                    Your enquiry has been received. Our team typically responds within 24 hours.
+                  </p>
+                  <button
+                    onClick={reset}
+                    className="mt-8 px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/60 hover:text-white hover:bg-white/[0.1] text-[13px] font-semibold transition-all duration-200"
+                  >
+                    Start another enquiry
+                  </button>
+                </div>
+              )}
+
+            </div>
+          </Drawer.Content>
+        </Drawer.Popup>
+      </Drawer.Portal>
+    </Drawer.Root>
+  )
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 const Navbar = ({ className, ...props }: { className?: string; [key: string]: unknown }) => {
-  const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false)
+  const [isLeftMenuOpen, setIsLeftMenuOpen]   = useState(false)
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const [showEmailForm, setShowEmailForm] = useState(false)
-const [email, setEmail] = useState("")
-const [submitted, setSubmitted] = useState(false)
-
-  // ── Notch measurement state ──
-  const [notchMetrics, setNotchMetrics] = useState<{
-    left: number; right: number; vw: number
-  } | null>(null)
-  const notchRef = useRef<HTMLDivElement>(null)
-
-  const pathname = usePathname()
-  const router = useRouter()
-  const { status } = useSession()
-  const isAuthenticated = status === "authenticated"
+  const [openDropdown, setOpenDropdown]       = useState<string | null>(null)
+  const [drawerOpen, setDrawerOpen]           = useState(false)
+  const [notchMetrics, setNotchMetrics]       = useState<{ left: number; right: number; vw: number } | null>(null)
+  const notchRef      = useRef<HTMLDivElement>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const pathname        = usePathname()
+  const { status }      = useSession()
+  const isAuthenticated = status === "authenticated"
   const isActive = (href: string) => pathname === href
 
- const hideNavbar = pathname?.startsWith("/dashboard") || pathname===("/schedule") || pathname===("/login");
+  const hideNavbar = pathname?.startsWith("/dashboard") || pathname === "/schedule" || pathname === "/login"
 
-      const [open, setOpen] = useState(false)
-
-  const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }], right: [] }
-  const navitems = { left: [{ label: "Product", href: "/product", icon: Package },{ label: "Contact", href: "/contact-us", icon: Contact }], right: [] }
+  const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }] }
+  const navitems = { left: [{ label: "Product", href: "/product", icon: Package }, { label: "Contact", href: "/contact-us", icon: Contact }] }
 
   const socialLinks1 = [
-    { name: "Shop",     icon: <ShoppingBag />, link: "tel:7980715765" },
-    { name: "Wishlist",     icon: <Heart />, link: "tel:7980715765" },
-    { name: "Cart",     icon: <ShoppingCart />, link: "mailto:cyberspaceworksofficial@gmail.com" },
-    { name: "Accounts",     icon: <User2Icon />, link: "tel:7980715765" },
-    
-    // { name: "Quick Enquiry", icon: "Quick Enquiry", link: "[wa.me](https://wa.me/7980715765)" },
-  ]
-  const socialLinks2 = [
-    { name: "Call",     icon: <FaPhoneAlt />, link: "tel:7980715765" },
-    { name: "Mail",     icon: <FaEnvelope />, link: "mailto:cyberspaceworksofficial@gmail.com" },
-    { name: "WhatsApp", icon: <FaWhatsapp />, link: "[wa.me](https://wa.me/7980715765)" },
-    { name: "Instagram", icon: <FaInstagram />, link: "[instagram.com](https://www.instagram.com/cyberspaceworks)" },
-    { name: "LinkedIn",  icon: <FaLinkedin />,  link: "[linkedin.com](https://www.linkedin.com/company/cyberspace-works)" },
-    { name: "Facebook",  icon: <FaFacebookF />, link: "[facebook.com](https://www.facebook.com/profile.php?id=100086774724799)" },
+    { name: "Shop",     icon: <ShoppingBag />,  link: "/" },
+    { name: "Wishlist", icon: (
+        <div className="relative"><Heart />
+          <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+          </span>
+        </div>), link: "/" },
+    { name: "Cart", icon: (
+        <div className="relative"><ShoppingCart />
+          <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+          </span>
+        </div>), link: "/" },
+    { name: "Account", icon: <User2Icon />, link: "/" },
   ]
 
-  const headerQuickLinks = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about-us" },
-    { label: "Features", href: "/features" },
-  ]
-   const headerQuickLinks2 = [
-    { label: "Pricing", href: "/" },
-    { label: "Faq", href: "/about-us" },
-    { label: "Contact", href: "/features" },
+  const socialLinks2 = [
+    { name: "Call",      icon: <FaPhoneAlt />,  link: "tel:7980715765" },
+    { name: "Mail",      icon: <FaEnvelope />,  link: "mailto:cyberspaceworksofficial@gmail.com" },
+    { name: "WhatsApp",  icon: <FaWhatsapp />,  link: "https://wa.me/7980715765" },
+    { name: "Instagram", icon: <FaInstagram />, link: "https://www.instagram.com/cyberspaceworks" },
+    { name: "LinkedIn",  icon: <FaLinkedin />,  link: "https://www.linkedin.com/company/cyberspace-works" },
+    { name: "Facebook",  icon: <FaFacebookF />, link: "https://www.facebook.com/profile.php?id=100086774724799" },
   ]
 
   const services = [
@@ -786,16 +1139,16 @@ const [submitted, setSubmitted] = useState(false)
     { name: "Digital Marketing",        icon: <FaBullhorn />,        subtext: "Boost your brand visibility",    href: "/services/digital-marketing" },
     { name: "Research & Analytics",     icon: <SiGoogleanalytics />, subtext: "Data-driven insights",           href: "/services/research-and-analytics" },
   ]
-    const products = [
-    { name: "CyberPayroll", icon: <IdCardLanyard />,          subtext: "Smart HR Management Software.", href: "/products/hrms" },
-    { name: "CyberDine",          icon: <ChefHat />,      subtext: "A Robust Restaurant Management System.",      href: "/products/restaurant" },
-    { name: "CyberPharma",          icon: <Pill />,       subtext: "Smart Medicine & Pharmacy Management System.", href: "/products/pharmacy" },
-    { name: "CyberClinic",     icon: <Stethoscope />,            subtext: "Smart & Robust Patient Management Solution.",  href: "/products/clinic" },
-    { name: "CyberRetail",             icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",     href: "/products/store" },
-    { name: "CyberLedger",           icon: <NotebookTabs />,           subtext: "Smart Tally Software.",      href: "/products/tally" },
-  
-    { name: "CyberInvoice",        icon: <ReceiptIndianRupee />,        subtext: "Simplifying GST, Billing & Business Accounting.",    href: "/products/gst&billing" },
-    { name: "CyberProjects",     icon: <SquareKanban />, subtext: "A Robust Project Management Software",           href: "/products/project" },
+
+  const products = [
+    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: "Smart HR Management Software.",                  href: "/products/hrms" },
+    { name: "CyberDine",    icon: <ChefHat />,             subtext: "A Robust Restaurant Management System.",          href: "/products/resturant" },
+    { name: "CyberPharma",  icon: <Pill />,                subtext: "Smart Medicine & Pharmacy Management System.",    href: "/products/pharmacy" },
+    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: "Smart & Robust Patient Management Solution.",     href: "/products/clinic" },
+    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",             href: "/products/store" },
+    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Smart Tally Software.",                          href: "/products/tally" },
+    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Simplifying GST, Billing & Business Accounting.", href: "/products/gst&billing" },
+    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "A Robust Project Management Software",            href: "/products/project" },
   ]
 
   const handleDropdownClose = () => {
@@ -803,297 +1156,84 @@ const [submitted, setSubmitted] = useState(false)
     closeTimeoutRef.current = setTimeout(() => setOpenDropdown(null), 200)
   }
 
-  // ── Measure notch DOM position and keep it in sync ──
   useEffect(() => {
     const measure = () => {
       if (!notchRef.current) return
-      const rect = notchRef.current.getBoundingClientRect()
-      const vw   = window.innerWidth
-      const left = Math.round(rect.left + window.scrollX)
-      const right = Math.round(rect.right + window.scrollX)
-      setNotchMetrics({ left, right, vw })
+      const rect  = notchRef.current.getBoundingClientRect()
+      const vw    = window.innerWidth
+      setNotchMetrics({ left: Math.round(rect.left + window.scrollX), right: Math.round(rect.right + window.scrollX), vw })
     }
-
     measure()
     const ro = new ResizeObserver(measure)
     if (notchRef.current) ro.observe(notchRef.current)
     window.addEventListener("resize", measure)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener("resize", measure)
-    }
+    return () => { ro.disconnect(); window.removeEventListener("resize", measure) }
   }, [])
 
   useEffect(() => {
-    const handleClickOrTouchOutside = (event: MouseEvent | TouchEvent) => {
-      const leftMenu   = document.querySelector(".left-menu-container-mobile")
-      const rightMenu  = document.querySelector(".right-menu-container-mobile")
-      const leftButton = document.querySelector(".left-hamburger")
-      const rightButton = document.querySelector(".right-hamburger")
-
-      if (
-        !leftMenu?.contains(event.target as Node) &&
-        !rightMenu?.contains(event.target as Node) &&
-        !leftButton?.contains(event.target as Node) &&
-        !rightButton?.contains(event.target as Node)
-      ) {
-        setIsLeftMenuOpen(false)
-        setIsRightMenuOpen(false)
+    const handleOut = (e: MouseEvent | TouchEvent) => {
+      const lm = document.querySelector(".left-menu-container-mobile")
+      const rm = document.querySelector(".right-menu-container-mobile")
+      const lb = document.querySelector(".left-hamburger")
+      const rb = document.querySelector(".right-hamburger")
+      if (!lm?.contains(e.target as Node) && !rm?.contains(e.target as Node) && !lb?.contains(e.target as Node) && !rb?.contains(e.target as Node)) {
+        setIsLeftMenuOpen(false); setIsRightMenuOpen(false)
       }
     }
-
-    const handleScroll = () => {
-      setIsLeftMenuOpen(false)
-      setIsRightMenuOpen(false)
-    }
-
-    document.addEventListener("mousedown", handleClickOrTouchOutside)
-    document.addEventListener("touchstart", handleClickOrTouchOutside)
+    const handleScroll = () => { setIsLeftMenuOpen(false); setIsRightMenuOpen(false) }
+    document.addEventListener("mousedown", handleOut)
+    document.addEventListener("touchstart", handleOut)
     window.addEventListener("scroll", handleScroll)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOrTouchOutside)
-      document.removeEventListener("touchstart", handleClickOrTouchOutside)
-      window.removeEventListener("scroll", handleScroll)
-    }
+    return () => { document.removeEventListener("mousedown", handleOut); document.removeEventListener("touchstart", handleOut); window.removeEventListener("scroll", handleScroll) }
   }, [])
 
-  const resetQuoteForm = useCallback(() => {
-    setIsServicesOpenMobile(false)
-  }, [])
-
-
-  if (hideNavbar) {
-    return null;
-  }
-
-
-
+  if (hideNavbar) return null
 
   return (
     <>
-      <style jsx global>{RAINBOW_STYLES}</style>
+      <style jsx global>{GLOBAL_STYLES}</style>
+
+      {/* ── Enquiry Drawer (rendered at root level) ── */}
+      <EnquiryDrawer open={drawerOpen} setOpen={setDrawerOpen} />
 
       <header className={cn("hidden lg:flex fixed top-0 inset-x-0 z-[1001] h-16 px-0 overflow-visible", className)} {...props}>
 
-        {/* ── SVG animation — rendered as sibling inside header, absolutely positioned ── */}
         <div className="absolute inset-0 pointer-events-none z-0">
           {notchMetrics && (
-            <SiteNav
-              notchLeft={notchMetrics.left-60}
-              notchRight={notchMetrics.right+63}
-              viewportWidth={notchMetrics.vw}
-            />
+            <SiteNav notchLeft={notchMetrics.left - 60} notchRight={notchMetrics.right + 63} viewportWidth={notchMetrics.vw} />
           )}
         </div>
 
         {/* ── Left sidebar ── */}
         <div className="rainbow-line-host flex-1 h-10 z-20 relative min-w-0">
           <svg className="absolute bg-black inset-0 w-full h-full" preserveAspectRatio="none">
-            <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-            <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
+            <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} />
           </svg>
-          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute left-2 top-1/2 -translate-y-1/2 ${ pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+          <div className="hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute left-2 top-1/2 -translate-y-1/2">
             <div className="flex items-center justify-center space-x-3 w-full">
               {socialLinks1.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
-                  <Link href={item.link}  className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">
+                  <Link href={item.link} className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">
                     {item.icon}
                   </Link>
                 </div>
               ))}
-              {/* <button>Quick Enquiry</button> */}
-              {/* <AnimatedBadge
-  text="Quick Enquiry"
-  color="#22d3ee"
-  href="/docs/components/animated-badge"
-/> */}
- 
-
-
-
-<Drawer.Root open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setShowEmailForm(false); setEmail(""); setSubmitted(false); } }}>
-  <div onClick={() => setOpen(true)} className="inline-block cursor-pointer">
-    <AnimatedBadge text="Quick Enquiry" color="#22d3ee" href="#" />
-  </div>
-
-  <Drawer.Portal>
-    {/* Backdrop */}
-    <Drawer.Backdrop className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
-
-    {/* Panel */}
-    <Drawer.Popup className="fixed top-0 right-0 z-[2001] h-screen w-full max-w-[560px] bg-[#0d0d0f] flex flex-col shadow-[−32px_0_80px_rgba(0,0,0,0.8)] data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] overflow-hidden">
-      <Drawer.Content className="flex flex-col h-full overflow-y-auto">
-
-        {/* ── Header ─────────────────────────────────────────────────── */}
-        <div className="flex items-start justify-between px-8 pt-2 pb-2 border-b border-white/[0.07]">
-          {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo2.png" alt="Logo" width={36} height={36} className="h-9 w-9 object-contain" />
-          </div>
-
-          {/* Close button */}
-          <Drawer.Close className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-white/[0.04] text-xs font-semibold tracking-widest text-white/60 hover:bg-white/[0.08] hover:text-white/90 transition-all duration-200 cursor-pointer">
-            <X size={13} strokeWidth={2.5} />
-            CLOSE
-          </Drawer.Close>
-        </div>
-
-        {/* ── Intro ──────────────────────────────────────────────────── */}
-        <div className="px-8 pt-8 pb-6">
-          {/* Available badge */}
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 mb-7">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-            </span>
-            <span className="text-[13px] text-white/60 font-medium">Available for new projects</span>
-          </div>
-
-          <h2 className="text-[2rem] font-semibold tracking-tight text-white leading-tight mb-3">
-            How can we help you?
-          </h2>
-          <p className="text-[15px] text-white/40 leading-relaxed">
-            Choose how you&apos;d like to work with us.
-          </p>
-        </div>
-
-        {/* ── Cards ──────────────────────────────────────────────────── */}
-        <div className="px-8 grid grid-cols-2 gap-4 flex-1">
-
-          {/* Start a Project */}
-          <div className="group relative flex flex-col rounded-2xl p-6 border border-white/[0.08] bg-white/[0.03] hover:border-white/[0.16] hover:bg-white/[0.05] transition-all duration-300 ">
-            {/* Icon */}
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1a1f3a] border border-[#2a3060] text-[#6c8aff] mb-8">
-              <Rocket size={22} strokeWidth={1.8} />
-            </div>
-
-            <div className="mt-0">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[1.15rem] font-semibold text-white">Start a Project</h3>
-                <ArrowRight size={16} className="text-white/30 group-hover:text-white/70 group-hover:translate-x-1 transition-all duration-200" />
+              {/* Quick Enquiry badge triggers drawer */}
+              <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
+                <AnimatedBadge text="Quick Enquiry" color="#22d3ee" href="#" />
               </div>
-              <p className="text-[13px] text-white/40 leading-relaxed">
-                Hire us for web, mobile, backend, SEO or custom software solutions.
-              </p>
             </div>
-
-            <button className="mt-6 text-[11px] cursor-pointer font-bold tracking-widest text-[#6c8aff] flex items-center gap-2 hover:gap-3 transition-all duration-200" onClick={() => setShowEmailForm(true)}>
-              GET STARTED <ArrowRight size={13} />
-            </button>
-          </div>
-
-          {/* Join the Team */}
-          <div className="group relative flex flex-col rounded-2xl p-6 border border-[#3a1f60]/60 bg-[#1a0a2e]/40 hover:border-purple-500/50 hover:bg-[#1a0a2e]/70 transition-all duration-300">
-            {/* Icon */}
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2a1040] border border-purple-500/30 text-purple-400 mb-10">
-              <Users size={22} strokeWidth={1.8} />
-            </div>
-
-            <div className="mt-0">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[1.15rem] font-semibold text-white">Purchase a software</h3>
-                <ArrowRight size={16} className="text-white/30 group-hover:text-purple-400 group-hover:translate-x-1 transition-all duration-200" />
-              </div>
-              <p className="text-[13px] text-white/40 leading-relaxed">
-                Developer or designer? Apply to collaborate or join our team.
-              </p>
-            </div>
-
-            <button className="mt-6 cursor-alias text-[11px] font-bold tracking-widest text-purple-400 flex items-center gap-2 hover:gap-3 transition-all duration-200" onClick={() => setShowEmailForm(true)}>
-              APPLY NOW <ArrowRight size={13} />
-            </button>
           </div>
         </div>
 
-        {/* ── Email form (shown after Get Started click) ──────────────── */}
-        {showEmailForm && (
-          <div className="mx-8 mt-5 rounded-2xl border border-[#2a3060]/80 bg-[#0f1428]/60 p-6 animate-[fadeSlideUp_0.3s_ease_forwards]">
-            <style>{`
-              @keyframes fadeSlideUp {
-                from { opacity: 0; transform: translateY(12px); }
-                to   { opacity: 1; transform: translateY(0); }
-              }
-            `}</style>
-
-            {submitted ? (
-              <div className="flex flex-col items-center gap-3 py-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-2xl">✓</div>
-                <p className="text-white font-semibold text-sm">We&apos;ll be in touch soon!</p>
-                <p className="text-white/40 text-xs text-center">Check your inbox. We respond within 24 hours.</p>
-              </div>
-            ) : (
-              <>
-                <p className="text-[13px] font-semibold text-white mb-1">Get in touch</p>
-                <p className="text-[12px] text-white/40 mb-4">Enter your email and we&apos;ll reach out to discuss your project.</p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
-                    className="flex-1 rounded-xl bg-white/[0.05] border border-white/10 px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#6c8aff]/60 focus:bg-white/[0.07] transition-all duration-200"
-                  />
-                  <button
-                    onClick={() => email && setSubmitted(true)}
-                    className="px-5 py-3 rounded-xl bg-[#6c8aff] text-white text-sm font-semibold hover:bg-[#7c98ff] active:scale-95 transition-all duration-200 whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed"
-                    disabled={!email}
-                  >
-                    Send →
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* ── Footer ─────────────────────────────────────────────────── */}
-        <div className="px-8 py-7 mt-4 border-t border-white/[0.06]">
-          <div className="flex items-center justify-center gap-8">
-            {[
-              { dot: "bg-emerald-400", text: "Responds in 24 hrs" },
-              { dot: "bg-emerald-400", text: "Secure & confidential" },
-              { dot: "bg-emerald-400", text: "No commitment" },
-            ].map(({ dot, text }) => (
-              <div key={text} className="flex items-center gap-2">
-                <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-                <span className="text-[12px] text-white/30 font-medium">{text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </Drawer.Content>
-    </Drawer.Popup>
-  </Drawer.Portal>
-</Drawer.Root>
-            </div>
-            
-          </div>
-        </div>
-
-        {/* ── Notch (3 slices) — attach ref to center slice ── */}
+        {/* ── Notch ── */}
         <div className="flex h-16 relative z-10 shrink-0 -ml-px">
-
-          {/* Left corner slice */}
           <div className="w-[50px] h-full relative shrink-0 rainbow-line-host">
             <div className="nav-left-slice-bg absolute inset-0 bg-black" />
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 50 64">
-              <path d="M0 39.5 C25 39.5 25 63.5 50 63.5" fill="none" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-              <path d="M0 36.5 C25 36.5 25 60.5 50 60.5" fill="none" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-            </svg>
           </div>
 
-          {/* Center slice — REF attached here for measurement */}
           <div ref={notchRef} className="flex-1 h-full relative min-w-0 -ml-px">
-            <div className="rainbow-line-host absolute inset-0 bg-black">
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
-                <line x1="0" y1="63.5" x2="100%" y2="63.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-                <line x1="0" y1="60.5" x2="100%" y2="60.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-              </svg>
-            </div>
-
-            {/* Content */}
+            <div className="rainbow-line-host absolute inset-0 bg-black" />
             <div className="relative w-full h-full flex items-center justify-between px-4 md:px-8">
 
               {/* Desktop left nav */}
@@ -1102,26 +1242,17 @@ const [submitted, setSubmitted] = useState(false)
                   {items.left.map(item => {
                     if (item.label === "Services") {
                       return (
-                        <div
-                          key={item.label}
-                          className="relative"
+                        <div key={item.label} className="relative"
                           onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
                           onMouseLeave={handleDropdownClose}
                         >
-                          <Link
-                            href={item.href}
-                            aria-current={isActive(item.href) ? "page" : undefined}
-                            className={`group flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap
-                              ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400"}`}
-                          >
-                            <item.icon className={`w-4 h-4 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white group-hover:text-cyan-400"}`} />
+                          <Link href={item.href} className={`group flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400"}`}>
+                            <item.icon className="w-4 h-4" />
                             <span>{item.label}</span>
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} />
                           </Link>
-
                           {openDropdown === item.label && (
-                            <div
-                              className="sparkle-nav__dropdown"
+                            <div className="sparkle-nav__dropdown"
                               onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
                               onMouseLeave={handleDropdownClose}
                             >
@@ -1130,7 +1261,7 @@ const [submitted, setSubmitted] = useState(false)
                                   {sub.icon && <span className="sparkle-nav__dropdown-icon">{sub.icon}</span>}
                                   <span className="sparkle-nav__dropdown-text">
                                     <span className="sparkle-nav__dropdown-name">{sub.name}</span>
-                                    {sub.subtext && <span className="sparkle-nav__dropdown-subtext">{sub.subtext}</span>}
+                                    <span className="sparkle-nav__dropdown-subtext">{sub.subtext}</span>
                                   </span>
                                 </Link>
                               ))}
@@ -1144,7 +1275,7 @@ const [submitted, setSubmitted] = useState(false)
                 </nav>
               </div>
 
-              {/* Desktop logo */}
+              {/* Logo */}
               <div className="hidden md:flex shrink-0 items-center justify-center px-4">
                 <Link href="/" className="transition-opacity hover:opacity-80">
                   <Image src="/logo2.png" alt="Logo" width={64} height={64} className="h-16 w-16" />
@@ -1154,34 +1285,20 @@ const [submitted, setSubmitted] = useState(false)
               {/* Desktop right nav */}
               <div className="hidden md:flex items-center gap-5 shrink-0 text-white ml-auto">
                 <nav className="flex items-center gap-8">
-                  {/* {navitems.left.map(item => (
-                    
-                    <NavLink key={item.label} {...item} active={isActive(item.href)} />
-                    
-                  ))} */}
                   {navitems.left.map(item => {
                     if (item.label === "Product") {
                       return (
-                        <div
-                          key={item.label}
-                          className="relative"
+                        <div key={item.label} className="relative"
                           onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
                           onMouseLeave={handleDropdownClose}
                         >
-                          <Link
-                            href={item.href}
-                            aria-current={isActive(item.href) ? "page" : undefined}
-                            className={`group flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap
-                              ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400"}`}
-                          >
-                            <item.icon className={`w-4 h-4 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white group-hover:text-cyan-400"}`} />
+                          <Link href={item.href} className={`group flex items-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400"}`}>
+                            <item.icon className="w-4 h-4" />
                             <span>{item.label}</span>
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === item.label ? "rotate-180" : ""}`} />
                           </Link>
-
                           {openDropdown === item.label && (
-                            <div
-                              className="sparkle-nav__dropdown"
+                            <div className="sparkle-nav__dropdown"
                               onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}
                               onMouseLeave={handleDropdownClose}
                             >
@@ -1190,7 +1307,7 @@ const [submitted, setSubmitted] = useState(false)
                                   {sub.icon && <span className="sparkle-nav__dropdown-icon">{sub.icon}</span>}
                                   <span className="sparkle-nav__dropdown-text">
                                     <span className="sparkle-nav__dropdown-name">{sub.name}</span>
-                                    {sub.subtext && <span className="sparkle-nav__dropdown-subtext">{sub.subtext}</span>}
+                                    <span className="sparkle-nav__dropdown-subtext">{sub.subtext}</span>
                                   </span>
                                 </Link>
                               ))}
@@ -1202,54 +1319,27 @@ const [submitted, setSubmitted] = useState(false)
                     return <NavLink key={item.label} {...item} active={isActive(item.href)} />
                   })}
                 </nav>
-                {/* <HoverBorderGradient
-                  style={{ background: "#0f172a", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", border: "none", color: "#fff", fontWeight: "600" }}
-                  className="shrink-0 ml-2"
-                >
-                  Quick Enquiry
-                </HoverBorderGradient> */}
               </div>
 
-              {/* Mobile: hamburger */}
-              <button
-                className="md:hidden mb-1 p-1 text-white hover:text-cyan-400 transition-colors"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
+              {/* Mobile hamburger */}
+              <button className="md:hidden mb-1 p-1 text-white hover:text-cyan-400 transition-colors" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-
-              {/* Mobile: logo */}
               <div className="md:hidden flex-1 flex justify-center shrink-0 mx-2 mt-1">
-                <Link href="/" className="transition-opacity hover:opacity-80">
-                  <Image src="/logo/bg-less.png" alt="Logo" width={32} height={32} className="h-8 w-auto dark:invert" />
-                </Link>
+                <Link href="/"><Image src="/logo/bg-less.png" alt="Logo" width={32} height={32} className="h-8 w-auto dark:invert" /></Link>
               </div>
-
-              {/* Mobile: theme toggle */}
-              <div className="md:hidden flex items-center gap-2 mb-1">
-                <MobileThemeToggle />
-              </div>
+              <div className="md:hidden flex items-center gap-2 mb-1"><MobileThemeToggle /></div>
             </div>
           </div>
 
-          {/* Right corner slice */}
           <div className="w-[50px] h-full relative shrink-0 -ml-px rainbow-line-host">
             <div className="nav-right-slice-bg absolute inset-0 bg-black" />
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 50 64">
-              <path d="M0 63.5 C25 63.5 25 39.5 50 39.5" fill="none" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-              <path d="M0 60.5 C25 60.5 25 36.5 50 36.5" fill="none" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-            </svg>
           </div>
         </div>
 
         {/* ── Right sidebar ── */}
         <div className="rainbow-line-host flex-1 h-10 bg-black z-20 relative min-w-0 -ml-px">
-          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-            <line x1="0" y1="39.5" x2="100%" y2="39.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-            <line x1="0" y1="36.5" x2="100%" y2="36.5" stroke="currentColor" strokeOpacity={0} strokeWidth={0} className="text-foreground" />
-          </svg>
-          <div className={`hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute right-2 top-1/2 -translate-y-1/2 ${pathname.startsWith('/software-dashboard') ? '' : ''}`}>
+          <div className="hidden lg:flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl absolute right-2 top-1/2 -translate-y-1/2">
             <div className="flex items-center justify-center space-x-3 w-full">
               {socialLinks2.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
@@ -1259,184 +1349,63 @@ const [submitted, setSubmitted] = useState(false)
                 </div>
               ))}
             </div>
-           {/* {pathname === "/software-dashboard" && (
-  <div className="border-t border-cyan-400/20 pt-2 flex justify-center">
-  <SparkleNavbar
-  color="#22d3ee"
-  items={[
-    {
-      label: "Pricing",
-      href: "#pricing",
-    },
-    {
-      label: "Faq",
-      href: "#faq",
-    },
-    {
-      label: "Contact",
-      href: "#contact",
-    },
-  ]}
-/>
-  </div>
-)} */}
           </div>
         </div>
-
       </header>
 
-      {/* ── Mobile hamburger menus ── */}
-      <div
-        className="lg:hidden flex items-center left-hamburger fixed left-8 z-50 group bg-black/30 border border-white/10 shadow-xl rounded-md"
-        onMouseEnter={() => {
-          setIsLeftMenuOpen(true)
-          setIsRightMenuOpen(false)
-        }}
-      >
-        <button className="text-3xl text-cyan-400" aria-label="Open left menu" title="Open left menu">
-          <IoReorderThree />
-        </button>
+      {/* ── Mobile menus ── */}
+      <div className="lg:hidden flex items-center left-hamburger fixed left-8 z-50 group bg-black/30 border border-white/10 shadow-xl rounded-md"
+        onMouseEnter={() => { setIsLeftMenuOpen(true); setIsRightMenuOpen(false) }}>
+        <button className="text-3xl text-cyan-400"><IoReorderThree /></button>
       </div>
 
-      <div
-        className="lg:hidden flex items-center right-hamburger fixed right-8 z-50 group bg-black/30 border border-white/10 shadow-xl rounded-md"
-        onClick={() => {
-          setIsRightMenuOpen(!isRightMenuOpen)
-          setIsLeftMenuOpen(false)
-        }}
-      >
-        <button className="text-3xl text-cyan-400" aria-label="Toggle social media menu" title="Toggle social media menu">
-          <IoReorderThree />
-        </button>
+      <div className="lg:hidden flex items-center right-hamburger fixed right-8 z-50 group bg-black/30 border border-white/10 shadow-xl rounded-md"
+        onClick={() => { setIsRightMenuOpen(!isRightMenuOpen); setIsLeftMenuOpen(false) }}>
+        <button className="text-3xl text-cyan-400"><IoReorderThree /></button>
       </div>
 
-      <div className={`lg:hidden left-menu-container-mobile fixed top-0 left-0 h-full w-64 bg-black/90 border-r border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${
-        isLeftMenuOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
+      <div className={`lg:hidden left-menu-container-mobile fixed top-0 left-0 h-full w-64 bg-black/90 border-r border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${isLeftMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col p-6 space-y-6 text-white">
-          <div className="flex flex-col items-start space-y-2">
-            <Link href="/" onClick={() => setIsLeftMenuOpen(false)}>
-              <Image src="/logo2.png" alt="Logo" width={180} height={70} className="w-32 h-auto" />
-            </Link>
-            <p className="text-sm text-gray-300">
-              Cyberspace Works - Website, Software, App Developer | Digital Marketing | Graphics Design | UI/UX | Research & Analysis
-            </p>
-            <p className="text-gray-400 flex items-start gap-2 mt-3">
-              <Cog6ToothIcon className="text-cyan-400 mt-1" />
-              <a href="tel:+917980715765" className="hover:underline leading-snug pl-6">+91 7980715765</a>
-            </p>
-            <p className="text-gray-400 flex items-start gap-2 mt-3">
-              <IoMailOutline className="text-cyan-400 mt-1 size-5" />
-              <a href="mailto:cyberspaceworksofficial@gmail.com" className="hover:underline leading-snug text-center">
-                cyberspaceworksofficial@<br />gmail.com
-              </a>
-            </p>
-            <p className="text-gray-400 flex items-start gap-2 mt-3">
-              <PhoneIcon className="text-cyan-400 mt-1 size-12" />
-              <a href="[maps.app.goo.gl](https://maps.app.goo.gl/QABsaPuw5qL3BwRa7)" className="hover:underline leading-snug text-center">
-                Kolkata 19, Krishna Chatterjee Ln, Bally, Howrah, West Bengal 711201
-              </a>
-            </p>
-          </div>
+          <Link href="/" onClick={() => setIsLeftMenuOpen(false)}>
+            <Image src="/logo2.png" alt="Logo" width={180} height={70} className="w-32 h-auto" />
+          </Link>
+          <p className="text-sm text-gray-300">Cyberspace Works – Web, Software, App, Marketing, Design & Research</p>
+          <p className="text-gray-400 flex items-start gap-2"><Cog6ToothIcon className="text-cyan-400 mt-1" /><a href="tel:+917980715765" className="hover:underline pl-6">+91 7980715765</a></p>
+          <p className="text-gray-400 flex items-start gap-2"><IoMailOutline className="text-cyan-400 mt-1 size-5" /><a href="mailto:cyberspaceworksofficial@gmail.com" className="hover:underline">cyberspaceworksofficial@gmail.com</a></p>
           <div className="mt-auto space-y-2">
-            {!isAuthenticated && (
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLeftMenuOpen(false)
-                  resetQuoteForm()
-                }}
-                className="w-full flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
-              >
-                Quick Enquiry
-              </button>
-            )}
-
             {isAuthenticated ? (
               <>
-                <Link
-                  href="/dashboard"
-                  className="flex items-center justify-center gap-1 px-4 py-1 text-black bg-cyan-400 rounded-full shadow-[0_0_12px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(0,0,0,0.6)]"
-                  onClick={() => setIsLeftMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLeftMenuOpen(false)
-                    signOut({ callbackUrl: "/login" })
-                  }}
-                  className="w-full flex items-center justify-center gap-1 px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full transition-all duration-300 hover:bg-cyan-500/10"
-                >
-                  Logout
-                </button>
+                <Link href="/dashboard" className="flex items-center justify-center px-4 py-1 text-black bg-cyan-400 rounded-full" onClick={() => setIsLeftMenuOpen(false)}>Dashboard</Link>
+                <button onClick={() => { setIsLeftMenuOpen(false); signOut({ callbackUrl: "/login" }) }} className="w-full flex items-center justify-center px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full hover:bg-cyan-500/10">Logout</button>
               </>
             ) : (
-              <Link
-                href="/login"
-                className="flex items-center justify-center gap-1 px-4 py-1 text-black bg-cyan-400 rounded-full shadow-[0_0_12px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(0,0,0,0.6)]"
-                onClick={() => setIsLeftMenuOpen(false)}
-              >
-                Login
-              </Link>
+              <Link href="/login" className="flex items-center justify-center px-4 py-1 text-black bg-cyan-400 rounded-full" onClick={() => setIsLeftMenuOpen(false)}>Login</Link>
             )}
           </div>
         </div>
       </div>
 
-      <div className={`lg:hidden right-menu-container-mobile fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${
-        isRightMenuOpen ? "translate-x-0" : "translate-x-full"
-      }`}>
+      <div className={`lg:hidden right-menu-container-mobile fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${isRightMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex flex-col p-6 space-y-4 text-white">
-          <div>
-            <h3 className="text-sm font-semibold text-cyan-400 mb-3">Contact</h3>
-            <div className="space-y-2">
-              {socialLinks1.map((item) => (
-                <Link key={item.name} href={item.link} className="flex items-center gap-2 text-lg hover:text-cyan-400 transition-colors">
-                  <span className="text-cyan-400 text-base">{item.icon}</span>
-                  <span>{item.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="h-px bg-cyan-400/20 my-2"></div>
-          <div>
-            <h3 className="text-sm font-semibold text-cyan-400 mb-3">Follow Us</h3>
-            <div className="space-y-2">
-              {socialLinks2.map((item) => (
-                <Link key={item.name} href={item.link} className="flex items-center gap-2 text-lg hover:text-cyan-400 transition-colors">
-                  <span className="text-cyan-400 text-base">{item.icon}</span>
-                  <span>{item.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <h3 className="text-sm font-semibold text-cyan-400 mb-3">Follow Us</h3>
+          {socialLinks2.map(item => (
+            <Link key={item.name} href={item.link} className="flex items-center gap-2 text-lg hover:text-cyan-400 transition-colors">
+              <span className="text-cyan-400 text-base">{item.icon}</span><span>{item.name}</span>
+            </Link>
+          ))}
         </div>
       </div>
 
-      {/* ── Mobile menu overlay ── */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 top-16 z-40 bg-neutral-50 dark:bg-neutral-900 border-b border-foreground/5 p-4 md:hidden shadow-lg"
-          >
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-16 z-40 bg-neutral-900 border-b border-foreground/5 p-4 md:hidden shadow-lg">
             <nav className="flex flex-col gap-2">
-              {[...items.left, ...items.right].map(item => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  aria-current={isActive(item.href) ? "page" : undefined}
-                  className={`group flex items-center gap-3 p-3 rounded-lg transition-colors
-                    ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400 hover:bg-foreground/5"}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <item.icon className={`w-5 h-5 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white/80 group-hover:text-cyan-400"}`} />
-                  <span className="font-medium">{item.label}</span>
+              {[...items.left, ...navitems.left].map(item => (
+                <Link key={item.label} href={item.href}
+                  className={`group flex items-center gap-3 p-3 rounded-lg transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400 hover:bg-foreground/5"}`}
+                  onClick={() => setIsMobileMenuOpen(false)}>
+                  <item.icon className="w-5 h-5" /><span className="font-medium">{item.label}</span>
                 </Link>
               ))}
             </nav>
@@ -1448,4 +1417,3 @@ const [submitted, setSubmitted] = useState(false)
 }
 
 export default Navbar
-

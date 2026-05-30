@@ -12,7 +12,7 @@ import {
 
 export default function FeaturesSection() {
   return (
-    <section className="container mx-auto py-20">
+    <section className="p-20  bg-black">
       <BentoGrid>
         {/* Card 1 */}
         <BentoCard

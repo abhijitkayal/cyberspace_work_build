@@ -83,10 +83,12 @@ export function HeroSection() {
         <div className="mx-auto max-w-4xl text-center">
           {/* Announcement Badge */}
           <div className="mb-8 flex justify-center">
-            <Badge variant="outline" className="px-4 py-2 border-foreground">
-              <IdCardLanyard className="w-3 h-3 mr-2 fill-current" />
-               HR Management System - Now Available!
-              <ArrowRight className="w-3 h-3 ml-2" />
+            <Badge variant="outline" className="mx-auto mb-10 max-w-2xl text-lg sm:text-xl">
+<span className="mr-2 inline-flex size-4 shrink-0 items-center justify-center">
+  <IdCardLanyard className="size-4 text-cyan-500" strokeWidth={3} />
+</span>
+              CyberPayroll
+              {/* <ArrowRight className="w-3 h-3 ml-2" /> */}
             </Badge>
           </div>
 

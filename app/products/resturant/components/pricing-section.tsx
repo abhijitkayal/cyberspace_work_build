@@ -407,14 +407,14 @@ export function PricingSection() {
 
         {/* Pricing Cards */}
         <div className="mx-auto max-w-6xl">
-          <div className="rounded-xl border">
+          <div className="rounded-xl border-2 border-[#171717]">
             <div className="grid lg:grid-cols-3">
               {plans.map((plan, index) => (
                 <div
                   key={index}
                   className={`p-8 grid grid-rows-subgrid row-span-4 gap-6 ${
                     plan.popular
-                      ? "my-2 mx-4 rounded-xl bg-card border-transparent shadow-xl ring-1 ring-foreground/10 backdrop-blur"
+                      ? "my-2 mx-4 rounded-xl bg-card  shadow-xl ring-1 ring-foreground/10 backdrop-blur border border-cyan-500"
                       : ""
                   }`}
                 >
@@ -462,30 +462,30 @@ export function PricingSection() {
                     </Drawer.Trigger>
 
                     <Drawer.Portal>
-                     <Drawer.Backdrop
+                      <Drawer.Backdrop
   className="
-    fixed inset-0 z-50 bg-black/50
+    fixed inset-0 z-1100 bg-black/50
 
-    data-[open]:animate-in
-    data-[closed]:animate-out
+    data-open:animate-in
+    data-closed:animate-out
 
-    data-[closed]:fade-out-0
-    data-[open]:fade-in-0
+    data-closed:fade-out-0
+    data-open:fade-in-0
 
     duration-500
   "
 />
 
-                      <Drawer.Viewport className="fixed inset-0 z-50 flex justify-end">
+                      <Drawer.Viewport className="fixed inset-0 z-1101 flex justify-end">
                       <Drawer.Popup
   className="
     h-full w-full max-w-md border-l bg-background shadow-2xl
 
-    data-[open]:animate-in
-    data-[closed]:animate-out
+    data-open:animate-in
+    data-closed:animate-out
 
-    data-[closed]:slide-out-to-right
-    data-[open]:slide-in-from-right
+    data-closed:slide-out-to-right
+    data-open:slide-in-from-right
 
     duration-500 ease-in-out
   "

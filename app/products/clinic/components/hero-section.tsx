@@ -82,11 +82,13 @@ export function HeroSection() {
       <div className="container mx-auto  mt-7 px-4 sm:px-6 lg:px-8 relative">
         <div className="mx-auto max-w-4xl text-center">
           {/* Announcement Badge */}
-          <div className="mb-8 flex justify-center">
-            <Badge variant="outline" className="px-4 py-2 border-foreground">
-              <Stethoscope className="w-3 h-3 mr-2 fill-current" />
-              Clinic Management System - now available!
-              <ArrowRight className="w-3 h-3 ml-2" />
+         <div className="mb-8 flex justify-center">
+            <Badge variant="outline" className="mx-auto mb-10 max-w-2xl text-lg sm:text-xl">
+<span className="mr-2 inline-flex size-4 shrink-0 items-center justify-center">
+  <Stethoscope className="size-4 text-cyan-500" strokeWidth={3} />
+</span>
+              CyberClinic
+              {/* <ArrowRight className="w-3 h-3 ml-2" /> */}
             </Badge>
           </div>
 

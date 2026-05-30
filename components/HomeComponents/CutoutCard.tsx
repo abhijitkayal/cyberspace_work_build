@@ -343,7 +343,7 @@ function CutoutCard({
 export default function SoftwareShowcase() {
   const router = useRouter();
   return (
-    <div id="products" className="relative min-h-screen overflow-hidden">
+    <div id="products" className="relative min-h-screen overflow-hidden bg-black">
       {/* Background */}
       {/* <div className="absolute inset-0 z-0">
         <Antigravity
