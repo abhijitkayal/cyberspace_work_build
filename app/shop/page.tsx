@@ -521,10 +521,10 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-// import Antigravity from '../Antigravity';
+
 import { useRouter } from "next/navigation";
 import { ChefHat, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ReceiptText, ShoppingBag, SquareKanban, Stethoscope } from "lucide-react";
-// import OurServicesWithWires from "./OurServices";
+
 import {
   Search,
   Heart,
