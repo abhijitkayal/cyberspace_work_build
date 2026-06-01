@@ -216,6 +216,7 @@ function CutoutCard({
           ? "translateY(-5px) scale(1.015)"
           : "none",
       }}
+      id="next-section"
     >
 
       <div
@@ -284,11 +285,7 @@ function CutoutCard({
     background: `${accent}18`,
   }}
 >
-  {icon && (
-    <span className="flex items-center justify-center size-5">
-      {icon}
-    </span>
-  )}
+ 
 
   {label}
 </span>
@@ -301,9 +298,16 @@ function CutoutCard({
             </div>
 
             <div className="flex flex-1 flex-col gap-3">
+              <div className="flex">
+               {icon && (
+    <span className="flex items-center justify-center size-7 text-cyan-500">
+      {icon}
+    </span>
+  )}
               <h3 className="text-xl font-semibold text-white">
                 {title}
               </h3>
+              </div>
 
               <p className="text-sm leading-7 text-white/50">
                 {description}

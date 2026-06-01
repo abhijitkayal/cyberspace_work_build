@@ -52,7 +52,7 @@ const faqItems: FaqItem[] = [
 
 const FaqSection = () => {
   return (
-    <section id="faq" className="py-24 sm:py-32">
+    <section id="faq" className="py-24 sm:py-32 bg-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">

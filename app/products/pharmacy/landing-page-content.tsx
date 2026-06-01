@@ -48,9 +48,9 @@ export function LandingPageContent() {
 
       {/* Footer */}
       {/* <LandingFooter /> */}
-      <SessionProvider>
+      {/* <SessionProvider>
       <Footer/>
-      </SessionProvider>
+      </SessionProvider> */}
       
 
       {/* Theme Customizer */}

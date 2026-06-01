@@ -221,6 +221,7 @@ import { SessionProvider } from "next-auth/react";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ThemeProvider } from "next-themes";
 import { usePathname } from "next/navigation";
+import LenisProvider from "@/components/LenisProviders";
 
 const GTM_ID = "GTM-KCNJRZVR";
 
@@ -348,7 +349,10 @@ export default function RootLayout({ children }) {
                   <div className="relative min-h-screen flex flex-col">
                     
                     <Navbar />
-                    <main className="flex-1 relative z-10 w-full">{children}</main>
+                    <LenisProvider>
+                       <main className="flex-1 relative z-10 w-full">{children}</main>
+                    </LenisProvider>
+                   
                     <Footer />
                     <BackToTopButton />
                   </div>

@@ -536,33 +536,33 @@
 //       </div>
 
 //       {/* ── Mobile menu overlay ── */}
-//       <AnimatePresence>
-//         {isMobileMenuOpen && (
-//           <motion.div
-//             initial={{ opacity: 0, y: -20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             exit={{ opacity: 0, y: -20 }}
-//             transition={{ duration: 0.2 }}
-//             className="fixed inset-x-0 top-16 z-40 bg-neutral-50 dark:bg-neutral-900 border-b border-foreground/5 p-4 md:hidden shadow-lg"
-//           >
-//             <nav className="flex flex-col gap-2">
-//               {[...items.left, ...items.right].map(item => (
-//                 <Link
-//                   key={item.label}
-//                   href={item.href}
-//                   aria-current={isActive(item.href) ? "page" : undefined}
-//                   className={`group flex items-center gap-3 p-3 rounded-lg transition-colors
-//                     ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400 hover:bg-foreground/5"}`}
-//                   onClick={() => setIsMobileMenuOpen(false)}
-//                 >
-//                   <item.icon className={`w-5 h-5 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white/80 group-hover:text-cyan-400"}`} />
-//                   <span className="font-medium">{item.label}</span>
-//                 </Link>
-//               ))}
-//             </nav>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
+      // <AnimatePresence>
+      //   {isMobileMenuOpen && (
+      //     <motion.div
+      //       initial={{ opacity: 0, y: -20 }}
+      //       animate={{ opacity: 1, y: 0 }}
+      //       exit={{ opacity: 0, y: -20 }}
+      //       transition={{ duration: 0.2 }}
+      //       className="fixed inset-x-0 top-16 z-40 bg-neutral-50 dark:bg-neutral-900 border-b border-foreground/5 p-4 md:hidden shadow-lg"
+      //     >
+      //       <nav className="flex flex-col gap-2">
+      //         {[...items.left, ...items.right].map(item => (
+      //           <Link
+      //             key={item.label}
+      //             href={item.href}
+      //             aria-current={isActive(item.href) ? "page" : undefined}
+      //             className={`group flex items-center gap-3 p-3 rounded-lg transition-colors
+      //               ${isActive(item.href) ? "text-cyan-400" : "text-white hover:text-cyan-400 hover:bg-foreground/5"}`}
+      //             onClick={() => setIsMobileMenuOpen(false)}
+      //           >
+      //             <item.icon className={`w-5 h-5 transition-colors ${isActive(item.href) ? "text-cyan-400" : "text-white/80 group-hover:text-cyan-400"}`} />
+      //             <span className="font-medium">{item.label}</span>
+      //           </Link>
+      //         ))}
+      //       </nav>
+      //     </motion.div>
+      //   )}
+      // </AnimatePresence>
 //     </>
 //   )
 // }
@@ -587,13 +587,14 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
-import { IoReorderThree } from "react-icons/io5"
+import { IoCallOutline, IoLocationOutline, IoReorderThree } from "react-icons/io5"
 import { IoMailOutline } from "react-icons/io5"
-import { HomeIcon, Cog6ToothIcon, PhoneIcon } from "@heroicons/react/24/solid"
+import { HomeIcon, Cog6ToothIcon, PhoneIcon, InformationCircleIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Drawer } from "@base-ui/react/drawer"
 import { HoverBorderGradient } from "./ui/hover-border-gradient"
+
 import {
   FaLaptopCode, FaMobileAlt, FaCode, FaPalette, FaBullhorn,
   FaBrush, FaBrain, FaPhoneAlt, FaEnvelope, FaWhatsapp,
@@ -670,6 +671,7 @@ const GLOBAL_STYLES = `
 // ─── Sub-components ───────────────────────────────────────────────────────────
 const MobileThemeToggle = () => {
   const { theme, setTheme, resolvedTheme } = useTheme()
+ 
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted) return <div className="w-9 h-9" />
@@ -712,9 +714,9 @@ const SOFTWARE_OPTIONS = [
 ]
 
 const SERVICE_CATEGORIES = [
-  "Web Development", "Mobile App", "Software Development",
-  "UI/UX Design", "Digital Marketing", "AI & Automation",
-  "Graphic Design", "Research & Analytics",
+  "HR Management System(CyberPayroll)", "Resturant Management System(CyberDine)", "Pharmacy Management System(CyberPharma)",
+  "Store Management System(CyberRetail)", "Tally Software(CyberLedger)", "GST & Billing System(CyberInvoice)",
+  "Clinic Management System(CyberClinic)", "Project Management System(CyberProjects)",
 ]
 
 // ─── Enquiry Drawer ───────────────────────────────────────────────────────────
@@ -723,12 +725,12 @@ type DrawerView = "home" | "project" | "software" | "success"
 function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
   const [view, setView] = useState<DrawerView>("home")
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
-  const [form, setForm] = useState({ name: "", email: "", service: "", description: "" })
+  const [form, setForm] = useState({ name: "", email: "",phone: "", service: "", description: "" })
 
   const reset = () => {
     setView("home")
     setSelectedSoftware([])
-    setForm({ name: "", email: "", service: "", description: "" })
+    setForm({ name: "", email: "",phone: "", service: "", description: "" })
   }
 
   const toggleSoftware = (id: string) => {
@@ -913,6 +915,15 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                       className={inputClass}
                     />
                   </div>
+                  <div>
+                    <label className={labelClass}>Phone No</label>
+                    <input
+                      type="phone" required placeholder="0000000000"
+                      value={form.phone}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
 
                   {/* Service category */}
                <div>
@@ -1090,6 +1101,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const [notchMetrics, setNotchMetrics]       = useState<{ left: number; right: number; vw: number } | null>(null)
   const notchRef      = useRef<HTMLDivElement>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false);
 
   const pathname        = usePathname()
   const { status }      = useSession()
@@ -1364,26 +1376,61 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
         <button className="text-3xl text-cyan-400"><IoReorderThree /></button>
       </div>
 
-      <div className={`lg:hidden left-menu-container-mobile fixed top-0 left-0 h-full w-64 bg-black/90 border-r border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${isLeftMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="flex flex-col p-6 space-y-6 text-white">
-          <Link href="/" onClick={() => setIsLeftMenuOpen(false)}>
-            <Image src="/logo2.png" alt="Logo" width={180} height={70} className="w-32 h-auto" />
-          </Link>
-          <p className="text-sm text-gray-300">Cyberspace Works – Web, Software, App, Marketing, Design & Research</p>
-          <p className="text-gray-400 flex items-start gap-2"><Cog6ToothIcon className="text-cyan-400 mt-1" /><a href="tel:+917980715765" className="hover:underline pl-6">+91 7980715765</a></p>
-          <p className="text-gray-400 flex items-start gap-2"><IoMailOutline className="text-cyan-400 mt-1 size-5" /><a href="mailto:cyberspaceworksofficial@gmail.com" className="hover:underline">cyberspaceworksofficial@gmail.com</a></p>
-          <div className="mt-auto space-y-2">
-            {isAuthenticated ? (
-              <>
-                <Link href="/dashboard" className="flex items-center justify-center px-4 py-1 text-black bg-cyan-400 rounded-full" onClick={() => setIsLeftMenuOpen(false)}>Dashboard</Link>
-                <button onClick={() => { setIsLeftMenuOpen(false); signOut({ callbackUrl: "/login" }) }} className="w-full flex items-center justify-center px-4 py-1 text-cyan-100 border border-cyan-500/40 rounded-full hover:bg-cyan-500/10">Logout</button>
-              </>
-            ) : (
-              <Link href="/login" className="flex items-center justify-center px-4 py-1 text-black bg-cyan-400 rounded-full" onClick={() => setIsLeftMenuOpen(false)}>Login</Link>
-            )}
-          </div>
-        </div>
-      </div>
+      <div className={`lg:hidden left-menu-container-mobile fixed top-0 left-0 h-full w-64 bg-black/90 border-r border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${
+              isLeftMenuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}>
+              <div className="flex flex-col p-6 space-y-6 text-white">
+                <div className="flex flex-col items-start space-y-2">
+                  <Link href="/" onClick={() => setIsLeftMenuOpen(false)}>
+                    <Image src="/logo2.png" alt="Logo" 
+                     width={180} 
+                     height={70}
+                    className="w-32 h-auto" />
+                  </Link>
+                  <p className="text-sm text-gray-300">
+                    Cyberspace Works - Website, Software, App Developer | Digital Marketing | Graphics Design | UI/UX | Research & Analysis
+                  </p>
+                 <p className="text-gray-400 flex items-start gap-2 mt-3">
+  <IoCallOutline className="text-cyan-400 mt-1" />
+  <a
+    href="tel:+917980715765"
+    className="hover:underline leading-snug pl-6"
+  >
+    +91 7980715765
+  </a>
+</p>
+
+<p className="text-gray-400 flex items-start gap-2 mt-3">
+  <IoMailOutline className="text-cyan-400 mt-1 size-5" />
+  <a
+    href="mailto:cyberspaceworksofficial@gmail.com"
+    className="hover:underline leading-snug text-center"
+  >
+    cyberspaceworks
+    official@gmail.com
+  </a>
+</p>
+
+<p className="text-gray-400 flex items-start gap-2 mt-3">
+  <IoLocationOutline className="text-cyan-400 mt-1 size-12" />
+  <a
+    href="https://maps.app.goo.gl/QABsaPuw5qL3BwRa7"
+    className="hover:underline leading-snug text-center"
+  >
+    Kolkata 19, Krishna Chatterjee Ln, Bally, Howrah, West Bengal 711201
+  </a>
+</p>
+
+                </div>
+                <div className="mt-auto">
+                  <Link href="/contact-us"
+                    className="flex items-center justify-center gap-1 px-4 py-1 text-black bg-cyan-400 rounded-full shadow-[0_0_12px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[0_0_16px_rgba(0,0,0,0.6)]"
+                    onClick={() => setIsLeftMenuOpen(false)}>
+                    Get a Free Quote
+                  </Link>
+                </div>
+              </div>
+            </div>
 
       <div className={`lg:hidden right-menu-container-mobile fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${isRightMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex flex-col p-6 space-y-4 text-white">
@@ -1395,6 +1442,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
           ))}
         </div>
       </div>
+
 
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -1412,6 +1460,237 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
           </motion.div>
         )}
       </AnimatePresence>
+      <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[350px] mx-auto bg-black/10 border border-white/10 shadow-xl backdrop-blur-sm rounded-2xl z-50">
+ {/* FAB */}
+<div className="relative">
+  <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-50">
+    
+    {/* Outer Pulsing Glow Ring */}
+    <div
+      className="absolute inset-0 w-14 h-14 rounded-full animate-pulseGlowRing"
+      style={{
+        background: 'conic-gradient(from 0deg, #0ea5e9, #06b6d4, #0ea5e9)',
+        filter: 'blur(16px)',
+        opacity: 0.9,
+        zIndex: -1,
+        transform: 'translateY(-8px)',
+        pointerEvents: 'none',
+      }}
+      aria-hidden="true"
+    />
+
+    {/* Inner Solid Circle */}
+    <div className="relative bg-black border border-gray-700 rounded-full p-2 shadow-lg w-14 h-14 flex items-center justify-center overflow-visible cursor-pointer">
+       <Link 
+    href="/" >
+      <Image
+        src="/logo2.png"
+        alt="Logo"
+        width={100}
+        height={100}
+        className="object-contain w-auto h-12"
+      />
+      </Link>
+    </div>
+  </div>
+
+  {/* Global CSS for Animation */}
+  {/* <style jsx global>{`
+    
+    }
+  `}</style> */}
+</div>
+  {/* Bottom nav items */}
+  <div className="flex justify-around items-center py-3 relative">
+
+
+ 
+{/* Home */}
+<Link
+  href="/"
+  className="flex flex-col items-center relative group"
+>
+  <HomeIcon
+    className={`w-6 h-6 transition-colors duration-300 ${
+      isActive("/") 
+        ? "text-cyan-400" 
+        : "text-cyan-100 group-hover:text-cyan-400"
+    }`}
+  />
+  <span
+    className={`text-xs mt-1 transition-colors duration-300 ${
+      isActive("/") 
+        ? "text-cyan-400" 
+        : "text-cyan-100 group-hover:text-cyan-400"
+    }`}
+  >
+    Home
+  </span>
+
+  {/* Hover underline */}
+  {!isActive("/") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
+  )}
+
+  {/* Active underline */}
+  {isActive("/") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
+  )}
+</Link>
+
+      
+ {/* Services */}
+<div className="relative">
+  <div
+    className="flex flex-col items-center relative cursor-pointer group"
+    onClick={() => setIsServicesOpenMobile(prev => !prev)}
+    onMouseEnter={() => window.innerWidth >= 1024 && setIsServicesOpenMobile(true)}
+    onMouseLeave={() => window.innerWidth >= 1024 && setIsServicesOpenMobile(false)}
+  >
+    <Cog6ToothIcon
+      className={`w-6 h-6 transition-colors duration-300 ${
+        pathname.startsWith("/services")
+          ? "text-cyan-400"
+          : "text-cyan-100 group-hover:text-cyan-400"
+      }`}
+    />
+    <span
+      className={`text-xs mt-1 transition-colors duration-300 ${
+        pathname.startsWith("/services")
+          ? "text-cyan-400"
+          : "text-gray-100 group-hover:text-cyan-400"
+      }`}
+    >
+      Services
+    </span>
+
+    {/* Hover underline for inactive */}
+    {!pathname.startsWith("/services") && (
+      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
+    )}
+
+    {/* Active underline */}
+    {pathname.startsWith("/services") && (
+      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
+    )}
+  </div>
+
+  {/* Dropdown */}
+  <div
+    className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-gray-900/95 backdrop-blur-sm border border-cyan-400/20 rounded-xl shadow-xl overflow-hidden transition-all duration-300 ease-in-out origin-bottom z-[9999]
+      ${isServicesOpenMobile ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}
+  >
+    <button
+      onClick={() => setIsServicesOpenMobile(false)}
+      className="absolute top-2 right-2 p-1 rounded-full hover:bg-cyan-400/20 transition-colors"
+      aria-label="Close services menu"
+    >
+      <XMarkIcon className="w-5 h-5 text-cyan-400 cursor-pointer" />
+    </button>
+
+    <div className="py-2 pt-8">
+      {/* Service Page */}
+      <Link
+        href="/services"
+        onClick={() => setIsServicesOpenMobile(false)}
+        className="flex items-center gap-3 px-4 py-2 text-sm text-cyan-100 font-semibold transition-colors duration-300 hover:text-cyan-400 hover:bg-cyan-400/10"
+      >
+        <span className="text-lg text-cyan-400"><Cog6ToothIcon /></span>
+        Our Services
+      </Link>
+
+      {/* Subservices */}
+      {services.map((service) => (
+        <Link
+          key={service.name}
+          href={service.href}
+          onClick={() => setIsServicesOpenMobile(false)}
+          className={`flex items-center gap-3 px-4 py-2 text-sm relative transition-colors duration-300
+            ${pathname === service.href
+              ? "text-cyan-400 bg-cyan-400/10"
+              : "text-gray-100 hover:text-cyan-400 hover:bg-cyan-400/10"
+            }`}
+        >
+          <span className="text-lg text-cyan-400">{service.icon}</span>
+          {service.name}
+        </Link>
+      ))}
+    </div>
+  </div>
+</div>
+
+
+    <div className="w-12" /> {/* FAB gap */}
+
+ {/* About */}
+<Link
+  href="/about-us"
+  className="flex flex-col items-center relative group"
+>
+  <InformationCircleIcon
+    className={`w-6 h-6 transition-colors duration-300 ${
+      isActive("/about-us")
+        ? "text-cyan-400"
+        : "text-cyan-100 group-hover:text-cyan-400"
+    }`}
+  />
+  <span
+    className={`text-xs mt-1 transition-colors duration-300 ${
+      isActive("/about-us")
+        ? "text-cyan-400"
+        : "text-gray-100 group-hover:text-cyan-400"
+    }`}
+  >
+    About
+  </span>
+
+  {/* Hover underline for inactive */}
+  {!isActive("/about-us") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
+  )}
+
+  {/* Active underline */}
+  {isActive("/about-us") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
+  )}
+</Link>
+
+{/* Contact */}
+<Link
+  href="/contact-us"
+  className="flex flex-col items-center relative group"
+>
+  <PhoneIcon
+    className={`w-6 h-6 transition-colors duration-300 ${
+      isActive("/contact-us")
+        ? "text-cyan-400"
+        : "text-cyan-100 group-hover:text-cyan-400"
+    }`}
+  />
+  <span
+    className={`text-xs mt-1 transition-colors duration-300 ${
+      isActive("/contact-us")
+        ? "text-cyan-400"
+        : "text-gray-100 group-hover:text-cyan-400"
+    }`}
+  >
+    Contact
+  </span>
+
+  {/* Hover underline for inactive */}
+  {!isActive("/contact-us") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
+  )}
+
+  {/* Active underline */}
+  {isActive("/contact-us") && (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
+  )}
+</Link>
+
+
+  </div>
+</div>
     </>
   )
 }

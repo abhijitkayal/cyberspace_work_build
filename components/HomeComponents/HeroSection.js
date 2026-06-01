@@ -174,7 +174,7 @@ function updateStars() {
   return (
     <div className="relative  text-white overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e3a8a_0%,#0d1b2a_20%,#000000_40%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#1e3a8a_0%,_#0d1b2a_10%,_#000000_25%)]" />
       </div>
 
       <HeroSection />
