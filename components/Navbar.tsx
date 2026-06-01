@@ -714,9 +714,9 @@ const SOFTWARE_OPTIONS = [
 ]
 
 const SERVICE_CATEGORIES = [
-  "HR Management System(CyberPayroll)", "Resturant Management System(CyberDine)", "Pharmacy Management System(CyberPharma)",
-  "Store Management System(CyberRetail)", "Tally Software(CyberLedger)", "GST & Billing System(CyberInvoice)",
-  "Clinic Management System(CyberClinic)", "Project Management System(CyberProjects)",
+  "CyberPayroll - HR Management System", "CyberDine - Resturant Management System", "CyberPharma - Pharmacy Management System",
+  "CyberRetail - Store Management System", "CyberLedger - Tally Software", "CyberInvoice - GST & Billing System",
+  "CyberClinic - Clinic Management System", "CyberProjects - Project Management System",
 ]
 
 // ─── Enquiry Drawer ───────────────────────────────────────────────────────────
@@ -833,7 +833,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                       className="group flex flex-col rounded-2xl p-6 border border-white/[0.08] bg-[#18181b]/60 hover:border-white/[0.18] hover:bg-[#1e1e22] transition-all duration-300 cursor-pointer min-h-[240px]"
                     >
                       {/* Icon box — blue tint like image */}
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1e2340] border border-[#2d3560] text-[#5b7cff] mb-6">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1e2340] border border-[#2d3560] text-[#00ced4] mb-6">
                         <Rocket size={24} strokeWidth={1.7} />
                       </div>
 
@@ -844,7 +844,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                       <p className="text-[12.5px] text-white/40 leading-relaxed mb-auto">
                         Hire us for web, mobile, backend, SEO or custom software solutions.
                       </p>
-                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-[#5b7cff] flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
+                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-[#00ced4] flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
                         GET STARTED <ArrowRight size={12} />
                       </button>
                     </div>
@@ -855,7 +855,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                       className="group flex flex-col rounded-2xl p-6 border border-purple-500/[0.2] bg-[#16102a]/60 hover:border-purple-400/40 hover:bg-[#1c1438]/80 transition-all duration-300 cursor-pointer min-h-[240px]"
                     >
                       {/* Icon box — purple tint like image */}
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#281848] border border-purple-500/30 text-purple-400 mb-6">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#281848] border border-purple-500/30 text-[#00ced4] mb-6">
                         <Package size={24} strokeWidth={1.7} />
                       </div>
 
@@ -866,7 +866,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                       <p className="text-[12.5px] text-white/40 leading-relaxed mb-auto">
                         Explore our 8 ready-made software products for your business needs.
                       </p>
-                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-purple-400 flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
+                      <button className="mt-5 text-[11px] font-bold tracking-[0.1em] text-[#00ced4] flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200">
                         BROWSE SOFTWARE <ArrowRight size={12} />
                       </button>
                     </div>
@@ -927,7 +927,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
 
                   {/* Service category */}
                <div>
-  <label className={labelClass}>Service Category</label>
+  <label className={labelClass}>Products</label>
 
   <select
     value={form.service}
@@ -979,7 +979,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-2xl bg-[#5b7cff] hover:bg-[#6d8dff] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(91,124,255,0.3)]"
+                    className="w-full py-3.5 rounded-2xl bg-[#00ced4] hover:bg-[#6d8dff] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(91,124,255,0.3)]"
                   >
                     Submit Enquiry →
                   </button>
@@ -1111,10 +1111,10 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const hideNavbar = pathname?.startsWith("/dashboard") || pathname === "/schedule" || pathname === "/login"
 
   const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }] }
-  const navitems = { left: [{ label: "Product", href: "/product", icon: Package }, { label: "Contact", href: "/contact-us", icon: Contact }] }
+  const navitems = { left: [{ label: "Products", href: "/product", icon: Package }, { label: "Contact", href: "/contact-us", icon: Contact }] }
 
   const socialLinks1 = [
-    { name: "Shop",     icon: <ShoppingBag />,  link: "/" },
+    { name: "Shop",     icon: <ShoppingBag />,  link: "/shop" },
     { name: "Wishlist", icon: (
         <div className="relative"><Heart />
           <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
@@ -1298,7 +1298,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
               <div className="hidden md:flex items-center gap-5 shrink-0 text-white ml-auto">
                 <nav className="flex items-center gap-8">
                   {navitems.left.map(item => {
-                    if (item.label === "Product") {
+                    if (item.label === "Products") {
                       return (
                         <div key={item.label} className="relative"
                           onMouseEnter={() => { if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current); setOpenDropdown(item.label) }}

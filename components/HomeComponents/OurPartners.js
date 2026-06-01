@@ -32,7 +32,7 @@ const logos = [
 
 const LogoSection = () => {
   return (
-    <section className="pt-15 relative z-10 px-6 overflow-hidden">
+    <section className="pt-15 relative z-10 px-6 overflow-hidden bg-black">
       <div className="flex items-center gap-6 max-w-7xl mx-auto lg:flex-row flex-col lg:px-0 px-6">
         
         {/* ✨ Animated Heading */}

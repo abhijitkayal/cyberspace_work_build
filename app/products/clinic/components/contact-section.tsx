@@ -17,6 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Mail, MessageCircle, Github, BookOpen } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger,SelectValue } from "@/components/ui/select"
+// import { SelectValue } from "@base-ui/react"
 
 const contactFormSchema = z.object({
   firstName: z.string().min(2, {
@@ -206,18 +208,42 @@ export function ContactSection() {
                       )}
                     />
                     <FormField
-                      control={form.control}
-                      name="subject"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Component request, bug report, general inquiry..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+  control={form.control}
+  name="subject"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Query Type</FormLabel>
+
+      <Select
+        onValueChange={field.onChange}
+        defaultValue={field.value}
+
+      >
+        <FormControl>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select query type" />
+          </SelectTrigger>
+        </FormControl>
+
+        <SelectContent>
+          <SelectItem value="need-help">
+            Need Help
+          </SelectItem>
+
+          <SelectItem value="have-suggestion">
+            Have Suggestion
+          </SelectItem>
+
+          <SelectItem value="have-question">
+            Have Question
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
+      <FormMessage />
+    </FormItem>
+  )}
+/>
                     <FormField
                       control={form.control}
                       name="message"

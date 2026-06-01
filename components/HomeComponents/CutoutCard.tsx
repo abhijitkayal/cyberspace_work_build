@@ -154,6 +154,7 @@ interface CardProps {
   cut?: number;
   duration?: string;
   icon?: ReactNode;
+  href?: string;
 }
 function CutoutCard({
   label,
@@ -164,6 +165,7 @@ function CutoutCard({
   cut = CUT,
   duration = "3s",
   icon,
+  href,
 }: CardProps) {
   const cardRef =
     useRef<HTMLDivElement>(null);
@@ -329,7 +331,7 @@ function CutoutCard({
                   ? `${accent}18`
                   : "transparent",
               }}
-              onClick={() => router.push("/products")}
+              onClick={() => router.push(href || "/") }
             >
               View More
             </button>
@@ -347,7 +349,7 @@ function CutoutCard({
 export default function SoftwareShowcase() {
   const router = useRouter();
   return (
-    <div id="products" className="relative min-h-screen overflow-hidden bg-black">
+    <div id="products" className="relative min-h-screen overflow-hidden bg-transparent">
       {/* Background */}
       {/* <div className="absolute inset-0 z-0">
         <Antigravity
@@ -406,6 +408,7 @@ export default function SoftwareShowcase() {
             tag="v2.4"
             accent="#0f766e"
               icon={<SquareKanban className="size-3" />}
+              href="/products/project"
           />
 
           <CutoutCard
@@ -415,6 +418,7 @@ export default function SoftwareShowcase() {
             tag="v4.0"
             accent="#0e7490"
               icon={<ReceiptIndianRupee className="size-3" />}
+              href="/products/gst&billing"
           />
 
           <CutoutCard
@@ -424,6 +428,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#0369a1"
               icon={<NotebookTabs className="size-3" />}
+              href="/products/tally"
           />
           <CutoutCard
             label="HR Management Software"
@@ -432,6 +437,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#1d4ed8"
               icon={<IdCardLanyard className="size-3" />}
+              href="/products/hrms"
           />
         </div>
          <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
@@ -450,6 +456,7 @@ export default function SoftwareShowcase() {
             tag="v2.4"
             accent="#4338ca"
               icon={<ShoppingBag className="size-3" />}
+              href="/products/store"
           />
 
           <CutoutCard
@@ -459,6 +466,7 @@ export default function SoftwareShowcase() {
             tag="v4.0"
             accent="#6d28d9"
               icon={<Stethoscope className="size-3" />}
+              href="/products/clinic"
           />
 
           <CutoutCard
@@ -468,6 +476,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#7e22ce"
               icon={<Pill className="size-3" />}
+              href="/products/pharmacy"
           />
           <CutoutCard
             label="Resturant Management System"
@@ -476,6 +485,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#38bdf8"
               icon={<ChefHat className="size-3" />}
+              href="/products/restaurant"
           />
         </div>
         {/* <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4">

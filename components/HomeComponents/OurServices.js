@@ -620,7 +620,7 @@ export default function OurServicesWithWires() {
   return (
     <section
       ref={containerRef}
-      className="relative z-0 w-full overflow-hidden"
+      className="relative z-0 w-full overflow-hidden bg-black"
       style={{ paddingTop: "30px", paddingBottom: "72px" }}
     >
       {/* <Pattern /> */}
@@ -668,12 +668,12 @@ export default function OurServicesWithWires() {
       {/* Top fade — blends section edge into whatever is above */}
       <div className="absolute top-0 left-0 w-full pointer-events-none" style={{
         height: "120px", zIndex: 3,
-        background: "linear-gradient(to bottom, #030508 0%, transparent 100%)",
+        background: "#000000",
       }} />
       {/* Bottom fade — blends section edge into whatever is below */}
       <div className="absolute bottom-0 left-0 w-full pointer-events-none" style={{
         height: "120px", zIndex: 3,
-        background: "linear-gradient(to top, #030508 0%, transparent 100%)",
+        background: "#000000",
       }} />
 
       {/* <SpotlightCard

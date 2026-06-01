@@ -329,7 +329,7 @@ if (ctx4) {
           animation-delay: 0s;
         }
       `}</style>
-      <main className="relative overflow-hidden " style={{ background: "#000" }}>
+      <main className="relative overflow-hidden " style={{ background: "#000000" }}>
         <div
           className="absolute inset-0 pointer-events-none"
           aria-hidden

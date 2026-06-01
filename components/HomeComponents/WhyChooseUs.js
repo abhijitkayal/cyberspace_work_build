@@ -531,7 +531,7 @@ const dataLine = {
     <div
       className={`relative group rounded-2xl p-[2px] bg-gradient-to-b from-cyan-500/20 to-transparent overflow-hidden ${className}`}
     >
-      <div className="relative bg-black/60 backdrop-blur-lg rounded-2xl p-6 flex flex-col gap-4 h-full transition-all duration-500 overflow-hidden">
+      <div className="relative bg-black backdrop-blur-lg rounded-2xl p-6 flex flex-col gap-4 h-full transition-all duration-500 overflow-hidden">
         <div className="absolute bottom-0 left-0 w-full h-2/3 blur-2xl pointer-events-none"></div>
         {children}
       </div>

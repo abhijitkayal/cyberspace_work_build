@@ -9,7 +9,8 @@ import OurServices from "@/components/HomeComponents/OurServices.js";
 import { Meteors } from "../ui/meteors";
 import InteractiveHoverButton  from "../ui/interactive-hover-button/InteractiveHoverButton.tsx";
 import { NeutralHeroBackground } from "./NaturalheroBackground";
-
+import Lenis from "lenis";
+import LenisProvider from "@/components/LenisProviders";
 export default function HomePage() {
   const servicesRef = useRef(null);
 
@@ -118,7 +119,7 @@ function updateStars() {
           style={{
             height: "180px",
             zIndex: 1,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, #030508 100%)",
+            background: "rgba(0,0,0,0)",
           }}
         />
          <main className="relative z-10 -mt-10 flex flex-col items-center justify-center h-[calc(100vh-100px)] text-center px-4 lg:pt-30 pt-3">
@@ -172,7 +173,8 @@ function updateStars() {
   };
 
   return (
-    <div className="relative  text-white overflow-hidden">
+  
+    <div className="relative  text-white overflow-hidden bg-black">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#1e3a8a_0%,_#0d1b2a_10%,_#000000_25%)]" />
       </div>
@@ -182,6 +184,7 @@ function updateStars() {
         <OurServices />
       </div>
     </div>
+   
   );
 }
 

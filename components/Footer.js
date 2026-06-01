@@ -551,7 +551,7 @@ const Footer = () => {
             </p>
             <p className="text-slate-900 text-sm sm:text-base">
               <a href="mailto:cyberspaceworksofficial@gmail.com" className="hover:text-slate-700 transition">
-                cyberspaceworksofficial@gmail.com
+                cyberspaceworksofficial@gmail<br/>.com
               </a>
             </p>
 

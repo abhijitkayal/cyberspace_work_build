@@ -596,7 +596,7 @@ export function PricingSection() {
                                 />
                               </Field.Root>
 
-                              <Field.Root name="description" className="space-y-2">
+                              {/* <Field.Root name="description" className="space-y-2">
                                 <Field.Label className="text-sm font-medium">Project Description</Field.Label>
                                 <textarea
                                   value={formData.description}
@@ -609,7 +609,7 @@ export function PricingSection() {
                                   className="min-h-35 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                                   placeholder="Describe your project"
                                 />
-                              </Field.Root>
+                              </Field.Root> */}
 
                               <Button
                                 type="submit"
