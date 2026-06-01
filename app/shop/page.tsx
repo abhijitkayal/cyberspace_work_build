@@ -742,7 +742,7 @@ function CutoutCard({
       ref={cardRef}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="relative h-full transition-all duration-300"
+      className="relative h-full transition-all duration-300 bg-black"
       style={{
         transform: mouse.inside
           ? "translateY(-5px) scale(1.015)"

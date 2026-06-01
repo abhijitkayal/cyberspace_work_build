@@ -2,7 +2,7 @@ import { HeroParallax } from '@/components/ui/hero-parallax'
 import React from 'react'
 // import HomePage from './hero-section/page'
 import HeroParallaxDemo from './hero-section/page'
-import SoftwareShowcase from '@/components/HomeComponents/CutoutCard'
+import SoftwareShowcase from './our-product/page'
 import AboutPage from './about/page'
 // import { BentoDemo } from '@/components/ui/bento-grid'
 import FeaturesSection from './feature-section/page'
@@ -13,6 +13,7 @@ const page = () => {
   return (
     <div>
       <HeroParallaxDemo/>
+      {/* <SoftwareShowcase/> */}
       <SoftwareShowcase/>
       <AboutPage/>
       <FeaturesSection/>

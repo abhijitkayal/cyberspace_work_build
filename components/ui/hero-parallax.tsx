@@ -474,7 +474,7 @@ export const HeroParallax = ({
     // ✅ h-screen so viewport is fixed height, overflow-y-scroll makes inner 600vh scrollable
     <div
       ref={containerRef}
-      className="h-[800px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
+      className="h-[1000px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
       style={{ perspective: "1000px" }}
     >
       {/* ✅ Inner content wrapper is 600vh — this is what creates the scroll length */}
@@ -482,9 +482,9 @@ export const HeroParallax = ({
         <Header />
 
         {/* Debug badge */}
-        <div className="fixed right-4 top-12 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
+        {/* <div className="fixed right-4 top-12 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
           scrollYProgress: {debugScrollProgress.toFixed(3)}
-        </div>
+        </div> */}
 
         {/* ── 3D Card Grid — exits on scroll ── */}
        {/* ── 3D Card Grid — exits on scroll ── */}
