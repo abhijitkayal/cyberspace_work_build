@@ -302,11 +302,11 @@ function CutoutCard({
             <div className="flex flex-1 flex-col gap-3">
               <div className="flex">
                {icon && (
-    <span className="flex items-center justify-center size-10 text-cyan-500">
+    <span className="flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5 text-cyan-500">
       {icon}
     </span>
   )}
-              <h3 className="text-xl font-semibold text-white">
+              <h3 className="text-xl ml-2 font-semibold text-white">
                 {title}
               </h3>
               </div>

@@ -170,16 +170,16 @@
 //     { name: "Facebook",  icon: <FaFacebookF />, link: "https://www.facebook.com/profile.php?id=100086774724799" },
 //   ]
 
-//   const services = [
-//     { name: "AI & Intelligent Systems", icon: <FaBrain />,           subtext: "Automation, ML & LLM solutions",  href: "/services/ai-intelligent-systems" },
-//     { name: "Web Development",          icon: <FaLaptopCode />,       subtext: "Custom, scalable web apps",       href: "/services/web-development" },
-//     { name: "App Development",          icon: <FaMobileAlt />,        subtext: "iOS & Android native solutions",  href: "/services/app-development" },
-//     { name: "Software Development",     icon: <FaCode />,             subtext: "Tailored enterprise solutions",   href: "/services/software-development" },
-//     { name: "UI/UX Design",             icon: <FaPalette />,          subtext: "Designs that convert users",      href: "/services/ui-ux-design" },
-//     { name: "Graphic Design",           icon: <FaBrush />,            subtext: "Creative branding visuals",       href: "/services/graphic-design" },
-//     { name: "Digital Marketing",        icon: <FaBullhorn />,         subtext: "Boost your brand visibility",     href: "/services/digital-marketing" },
-//     { name: "Research & Analytics",     icon: <SiGoogleanalytics />,  subtext: "Data-driven insights",            href: "/services/research-and-analytics" },
-//   ]
+  // const services = [
+  //   { name: "AI & Intelligent Systems", icon: <FaBrain />,           subtext: "Automation, ML & LLM solutions",  href: "/services/ai-intelligent-systems" },
+  //   { name: "Web Development",          icon: <FaLaptopCode />,       subtext: "Custom, scalable web apps",       href: "/services/web-development" },
+  //   { name: "App Development",          icon: <FaMobileAlt />,        subtext: "iOS & Android native solutions",  href: "/services/app-development" },
+  //   { name: "Software Development",     icon: <FaCode />,             subtext: "Tailored enterprise solutions",   href: "/services/software-development" },
+  //   { name: "UI/UX Design",             icon: <FaPalette />,          subtext: "Designs that convert users",      href: "/services/ui-ux-design" },
+  //   { name: "Graphic Design",           icon: <FaBrush />,            subtext: "Creative branding visuals",       href: "/services/graphic-design" },
+  //   { name: "Digital Marketing",        icon: <FaBullhorn />,         subtext: "Boost your brand visibility",     href: "/services/digital-marketing" },
+  //   { name: "Research & Analytics",     icon: <SiGoogleanalytics />,  subtext: "Data-driven insights",            href: "/services/research-and-analytics" },
+  // ]
 
 //   const handleDropdownClose = () => {
 //     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
@@ -712,6 +712,21 @@ const SOFTWARE_OPTIONS = [
   { id: "invoice",  label: "CyberInvoice",  desc: "GST, Billing & Accounting",     icon: <ReceiptIndianRupee size={18} /> },
   { id: "projects", label: "CyberProjects", desc: "Project Management",            icon: <SquareKanban size={18} /> },
 ]
+  // const services = [
+  //   { name: "AI & Intelligent Systems", icon: <FaBrain />,           subtext: "Automation, ML & LLM solutions",  href: "/services/ai-intelligent-systems" },
+  //   { name: "Web Development",          icon: <FaLaptopCode />,       subtext: "Custom, scalable web apps",       href: "/services/web-development" },
+  //   { name: "App Development",          icon: <FaMobileAlt />,        subtext: "iOS & Android native solutions",  href: "/services/app-development" },
+  //   { name: "Software Development",     icon: <FaCode />,             subtext: "Tailored enterprise solutions",   href: "/services/software-development" },
+  //   { name: "UI/UX Design",             icon: <FaPalette />,          subtext: "Designs that convert users",      href: "/services/ui-ux-design" },
+  //   { name: "Graphic Design",           icon: <FaBrush />,            subtext: "Creative branding visuals",       href: "/services/graphic-design" },
+  //   { name: "Digital Marketing",        icon: <FaBullhorn />,         subtext: "Boost your brand visibility",     href: "/services/digital-marketing" },
+  //   { name: "Research & Analytics",     icon: <SiGoogleanalytics />,  subtext: "Data-driven insights",            href: "/services/research-and-analytics" },
+  // ]
+const services = [
+  "AI & Intelligent Systems", "Web Development", "App Development",
+  "Software Development", "UI/UX Design", "Graphic Design",
+  "Research & Analytics", "Digital Marketing",
+]
 
 const SERVICE_CATEGORIES = [
   "CyberPayroll - HR Management System", "CyberDine - Resturant Management System", "CyberPharma - Pharmacy Management System",
@@ -830,7 +845,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                     {/* Card 1: Start a Project */}
                     <div
                       onClick={() => setView("project")}
-                      className="group flex flex-col rounded-2xl p-6 border border-white/[0.08] bg-[#18181b]/60 hover:border-white/[0.18] hover:bg-[#1e1e22] transition-all duration-300 cursor-pointer min-h-[240px]"
+                      className="group flex flex-col rounded-2xl p-6 border border-[#0e7480] bg-[#0e7480]/40 hover:border-white/[0.18] hover:bg-[#0e7480] transition-all duration-300 cursor-pointer min-h-[240px]"
                     >
                       {/* Icon box — blue tint like image */}
                       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1e2340] border border-[#2d3560] text-[#00ced4] mb-6">
@@ -887,7 +902,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
               )}
 
               {/* ── PROJECT FORM VIEW ── */}
-              {(view === "project" || view === "software") && (
+              {view === "project" && (
                 <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
                   <div>
                     <h3 className="text-[1.4rem] font-bold text-white mb-1">Start a Project</h3>
@@ -927,6 +942,107 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
 
                   {/* Service category */}
                <div>
+  <label className={labelClass}>Projects</label>
+
+  <select
+    value={form.service}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        service: e.target.value,
+      }))
+    }
+    className="
+      w-full
+      rounded-xl
+      bg-white/[0.03]
+      border border-white/[0.08]
+      px-4 py-3
+      text-sm text-white
+      outline-none
+      focus:border-[#5b7cff]/60
+      focus:ring-2 focus:ring-[#5b7cff]/20
+      transition-all duration-200
+    "
+  >
+    <option value="" className="bg-[#0d0d0f] text-white/50">
+      Select a Service
+    </option>
+
+    {services.map((cat) => (
+      <option
+        key={cat}
+        value={cat}
+        className="bg-[#0d0d0f] text-white"
+      >
+        {cat}
+      </option>
+    ))}
+  </select>
+</div>
+
+                  {/* Description */}
+                  <div>
+                    <label className={labelClass}>Project Description</label>
+                    <textarea
+                      rows={4} placeholder="Tell us about your project..."
+                      value={form.description}
+                      onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 rounded-2xl bg-[#00ced4] hover:bg-[#6d8dff] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(91,124,255,0.3)]"
+                  >
+                    Submit Enquiry →
+                  </button>
+                </form>
+              )}
+
+              {/* ── SOFTWARE PURCHASE VIEW ── */}
+              {view === "software" && (
+                <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
+                  <div>
+                    <h3 className="text-[1.4rem] font-bold text-white mb-1">Purchase a Software</h3>
+                    <p className="text-[13px] text-white/40">Select the software(s) you&apos;re interested in and leave your details.</p>
+                  </div>
+
+                
+         
+
+                  
+                  <div>
+                    <label className={labelClass}>Full Name</label>
+                    <input
+                      type="text" required placeholder="John Doe"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+
+                 
+                  <div>
+                    <label className={labelClass}>Email Address</label>
+                    <input
+                      type="email" required placeholder="you@company.com"
+                      value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Phone No</label>
+                    <input
+                      type="phone" required placeholder="0000000000"
+                      value={form.phone}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+                           <div>
   <label className={labelClass}>Products</label>
 
   <select
@@ -965,84 +1081,6 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
     ))}
   </select>
 </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className={labelClass}>Project Description</label>
-                    <textarea
-                      rows={4} placeholder="Tell us about your project..."
-                      value={form.description}
-                      onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                      className={`${inputClass} resize-none`}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 rounded-2xl bg-[#00ced4] hover:bg-[#6d8dff] active:scale-[0.98] text-white font-bold text-[14px] tracking-wide transition-all duration-200 shadow-[0_0_24px_rgba(91,124,255,0.3)]"
-                  >
-                    Submit Enquiry →
-                  </button>
-                </form>
-              )}
-
-              {/* ── SOFTWARE PURCHASE VIEW ── */}
-              {/* {view === "software" && (
-                <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
-                  <div>
-                    <h3 className="text-[1.4rem] font-bold text-white mb-1">Purchase a Software</h3>
-                    <p className="text-[13px] text-white/40">Select the software(s) you&apos;re interested in and leave your details.</p>
-                  </div>
-
-                
-                  <div>
-                    <label className={labelClass}>Select Software <span className="normal-case text-white/30">(pick one or more)</span></label>
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {SOFTWARE_OPTIONS.map(sw => {
-                        const selected = selectedSoftware.includes(sw.id)
-                        return (
-                          <button
-                            key={sw.id} type="button"
-                            onClick={() => toggleSoftware(sw.id)}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-2xl border text-left transition-all duration-200 ${
-                              selected
-                                ? "bg-purple-500/15 border-purple-400/50 text-white"
-                                : "bg-white/[0.03] border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white/70"
-                            }`}
-                          >
-                            <span className={`shrink-0 ${selected ? "text-purple-400" : "text-white/30"}`}>{sw.icon}</span>
-                            <div>
-                              <p className="text-[12.5px] font-semibold leading-tight">{sw.label}</p>
-                              <p className="text-[11px] text-white/35 leading-tight mt-0.5">{sw.desc}</p>
-                            </div>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  
-                  <div>
-                    <label className={labelClass}>Full Name</label>
-                    <input
-                      type="text" required placeholder="John Doe"
-                      value={form.name}
-                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                      className={inputClass}
-                    />
-                  </div>
-
-                 
-                  <div>
-                    <label className={labelClass}>Email Address</label>
-                    <input
-                      type="email" required placeholder="you@company.com"
-                      value={form.email}
-                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                      className={inputClass}
-                    />
-                  </div>
-
                   
                   <div>
                     <label className={labelClass}>Additional Notes</label>
@@ -1062,7 +1100,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                     Submit Enquiry →
                   </button>
                 </form>
-              )} */}
+              )}
 
               {/* ── SUCCESS VIEW ── */}
               {view === "success" && (
