@@ -376,7 +376,7 @@
 
 
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -405,18 +405,24 @@ export const HeroParallax = ({
 
   const { scrollYProgress, scrollY } = useScroll({ container: containerRef });
   const [debugScrollProgress, setDebugScrollProgress] = useState(0);
+//   const customProgress = useTransform(
+//   scrollY,
+//   [0, 1000], // 0px to 1000px scroll
+//   [0, 1],    // progress 0 to 1
+//   { clamp: true }
+// );
 
-  const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
+  const springConfig = { stiffness: 200, damping: 40, bounce: 0 };
 
   // ── Row sliding (classic parallax) ──
   const translateX = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, 1000]),
-    springConfig
-  );
-  const translateXReverse = useSpring(
-    useTransform(scrollYProgress, [0, 1], [0, -1000]),
-    springConfig
-  );
+  useTransform(scrollYProgress, [0, 1], [0, 1500]),
+  springConfig
+);
+const translateXReverse = useSpring(
+  useTransform(scrollYProgress, [0, 1], [0, -1500]),
+  springConfig
+);
 
   // ── Phase 1 (0–0.2): 3D tilt settles flat ──
   const rotateX = useSpring(
@@ -453,11 +459,10 @@ export const HeroParallax = ({
   useMotionValueEvent(scrollY, "change", (latest) => {
     console.log("scrollY:", latest);
   });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setDebugScrollProgress(latest); // ✅ store the actual value
-    console.log("scrollYProgress:", latest);
-  });
+useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  console.log("Progress:", latest);
+  setDebugScrollProgress(latest);
+});
 
   // ── Phase 3 (0.52–0.72): All Images section enters from below ──
   const gridEnterY = useSpring(
@@ -468,6 +473,25 @@ export const HeroParallax = ({
     useTransform(scrollYProgress, [0.52, 0.72], [0, 1]),
     { stiffness: 140, damping: 30 }
   );
+  useEffect(() => {
+  if (!containerRef.current) return;
+
+  console.log(
+    "scrollHeight:",
+    containerRef.current.scrollHeight
+  );
+
+  console.log(
+    "clientHeight:",
+    containerRef.current.clientHeight
+  );
+
+  console.log(
+    "maxScroll:",
+    containerRef.current.scrollHeight -
+      containerRef.current.clientHeight
+  );
+}, []);
 
   
   return (
@@ -478,23 +502,23 @@ export const HeroParallax = ({
       style={{ perspective: "1000px" }}
     >
       {/* ✅ Inner content wrapper is 600vh — this is what creates the scroll length */}
-      <div className="h-[200vh] relative">
+      <div className="h-[1000vh] relative">
         <Header />
 
         {/* Debug badge */}
-        {/* <div className="fixed right-4 top-12 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
+        <div className="fixed right-4 top-200 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
           scrollYProgress: {debugScrollProgress.toFixed(3)}
-        </div> */}
+        </div>
 
         {/* ── 3D Card Grid — exits on scroll ── */}
        {/* ── 3D Card Grid — exits on scroll ── */}
 
   <motion.div
-    // style={{
-    //   y: exitY,
-    //   opacity: exitOpacity,
-    //   scale: exitScale,
-    // }}
+    style={{
+      y: exitY,
+      // opacity: exitOpacity,
+      scale: exitScale,
+    }}
     className="relative h-10"
   >
     <motion.div
