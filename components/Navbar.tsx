@@ -942,7 +942,7 @@ function EnquiryDrawer({ open, setOpen, drawerType }: { open: boolean; setOpen: 
 
                   {/* Service category */}
                <div>
-  <label className={labelClass}>Projects</label>
+  <label className={labelClass}>Services</label>
 
   <select
     value={form.service}
@@ -1067,7 +1067,7 @@ function EnquiryDrawer({ open, setOpen, drawerType }: { open: boolean; setOpen: 
     "
   >
     <option value="" className="bg-[#0d0d0f] text-white/50">
-      Select a Service
+      Select a Producs
     </option>
 
     {SERVICE_CATEGORIES.map((cat) => (
@@ -1322,7 +1322,10 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
                 </div>
               ))}
               {/* Quick Enquiry badge triggers drawer */}
-              <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
+              <div onClick={() => {
+  setDrawerType("enquiry")
+  setDrawerOpen(true)
+}} className="cursor-pointer">
                 <AnimatedBadge text="Quick Enquiry" color="#22d3ee" href="#" />
               </div>
             </div>

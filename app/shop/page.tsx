@@ -532,6 +532,7 @@ import {
  
 } from "lucide-react";
 import DotGrid from "../products/clinic/components/DotGrid";
+import styled from "styled-components";
 
 /* ═══════════════════════════════════════════════════════
    CUTOUT HELPERS
@@ -765,10 +766,10 @@ function CutoutCard({
             clipPath: cutPath(cut),
           }}
         >
-          <div
+          {/* <div
             className="absolute inset-[-100%]"
             style={{
-              animation: `spin ${duration} linear infinite`,
+              // animation: `spin ${duration} linear infinite`,
               background: `conic-gradient(
                 from 0deg,
                 transparent 0deg,
@@ -780,7 +781,7 @@ function CutoutCard({
                 transparent 360deg
               )`,
             }}
-          />
+          /> */}
         </div>
 
         {/* Inner Card */}
@@ -791,7 +792,7 @@ function CutoutCard({
           }}
         >
           {/* Spotlight */}
-          <div
+          {/* <div
             className="absolute inset-0 transition-opacity duration-300"
             style={{
               opacity: mouse.inside ? 1 : 0,
@@ -801,7 +802,7 @@ function CutoutCard({
                 transparent 70%
               )`,
             }}
-          />
+          /> */}
 
           <div className="relative z-20 flex h-full flex-col gap-4 p-7">
             <CornerMark
@@ -810,7 +811,7 @@ function CutoutCard({
             />
 
            <div className="flex items-start justify-between">
-  <span
+  {/* <span
     className="inline-flex items-center gap-2 border px-2 py-1 text-[9px] uppercase tracking-[0.2em]"
     style={{
       color: accent,
@@ -819,14 +820,14 @@ function CutoutCard({
     }}
   >
     {label}
-  </span>
+  </span> */}
 
   <div className="flex items-center gap-3">
-    {tag && (
+    {/* {tag && (
       <span className="text-[9px] uppercase tracking-[0.15em] text-white/30">
         {tag}
       </span>
-    )}
+    )} */}
 
     <button
       onClick={() =>
@@ -852,11 +853,11 @@ function CutoutCard({
             <div className="flex flex-1 flex-col gap-3">
               <div className="flex">
                {icon && (
-    <span className="flex items-center justify-center size-7 text-cyan-500">
+    <span className="flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5 text-cyan-500">
       {icon}
     </span>
   )}
-              <h3 className="text-xl font-semibold text-white">
+              <h3 className="text-xl font-semibold ml-2 text-white">
                 {title}
               </h3>
               </div>
@@ -868,8 +869,8 @@ function CutoutCard({
 
             <div className="mt-auto space-y-3">
   <div
-    className="text-2xl font-bold"
-    style={{ color: accent }}
+    className="text-2xl font-bold text-white "
+    
   >
     ₹{price}
   </div>
@@ -907,6 +908,25 @@ export default function SoftwareShowcase() {
 const [category, setCategory] = useState("All");
 const [wishlist, setWishlist] = useState<any[]>([]);
 const [cart, setCart] = useState<any[]>([]);
+const StyledPattern = styled.div`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  background-color: #000;
+  background-image: radial-gradient(#00ced4 10%, transparent 10%);
+  background-size: 11px 11px;
+  opacity: 0.5;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+`;
+const Pattern = () => <StyledPattern />;
 
 const products = [
   {
@@ -1031,23 +1051,8 @@ const addToCart = (product: any) => {
 };
   return (
     <div id="products" className="relative min-h-screen overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0">
-  <DotGrid
-    dotSize={3}
-    edgeOpacity={0.05}       // nearly invisible at edges
-  centerOpacity={1}
-  falloffSharpness={3}  
-    gap={15}
-    baseColor="#969095"
-    activeColor="#06b6d4"
-    proximity={120}
-    shockRadius={250}
-    shockStrength={5}
-    resistance={750}
-    returnDuration={1.5}
-  />
-</div>
-
+     
+<Pattern/>
       {/* Content */}
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 py-20">
         {/* Heading */}

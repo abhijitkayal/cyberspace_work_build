@@ -540,7 +540,7 @@ const Footer = () => {
 
 
           {/* Contact */}
-          <div>
+          <div className="-ml-5"> 
             <h3 className="text-base sm:text-lg font-semibold mb-3 text-black">
               Get In Touch
             </h3>
@@ -551,7 +551,7 @@ const Footer = () => {
             </p>
             <p className="text-slate-900 text-sm sm:text-base">
               <a href="mailto:cyberspaceworksofficial@gmail.com" className="hover:text-slate-700 transition">
-                cyberspaceworksofficial@gmail<br/>.com
+                cyberspaceworksofficial@gmail.com
               </a>
             </p>
 

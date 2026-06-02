@@ -66,95 +66,95 @@ export default function Page() {
 }
 const products = [
   {
-    title: "Moonbeam",
+    title: "CyberClinic",
     link: "/products/clinic",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Cursor",
+    title: "CyberPayroll",
     link: "/products/hrms",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Rogue",
+    title: "CyberInvoice",
     link: "/products/gst&billing",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
 
   {
-    title: "Editorially",
+    title: "CyberPharma",
     link: "/products/pharmacy",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Editrix AI",
+    title: "CyberProjects",
     link: "/products/project",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Pixel Perfect",
+    title: "CyberDine",
     link: "/products/resturant",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
 
   {
-    title: "Algochurn",
+    title: "CyberRetail",
     link: "/products/store",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Aceternity UI",
+    title: "CyberLedger",
     link: "/products/tally",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Tailwind Master Kit",
-    link: "https://tailwindmasterkit.com",
+    title: "CyberPayroll",
+    link: "/products/hrms",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "SmartBridge",
-    link: "https://smartbridgetech.com",
+    title: "CyberClinic",
+    link: "/products/clinic",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Renderwork Studio",
-    link: "https://renderwork.studio",
+    title: "CyberInvoice",
+    link: "/products/gst&billing",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
 
   {
-    title: "Creme Digital",
-    link: "https://cremedigital.com",
+    title: "CyberDine",
+    link: "/products/resturant",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Golden Bells Academy",
-    link: "https://goldenbellsacademy.com",
+    title: "CyberPharma",
+    link: "/products/pharmacy",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "Invoker Labs",
-    link: "https://invoker.lol",
+    title: "CyberLedger",
+    link: "/products/tally",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },
   {
-    title: "E Free Invoice",
-    link: "https://efreeinvoice.com",
+    title: "CyberRetail",
+    link: "/products/store",
     thumbnail:
       "/Screenshot 2026-05-29 100006.png",
   },

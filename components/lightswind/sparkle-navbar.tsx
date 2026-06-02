@@ -278,9 +278,12 @@ const SparkleNavbar: React.FC<SparkleNavbarProps> = ({
   <ul className="flex gap-10 mt-4 ">
     {items.slice(0, 3).map((item, index) => (
       <li
-        key={item.label}
-        className={index === activeIndex ? "active" : ""}
-      >
+  key={item.label}
+  className={`
+    ${index === activeIndex ? "active" : ""}
+    ${item.label === "Home" ? "hidden md:block" : ""}
+  `}
+>
         <Link href={item.href}>
           <button
             ref={(el) => {

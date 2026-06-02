@@ -386,8 +386,6 @@ import {
   MotionValue,
   useMotionValueEvent,
 } from "motion/react";
-import LenisProvider from "../LenisProviders";
-import Lenis from "lenis";
 
 // ─── HeroParallax ─────────────────────────────────────────────────────────────
 export const HeroParallax = ({
@@ -401,14 +399,11 @@ export const HeroParallax = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const firstRow = products.slice(0, 5);
-  const lenis = new Lenis({
-  smoothWheel: true,
-})
   const secondRow = products.slice(5, 10);
   const thirdRow = products.slice(10, 15);
   const allProducts = [...firstRow, ...secondRow, ...thirdRow];
 
-  const { scrollYProgress, scrollY } = useScroll();
+  const { scrollYProgress, scrollY } = useScroll({ container: containerRef });
   const [debugScrollProgress, setDebugScrollProgress] = useState(0);
 
   const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
@@ -477,10 +472,9 @@ export const HeroParallax = ({
   
   return (
     // ✅ h-screen so viewport is fixed height, overflow-y-scroll makes inner 600vh scrollable
-    <LenisProvider>
     <div
-      // ref={containerRef}
-      className="h-[1900px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
+      ref={containerRef}
+      className="h-[1000px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
       style={{ perspective: "1000px" }}
     >
       {/* ✅ Inner content wrapper is 600vh — this is what creates the scroll length */}
@@ -582,7 +576,6 @@ export const HeroParallax = ({
         </motion.div> */}
       </div>
     </div>
-    </LenisProvider>
   );
 };
 
@@ -678,7 +671,7 @@ export const ProductCard = ({
       style={{ x: translate }}
       whileHover={{ y: -20 }}
       key={product.title}
-      className="group/product h-96 w-[30rem] relative shrink-0 no-scrollbar"
+      className="group/product h-86 w-[40rem] relative shrink-0 no-scrollbar"
     >
       <a
         href={product.link}
@@ -687,12 +680,11 @@ export const ProductCard = ({
       >
         <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10 bg-neutral-900">
           <Image
-            src={product.thumbnail}
-            fill
-            sizes="30rem"
-            className="object-cover object-top absolute h-full w-full inset-0"
-            alt={product.title}
-          />
+  src={product.thumbnail}
+  fill
+  alt={product.title}
+  className=""
+/>
         </div>
       </a>
       <div className="absolute inset-0 h-full w-full rounded-2xl opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none transition-opacity duration-300" />
