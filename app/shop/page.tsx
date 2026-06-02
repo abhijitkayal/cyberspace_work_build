@@ -876,11 +876,12 @@ function CutoutCard({
   </div>
 
   <button
-    className="w-full py-3 border rounded-lg transition-all duration-300"
-    style={{
-      borderColor: accent,
-      color: accent,
-    }}
+    className="w-full py-3 border rounded-lg transition-all duration-300 text-white"
+    // style={{
+    //   borderColor: accent,
+    //   color: accent,
+    // }}
+  
     onClick={() =>
       addToCart?.({
         title,
@@ -908,6 +909,9 @@ export default function SoftwareShowcase() {
 const [category, setCategory] = useState("All");
 const [wishlist, setWishlist] = useState<any[]>([]);
 const [cart, setCart] = useState<any[]>([]);
+const [minPrice, setMinPrice] = useState("");
+const [maxPrice, setMaxPrice] = useState("");
+const [priceRange, setPriceRange] = useState([0, 5000]);
 const StyledPattern = styled.div`
   position: absolute;
   inset: 0;
@@ -1072,17 +1076,33 @@ const addToCart = (product: any) => {
         </div> */}
         <div className="mb-10 flex flex-col md:flex-row gap-4 w-full">
   <div className="relative flex-1">
-    <Search className="absolute left-4 top-3 size-4 text-white/50" />
+    <Search className="absolute left-4 top-4 size-4 text-white/50" />
 
     <input
       type="text"
       placeholder="Search software..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-xl bg-white/5 border border-white/10 pl-12 pr-4 py-3 text-white outline-none"
+      className="w-full rounded-xl bg-black border border-white/10 pl-12 pr-4 py-3 text-white outline-none"
     />
   </div>
+         <div className=" flex flex-col ">
+  <label>Price Range</label>
+  <div className="relative ">
+    
 
+    <input
+      type="range"
+      min={0}
+      max={1000}
+      value={priceRange[1]}
+      onChange={(e) =>
+        setPriceRange([priceRange[0], Number(e.target.value)])
+      }
+      className=" accent-cyan-500 mt-2"
+    />
+  </div>
+</div>
   <select
     value={category}
     onChange={(e) => setCategory(e.target.value)}

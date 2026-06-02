@@ -589,7 +589,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
 import { IoCallOutline, IoLocationOutline, IoReorderThree } from "react-icons/io5"
 import { IoMailOutline } from "react-icons/io5"
-import { HomeIcon, Cog6ToothIcon, PhoneIcon, InformationCircleIcon, XMarkIcon } from "@heroicons/react/24/solid"
+import { HomeIcon, Cog6ToothIcon, PhoneIcon, InformationCircleIcon, XMarkIcon, BuildingStorefrontIcon } from "@heroicons/react/24/solid"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Drawer } from "@base-ui/react/drawer"
@@ -1067,7 +1067,7 @@ function EnquiryDrawer({ open, setOpen, drawerType }: { open: boolean; setOpen: 
     "
   >
     <option value="" className="bg-[#0d0d0f] text-white/50">
-      Select a Producs
+      Select a Products
     </option>
 
     {SERVICE_CATEGORIES.map((cat) => (
@@ -1191,7 +1191,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
           </span>
         </div>), link: "/" },
-    { name: "Account", icon: <User2Icon />, link: "/" },
+    { name: "Account", icon: <User2Icon />, link: "/login" },
   ]
 
   const socialLinks2 = [
@@ -1523,8 +1523,53 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
                     Get a Free Quote
                   </Link>
                 </div>
-              </div>
+                <div className="flex flex-col items-center gap-3 font-bold px-2 py-1 rounded-xl shadow-xl mt-4">
+            <div className="flex items-center justify-center space-x-3 w-full">
+              {socialLinks1.map(item => (
+                <div key={item.name}  className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
+                  {item.name === "Wishlist" ? (
+  <button
+    onClick={() => {
+      setDrawerType("wishlist")
+      setDrawerOpen(true)
+    }}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </button>
+) : item.name === "Cart" ? (
+  <button
+    onClick={() => {
+      setDrawerType("cart")
+      setDrawerOpen(true)
+    }}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </button>
+) : (
+  <Link
+    href={item.link}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </Link>
+)}
+                </div>
+              ))}
+              {/* Quick Enquiry badge triggers drawer */}
+              
             </div>
+            <div onClick={() => {
+  setDrawerType("enquiry")
+  setDrawerOpen(true)
+}} className="cursor-pointer">
+                <AnimatedBadge text="Quick Enquiry" color="#22d3ee" href="#" />
+              </div>
+          </div>
+        </div>
+              </div>
+            {/* </div> */}
 
       <div className={`lg:hidden right-menu-container-mobile fixed top-0 right-0 h-full w-64 bg-black/90 border-l border-cyan-400/20 backdrop-blur-xl transform transition-transform duration-300 z-[9999] ${isRightMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex flex-col p-6 space-y-4 text-white">
@@ -1601,24 +1646,24 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
  
 {/* Home */}
 <Link
-  href="/"
+  href="/product"
   className="flex flex-col items-center relative group"
 >
-  <HomeIcon
+  <BuildingStorefrontIcon
     className={`w-6 h-6 transition-colors duration-300 ${
-      isActive("/") 
+      isActive("/product") 
         ? "text-cyan-400" 
         : "text-cyan-100 group-hover:text-cyan-400"
     }`}
   />
   <span
     className={`text-xs mt-1 transition-colors duration-300 ${
-      isActive("/") 
+      isActive("/product") 
         ? "text-cyan-400" 
         : "text-cyan-100 group-hover:text-cyan-400"
     }`}
   >
-    Home
+    Products
   </span>
 
   {/* Hover underline */}
