@@ -1649,7 +1649,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   href="/product"
   className="flex flex-col items-center relative group"
 >
-  <BuildingStorefrontIcon
+  <Package
     className={`w-6 h-6 transition-colors duration-300 ${
       isActive("/product") 
         ? "text-cyan-400" 
