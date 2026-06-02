@@ -1164,6 +1164,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const notchRef      = useRef<HTMLDivElement>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false);
+  const [isProductOpenMobile,setIsProductOpenMobile]=useState(false);
 
   const pathname        = usePathname()
   const { status }      = useSession()
@@ -1645,38 +1646,84 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
 
  
 {/* Home */}
-<Link
-  href="/product"
-  className="flex flex-col items-center relative group"
->
-  <Package
-    className={`w-6 h-6 transition-colors duration-300 ${
-      isActive("/product") 
-        ? "text-cyan-400" 
-        : "text-cyan-100 group-hover:text-cyan-400"
-    }`}
-  />
-  <span
-    className={`text-xs mt-1 transition-colors duration-300 ${
-      isActive("/product") 
-        ? "text-cyan-400" 
-        : "text-cyan-100 group-hover:text-cyan-400"
-    }`}
+<div className="relative">
+  <div
+    className="flex flex-col items-center relative cursor-pointer group"
+    onClick={() => setIsProductOpenMobile(prev => !prev)}
+    onMouseEnter={() => window.innerWidth >= 1024 && setIsProductOpenMobile(true)}
+    onMouseLeave={() => window.innerWidth >= 1024 && setIsProductOpenMobile(false)}
   >
-    Products
-  </span>
+    <Package
+      className={`w-6 h-6 transition-colors duration-300 ${
+        pathname.startsWith("/product")
+          ? "text-cyan-400"
+          : "text-cyan-100 group-hover:text-cyan-400"
+      }`}
+    />
+    <span
+      className={`text-xs mt-1 transition-colors duration-300 ${
+        pathname.startsWith("/product")
+          ? "text-cyan-400"
+          : "text-gray-100 group-hover:text-cyan-400"
+      }`}
+    >
+      Products
+    </span>
 
-  {/* Hover underline */}
-  {!isActive("/") && (
-    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
-  )}
+    {/* Hover underline for inactive */}
+    {!pathname.startsWith("/product") && (
+      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-cyan-700 via-cyan-400 to-cyan-200 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full"></span>
+    )}
 
-  {/* Active underline */}
-  {isActive("/") && (
-    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
-  )}
-</Link>
+    {/* Active underline */}
+    {pathname.startsWith("/product") && (
+      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-cyan-400 rounded-full"></span>
+    )}
+  </div>
 
+  {/* Dropdown */}
+  <div
+    className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-gray-900/95 backdrop-blur-sm border border-cyan-400/20 rounded-xl shadow-xl overflow-hidden transition-all duration-300 ease-in-out origin-bottom z-[9999]
+      ${isProductOpenMobile ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}
+  >
+    <button
+      onClick={() => setIsProductOpenMobile(false)}
+      className="absolute top-2 right-2 p-1 rounded-full hover:bg-cyan-400/20 transition-colors"
+      aria-label="Close services menu"
+    >
+      <XMarkIcon className="w-5 h-5 text-cyan-400 cursor-pointer" />
+    </button>
+
+    <div className="py-2 pt-8">
+      {/* Service Page */}
+      <Link
+        href="/services"
+        onClick={() => setIsProductOpenMobile(false)}
+        className="flex items-center gap-3 px-4 py-2 text-sm text-cyan-100 font-semibold transition-colors duration-300 hover:text-cyan-400 hover:bg-cyan-400/10"
+      >
+        <span className="text-lg text-cyan-400"><Cog6ToothIcon /></span>
+        Our Products
+      </Link>
+
+      {/* Subservices */}
+      {products.map((service) => (
+        <Link
+          key={service.name}
+          href={service.href}
+          onClick={() => setIsProductOpenMobile(false)}
+          className={`flex items-center gap-3 px-4 py-2 text-sm relative transition-colors duration-300
+            ${pathname === service.href
+              ? "text-cyan-400 bg-cyan-400/10"
+              : "text-gray-100 hover:text-cyan-400 hover:bg-cyan-400/10"
+            }`}
+        >
+          <span className="text-lg text-cyan-400">{service.icon}</span>
+          {service.name}
+        </Link>
+      ))}
+    </div>
+  </div>
+</div>
       
  {/* Services */}
 <div className="relative">
