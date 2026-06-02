@@ -1278,7 +1278,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
 
         <div className="absolute inset-0 pointer-events-none z-0">
           {notchMetrics && (
-            <SiteNav notchLeft={notchMetrics.left - 60} notchRight={notchMetrics.right + 63} viewportWidth={notchMetrics.vw} />
+            <SiteNav notchLeft={notchMetrics.left - 60} notchRight={notchMetrics.right + 70} viewportWidth={notchMetrics.vw} />
           )}
         </div>
 
