@@ -376,7 +376,7 @@
 
 
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -386,6 +386,8 @@ import {
   MotionValue,
   useMotionValueEvent,
 } from "motion/react";
+import LenisProvider from "../LenisProviders.tsx";
+import Lenis from "lenis";
 
 // ─── HeroParallax ─────────────────────────────────────────────────────────────
 export const HeroParallax = ({
@@ -399,30 +401,27 @@ export const HeroParallax = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const firstRow = products.slice(0, 5);
+  const lenis = new Lenis({
+  smoothWheel: true,
+})
   const secondRow = products.slice(5, 10);
   const thirdRow = products.slice(10, 15);
   const allProducts = [...firstRow, ...secondRow, ...thirdRow];
 
-  const { scrollYProgress, scrollY } = useScroll({ container: containerRef });
+  const { scrollYProgress, scrollY } = useScroll();
   const [debugScrollProgress, setDebugScrollProgress] = useState(0);
-//   const customProgress = useTransform(
-//   scrollY,
-//   [0, 1000], // 0px to 1000px scroll
-//   [0, 1],    // progress 0 to 1
-//   { clamp: true }
-// );
 
-  const springConfig = { stiffness: 200, damping: 40, bounce: 0 };
+  const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
 
   // ── Row sliding (classic parallax) ──
   const translateX = useSpring(
-  useTransform(scrollYProgress, [0, 1], [0, 1500]),
-  springConfig
-);
-const translateXReverse = useSpring(
-  useTransform(scrollYProgress, [0, 1], [0, -1500]),
-  springConfig
-);
+    useTransform(scrollYProgress, [0, 1], [0, 1000]),
+    springConfig
+  );
+  const translateXReverse = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, -1000]),
+    springConfig
+  );
 
   // ── Phase 1 (0–0.2): 3D tilt settles flat ──
   const rotateX = useSpring(
@@ -459,10 +458,11 @@ const translateXReverse = useSpring(
   useMotionValueEvent(scrollY, "change", (latest) => {
     console.log("scrollY:", latest);
   });
-useMotionValueEvent(scrollYProgress, "change", (latest) => {
-  console.log("Progress:", latest);
-  setDebugScrollProgress(latest);
-});
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setDebugScrollProgress(latest); // ✅ store the actual value
+    console.log("scrollYProgress:", latest);
+  });
 
   // ── Phase 3 (0.52–0.72): All Images section enters from below ──
   const gridEnterY = useSpring(
@@ -473,36 +473,18 @@ useMotionValueEvent(scrollYProgress, "change", (latest) => {
     useTransform(scrollYProgress, [0.52, 0.72], [0, 1]),
     { stiffness: 140, damping: 30 }
   );
-  useEffect(() => {
-  if (!containerRef.current) return;
-
-  console.log(
-    "scrollHeight:",
-    containerRef.current.scrollHeight
-  );
-
-  console.log(
-    "clientHeight:",
-    containerRef.current.clientHeight
-  );
-
-  console.log(
-    "maxScroll:",
-    containerRef.current.scrollHeight -
-      containerRef.current.clientHeight
-  );
-}, []);
 
   
   return (
     // ✅ h-screen so viewport is fixed height, overflow-y-scroll makes inner 600vh scrollable
+    <LenisProvider>
     <div
-      ref={containerRef}
-      className="h-[1000px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
+      // ref={containerRef}
+      className="h-[1900px] overflow-y-scroll antialiased relative flex flex-col self-auto bg-black no-scrollbar"
       style={{ perspective: "1000px" }}
     >
       {/* ✅ Inner content wrapper is 600vh — this is what creates the scroll length */}
-      <div className="h-[1000vh] relative">
+      <div className="h-[300vh] relative">
         <Header />
 
         {/* Debug badge */}
@@ -600,6 +582,7 @@ useMotionValueEvent(scrollYProgress, "change", (latest) => {
         </motion.div> */}
       </div>
     </div>
+    </LenisProvider>
   );
 };
 

@@ -299,8 +299,10 @@
 "use client"
 
 import MagicBento from '../../components/MagicBento.jsx'
+import LenisProvider from '../../components/LenisProviders.tsx';
  const AboutSection = () => {
   return(
+    <LenisProvider>
      <section className="relative z-0 py-16 bg-black grid w-full items-center justify-center">
       <div className="text-center mb-12 -mt-8">
       <h2
@@ -324,6 +326,7 @@ import MagicBento from '../../components/MagicBento.jsx'
   disableAnimations={false}
 />
 </section>
+</LenisProvider>
   );
  }
  export default AboutSection;
