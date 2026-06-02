@@ -488,9 +488,9 @@ export const HeroParallax = ({
         <Header />
 
         {/* Debug badge */}
-        <div className="fixed right-4 top-200 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
+        {/* <div className="fixed right-4 top-200 z-50 rounded-full border border-white/15 bg-black/70 px-3 py-1 text-xs font-medium tracking-wide text-white/80 backdrop-blur-md">
           scrollYProgress: {debugScrollProgress.toFixed(3)}
-        </div>
+        </div> */}
 
         {/* ── 3D Card Grid — exits on scroll ── */}
        {/* ── 3D Card Grid — exits on scroll ── */}
