@@ -737,7 +737,7 @@ const SERVICE_CATEGORIES = [
 // ─── Enquiry Drawer ───────────────────────────────────────────────────────────
 type DrawerView = "home" | "project" | "software" | "success"
 
-function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+function EnquiryDrawer({ open, setOpen, drawerType }: { open: boolean; setOpen: (v: boolean) => void; drawerType: "enquiry" | "wishlist" | "cart" }) {
   const [view, setView] = useState<DrawerView>("home")
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
   const [form, setForm] = useState({ name: "", email: "",phone: "", service: "", description: "" })
@@ -818,7 +818,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
             <div className="flex-1 overflow-y-auto overflow-x-hidden">
 
               {/* ── HOME VIEW ── */}
-              {view === "home" && (
+              {drawerType === "enquiry" && view === "home" && (
                 <div className="cards-fade-in">
                   {/* Hero section — matches image: rounded dark card */}
                   <div className="mx-6 mt-6 rounded-3xl bg-[#18181b]/80 border border-white/[0.06] p-8 pb-9">
@@ -902,7 +902,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
               )}
 
               {/* ── PROJECT FORM VIEW ── */}
-              {view === "project" && (
+              {drawerType === "enquiry" && view === "project" && (
                 <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
                   <div>
                     <h3 className="text-[1.4rem] font-bold text-white mb-1">Start a Project</h3>
@@ -1002,7 +1002,7 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
               )}
 
               {/* ── SOFTWARE PURCHASE VIEW ── */}
-              {view === "software" && (
+             {drawerType === "enquiry" && view === "software" && (
                 <form onSubmit={handleSubmit} className="form-slide-in px-7 py-7 space-y-5">
                   <div>
                     <h3 className="text-[1.4rem] font-bold text-white mb-1">Purchase a Software</h3>
@@ -1102,8 +1102,31 @@ function EnquiryDrawer({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
                 </form>
               )}
 
+
+              {drawerType === "wishlist" && (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold text-white mb-4">
+        Wishlist
+      </h2>
+
+      <p className="text-white/60">
+        No items in wishlist.
+      </p>
+    </div>
+  )}
+    {drawerType === "cart" && (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold text-white mb-4">
+        Shopping Cart
+      </h2>
+
+      <p className="text-white/60">
+        Your cart is empty.
+      </p>
+    </div>
+  )}
               {/* ── SUCCESS VIEW ── */}
-              {view === "success" && (
+              {drawerType === "enquiry" && view === "success" && (
                 <div className="form-slide-in flex flex-col items-center justify-center h-full min-h-[400px] px-8 text-center">
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-400/30 mb-6">
                     <CheckCircle2 size={36} className="text-emerald-400" strokeWidth={1.5} />
@@ -1136,6 +1159,7 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [openDropdown, setOpenDropdown]       = useState<string | null>(null)
   const [drawerOpen, setDrawerOpen]           = useState(false)
+  const [drawerType, setDrawerType] = useState<"enquiry" | "wishlist" | "cart">("enquiry")
   const [notchMetrics, setNotchMetrics]       = useState<{ left: number; right: number; vw: number } | null>(null)
   const notchRef      = useRef<HTMLDivElement>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -1244,7 +1268,11 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
       <style jsx global>{GLOBAL_STYLES}</style>
 
       {/* ── Enquiry Drawer (rendered at root level) ── */}
-      <EnquiryDrawer open={drawerOpen} setOpen={setDrawerOpen} />
+  <EnquiryDrawer
+  open={drawerOpen}
+  setOpen={setDrawerOpen}
+  drawerType={drawerType}
+/>
 
       <header className={cn("hidden lg:flex fixed top-0 inset-x-0 z-[1001] h-16 px-0 overflow-visible", className)} {...props}>
 
@@ -1263,9 +1291,34 @@ const Navbar = ({ className, ...props }: { className?: string; [key: string]: un
             <div className="flex items-center justify-center space-x-3 w-full">
               {socialLinks1.map(item => (
                 <div key={item.name} className="flex flex-col items-center justify-center w-10 h-7" title={item.name}>
-                  <Link href={item.link} className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600 cursor-pointer leading-none">
-                    {item.icon}
-                  </Link>
+                  {item.name === "Wishlist" ? (
+  <button
+    onClick={() => {
+      setDrawerType("wishlist")
+      setDrawerOpen(true)
+    }}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </button>
+) : item.name === "Cart" ? (
+  <button
+    onClick={() => {
+      setDrawerType("cart")
+      setDrawerOpen(true)
+    }}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </button>
+) : (
+  <Link
+    href={item.link}
+    className="flex h-full w-full items-center justify-center text-cyan-400 text-xl hover:text-cyan-600"
+  >
+    {item.icon}
+  </Link>
+)}
                 </div>
               ))}
               {/* Quick Enquiry badge triggers drawer */}

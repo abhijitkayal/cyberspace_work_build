@@ -531,6 +531,7 @@ import {
   ShoppingCart,
  
 } from "lucide-react";
+import DotGrid from "../products/clinic/components/DotGrid";
 
 /* ═══════════════════════════════════════════════════════
    CUTOUT HELPERS
@@ -1029,29 +1030,23 @@ const addToCart = (product: any) => {
   setCart((prev) => [...prev, product]);
 };
   return (
-    <div id="products" className="relative min-h-screen overflow-hidden bg-transparent">
-      {/* Background */}
-      {/* <div className="absolute inset-0 z-0">
-        <Antigravity
-          count={620}
-          magnetRadius={12}
-          ringRadius={4}
-          waveSpeed={0.4}
-          waveAmplitude={1}
-          particleSize={0.75}
-          lerpSpeed={0.08}
-          color="#00ced4"
-          autoAnimate
-          particleVariance={1}
-          rotationSpeed={0}
-          depthFactor={1}
-          pulseSpeed={3}
-          particleShape="capsule"
-          fieldStrength={16}
-      />
-      </div> */}
-      
-    {/* <OurServicesWithWires/> */}
+    <div id="products" className="relative min-h-screen overflow-hidden bg-black">
+      <div className="absolute inset-0 z-0">
+  <DotGrid
+    dotSize={3}
+    edgeOpacity={0.05}       // nearly invisible at edges
+  centerOpacity={1}
+  falloffSharpness={3}  
+    gap={15}
+    baseColor="#969095"
+    activeColor="#06b6d4"
+    proximity={120}
+    shockRadius={250}
+    shockStrength={5}
+    resistance={750}
+    returnDuration={1.5}
+  />
+</div>
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 py-20">
