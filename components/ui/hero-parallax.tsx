@@ -386,7 +386,7 @@ import {
   MotionValue,
   useMotionValueEvent,
 } from "motion/react";
-import LenisProvider from "../LenisProviders.tsx";
+import LenisProvider from "../LenisProviders";
 import Lenis from "lenis";
 
 // ─── HeroParallax ─────────────────────────────────────────────────────────────
