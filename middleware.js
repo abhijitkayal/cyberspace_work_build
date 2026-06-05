@@ -21,6 +21,12 @@ function isPublicServiceRoute(pathname) {
   return pathname === "/services" || pathname.startsWith("/services/");
 }
 
+function isPubliccontactRoute(pathname) {
+  return pathname === "/contact-us" || pathname.startsWith("/contact-us/");
+}
+function isPublicproductRoute(pathname) {
+  return pathname === "/product" || pathname.startsWith("/product/");
+}
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const token = await getToken({
@@ -39,15 +45,17 @@ export async function middleware(request) {
   }
 
   const isPublicShareRoute = pathname.startsWith("/share/");
-  function isPublicProductRoute(pathname) {
+  function isPublicProductsRoute(pathname) {
   return pathname === "/products" || pathname.startsWith("/products/");
 }
   // const isPublicRoute = isPublicShareRoute || isPublicShopRoute(pathname);
   const isPublicRoute =
   isPublicShareRoute ||
   isPublicShopRoute(pathname) ||
-  isPublicProductRoute(pathname) ||
-  isPublicServiceRoute(pathname);
+  isPublicProductsRoute(pathname) ||
+  isPublicServiceRoute(pathname) ||
+  isPubliccontactRoute(pathname)||
+  isPublicproductRoute(pathname);
 
   if (!pathname.startsWith("/api") && !authRoutes.has(pathname) && !isPublicRoute && !isProjectRoute(pathname) && pathname !== "/") {
     if (!token) {
