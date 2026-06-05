@@ -21,7 +21,7 @@ export async function GET() {
       );
     }
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email } as any)
       .select("_id name email role")
       .lean();
 

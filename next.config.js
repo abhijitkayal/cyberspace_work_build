@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -8,6 +10,8 @@ const nextConfig = {
       },
     ],
   },
+  // Fixes workspace root inference on Windows when multiple lockfiles exist
+  outputFileTracingRoot: path.resolve(__dirname),
 };
 
 module.exports = nextConfig;

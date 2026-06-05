@@ -81,7 +81,7 @@ export async function POST(req: Request) {
 
     const existingUser = await User.findOne({
       email: email.toLowerCase(),
-    });
+    } as any);
 
     if (existingUser) {
       return NextResponse.json(
