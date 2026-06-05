@@ -28,7 +28,11 @@ function isPublicproductRoute(pathname) {
   return pathname === "/product" || pathname.startsWith("/product/");
 }
 export async function middleware(request) {
-  const { pathname } = request.nextUrl;
+  // Normalize pathname to avoid trailing-slash mismatches ("/login/" vs "/login")
+  let pathname = request.nextUrl.pathname;
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
+  }
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
