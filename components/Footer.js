@@ -201,6 +201,7 @@ import logo from "../public/logo.png";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useQuoteModal } from "@/context/QuoteModalContext";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -209,24 +210,28 @@ const Footer = () => {
   const pathName=usePathname();
   const router = useRouter();
   
-  // Quote modal state
-  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [stepFormData, setStepFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    service: [],
-    requirement: "",
-    budget: "",
-  });
-  const [stepError, setStepError] = useState("");
-  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  // Use Quote Modal Context
+  const {
+    isQuoteModalOpen,
+    setIsQuoteModalOpen,
+    currentStepIndex,
+    setCurrentStepIndex,
+    isComplete,
+    setIsComplete,
+    stepFormData,
+    setStepFormData,
+    stepError,
+    setStepError,
+    isSubmittingLead,
+    setIsSubmittingLead,
+    resetQuoteForm,
+    openQuoteModal,
+    closeQuoteModal,
+  } = useQuoteModal();
 
   const quoteSteps = [
     { key: "name", label: "What is your name?", type: "text", placeholder: "Enter your full name" },
-    { key: "email", label: "What is your email address?", type: "email", placeholder: "Enter your email" },
+    { key: "email", label: "What is your email address? (optional)", type: "email", placeholder: "Enter your email" },
     { key: "phone", label: "What is your phone number?", type: "tel", placeholder: "Enter your phone number" },
     { key: "service", label: "Which service do you need?", type: "checkbox" },
     { key: "requirement", label: "Briefly describe your requirement", type: "text", placeholder: "Tell us about your project" },
@@ -244,31 +249,6 @@ const Footer = () => {
     { name: "Research & Analytics", icon: <SiGoogleanalytics />, subtext: "Data-driven insights", href: "/services/research-and-analytics" },
   ];
 
-  const resetQuoteForm = useCallback(() => {
-    setCurrentStepIndex(0);
-    setIsComplete(false);
-    setStepError("");
-    setIsSubmittingLead(false);
-    setStepFormData({
-      name: "",
-      email: "",
-      phone: "",
-      service: [],
-      requirement: "",
-      budget: "",
-    });
-  }, []);
-
-  const openQuoteModal = () => {
-    resetQuoteForm();
-    setIsQuoteModalOpen(true);
-  };
-
-  const closeQuoteModal = useCallback(() => {
-    setIsQuoteModalOpen(false);
-    resetQuoteForm();
-  }, [resetQuoteForm]);
-
   const validateStepValue = (key, value) => {
     if (key === "service") {
       if (!Array.isArray(value) || value.length === 0) {
@@ -277,13 +257,16 @@ const Footer = () => {
       return "";
     }
 
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return "This field is required.";
-
     if (key === "email") {
+      const trimmedValue = value.trim();
+      if (!trimmedValue) return "";
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(trimmedValue)) return "Please enter a valid email address.";
+      return "";
     }
+
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return "This field is required.";
 
     if (key === "phone") {
       const phonePattern = /^[0-9]{10,15}$/;
@@ -391,7 +374,7 @@ const Footer = () => {
     <footer className="bg-black text-white py-8 px-6 sm:px-6">
       <div className="max-w-7xl mx-auto bg-gradient-to-r from-cyan-400 via-cyan-400/90 to-cyan-400/70 text-black rounded-3xl p-6 sm:p-8 md:p-10 flex flex-col gap-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 md:gap-10 text-center sm:text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10 text-center sm:text-left">
           {/* Logo & About */}
           <div className="flex flex-col items-center sm:items-start">
             <Image
@@ -416,12 +399,11 @@ const Footer = () => {
               {[
                 { href: "/", label: "Home" },
                 { href: "/services", label: "Services" },
-                { href: "/product", label: "Products" },
                 { href: "/about-us", label: "About Us" },
                 { href: "/contact-us", label: "Contact Us" },
                 { href: "/privacy-policy", label: "Privacy Policy" },
                 { href: "/terms-and-conditions", label: "Terms & Conditions" },
-                
+                { href: "/faq", label: "FAQ" },
                 // { href: "/login", label: "Login" },
               ].map((link) => (
                 <li key={link.href}>
@@ -471,7 +453,7 @@ const Footer = () => {
                                   href="/login"
                                   className=" relative hover:text-slate-700 transition duration-200 after:absolute after:left-0 after:-bottom-0.5 after:w-0 after:h-[2px] after:bg-slate-700 after:transition-all after:duration-300 hover:after:w-full"
                                 >
-                                  Profile
+                                  Dashboard
                                 </Link>
                               </li>
                             )}
@@ -507,40 +489,8 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold mb-3 text-black">
-              Services
-            </h3>
-            <ul className="space-y-2 text-slate-900 text-sm sm:text-base">
-              {[
-                { href: "/products/resturant", label: "CyberDine" }, // ✅ Added first
-                { href: "/products/pharmacy", label: "CyberPharma" },
-                { href: "/products/clinic", label: "CyberClinic" },
-                { href: "/products/store", label: "CyberRetail" },
-                { href: "/products/hrms", label: "CyberPayroll" },
-                { href: "/products/tally", label: "CyberLedger" },
-                { href: "/products/gst&billing", label: "CyberInvoice" },
-                { href: "/products/projects", label: "CyberProjects" },
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="relative inline-block hover:text-slate-700 transition duration-200 after:absolute after:left-0 after:-bottom-0.5 after:w-0 after:h-[2px] after:bg-slate-700 after:transition-all after:duration-300 hover:after:w-full"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-              
-            </ul>
-          </div>
-
-        
-
-
-
           {/* Contact */}
-          <div className="-ml-5"> 
+          <div>
             <h3 className="text-base sm:text-lg font-semibold mb-3 text-black">
               Get In Touch
             </h3>
@@ -578,7 +528,7 @@ const Footer = () => {
 
         {/* Bottom Text */}
         <div className="text-center text-slate-900 text-xs sm:text-sm border-t border-gray-300/30 pt-4">
-          © {currentYear} Cyberspace Works. All Rights Reserved.
+          © {currentYear} All Rights Reserved.
         </div>
       </div>
 

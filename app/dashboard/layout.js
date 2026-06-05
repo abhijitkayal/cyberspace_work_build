@@ -65,17 +65,34 @@
 // }
 
 
+import { connectToDatabase } from "@/lib/mongodb";
 import { requireAuth } from "@/lib/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import BusinessSettings from "@/lib/models/BusinessSettings";
 
 export default async function DashboardLayout({ children }) {
   const session = await requireAuth();
+  await connectToDatabase();
+
+  const businessSettings = await BusinessSettings.findOne({ scope: "global" })
+    .select("businessName logoUrl")
+    .lean();
+
+  const businessBrand = {
+    businessName: "CyberSpace Works", // Fallback name if not set in DB
+    logoUrl: "/logo2.png",
+  };
   const roleLabel =
     typeof session.user.role === "string"
       ? session.user.role.charAt(0).toUpperCase() + session.user.role.slice(1)
       : "User";
+  const userName = session.user.name || "User";
+  const userEmail = session.user.email || "";
+  const dashboardTitle = userEmail
+    ? `${roleLabel} Dashboard - ${userName} (${userEmail})`
+    : `${roleLabel} Dashboard - ${userName}`;
 
   return (
     <section className="min-h-">
@@ -91,13 +108,13 @@ export default async function DashboardLayout({ children }) {
           user={{
             name: session.user.name || "User",
             email: session.user.email || "",
-            avatar: "/logo2.png",
+            avatar: "",
           }}
+          business={businessBrand}
         />
         <SidebarInset>
           <SiteHeader
-            title={`${roleLabel} Dashboard`}
-            subtitle={session.user.email || "Secure workspace"}
+            title={dashboardTitle}
           />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-4 p-4 md:p-6">

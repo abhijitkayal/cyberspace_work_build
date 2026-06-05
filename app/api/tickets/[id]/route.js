@@ -5,6 +5,7 @@ import Ticket from "@/lib/models/Ticket";
 import User from "@/lib/models/User";
 import { sendTicketEmail } from "@/lib/email/sendTicketEmail";
 import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ async function loadTicket(ticketId) {
   return Ticket.findById(ticketId)
     .populate("createdBy", "name email role")
     .populate("assignedTo", "name email role")
+    .populate("project", "title client assignedEmployees")
     .populate("messages.sender", "name email role");
 }
 
@@ -143,11 +145,14 @@ export async function PUT(req, { params }) {
         changeType: newMessage ? "message" : "status",
       });
 
-      emitToUsers(recipients, "notification", {
+      await notificationService.createAndEmitNotification({
+        userIds: recipients,
         type: "ticket",
         title: newMessage ? "New ticket message" : "Ticket updated",
+        message: newMessage ? "New ticket message" : "Ticket updated",
         text: newMessage ? "New ticket message" : "Ticket updated",
-        ticketId: updatedTicketId,
+        source: "ticket",
+        payload: { ticketId: updatedTicketId },
       });
     }
 

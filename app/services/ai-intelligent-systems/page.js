@@ -37,6 +37,7 @@
 //   return <AiIntelligentSystems />;
 // }
 import AiIntelligentSystems from "@/components/ServicesComponents/AiIntelligentSystems";
+import LenisProvider from "@/components/LenisProviders";
 
 export const metadata = {
   metadataBase: new URL("https://cyberspaceworks.com"),
@@ -83,5 +84,9 @@ export const metadata = {
 };
 
 export default function AIIntelligentSystemsPage() {
-  return <AiIntelligentSystems />;
+  return (
+    <LenisProvider>
+      <AiIntelligentSystems />
+    </LenisProvider>
+  );
 }

@@ -1,5 +1,6 @@
 import { requireRole } from "@/lib/auth";
 import ClientDashboardPanel from "@/components/projects/ClientDashboardPanel";
+import Link from "next/link";
 import { connectToDatabase } from "@/lib/mongodb";
 import Project from "@/lib/models/Project";
 import { buildProjectVisibilityQuery } from "@/lib/project-utils";
@@ -90,6 +91,11 @@ export default async function ClientDashboardPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end">
+        <Link href="/dashboard/marketplace" className="text-sm text-blue-600 hover:underline">
+          Marketplace
+        </Link>
+      </div>
       <ClientDashboardPanel projects={projectsForClient} sessionUserId={session.user.id} />
     </div>
   );

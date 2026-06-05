@@ -1,6 +1,7 @@
 // app/about-us/page.js
 import ResearchAndAnalytics  from "@/components/ServicesComponents/ResearchAndAnalytics";
-import DynamicCanonical from "@/components/DynamicCanonical"; 
+import DynamicCanonical from "@/components/DynamicCanonical";
+import LenisProvider from "@/components/LenisProviders"; 
 // ✅ Server Component metadata
 export const metadata = {
   metadataBase: new URL("https://cyberspaceworks.com"),
@@ -40,8 +41,10 @@ export default function AboutPage() {
   return (
     <>
       {/* ✅ Client Component for dynamic canonical */}
-      <DynamicCanonical />
-      <ResearchAndAnalytics />
+      <LenisProvider>
+        <DynamicCanonical />
+        <ResearchAndAnalytics />
+      </LenisProvider>
     </>
   );
 }

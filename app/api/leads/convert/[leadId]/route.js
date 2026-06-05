@@ -8,16 +8,23 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Lead from "@/lib/models/Lead";
 import Client from "@/lib/models/Client";
 import User from "@/lib/models/User";
-import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const convertSchema = z.object({
   password: z.string().min(8),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .default("")
+    .refine((value) => value === "" || z.string().email().safeParse(value).success, {
+      message: "Invalid email address",
+    }),
   validFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   validTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  finalBudget: z.string().trim().min(1, "Final budget is required"),
   projectName: z.string().trim().optional().default(""),
   projectDescription: z.string().trim().optional().default(""),
 });
@@ -46,13 +53,18 @@ export async function POST(request, { params }) {
       return Response.json({ error: "Lead already converted to client" }, { status: 400 });
     }
 
+    const leadEmail = String(validated.email || lead.email || "").trim().toLowerCase();
+    if (!leadEmail) {
+      return Response.json({ error: "Lead email is required before conversion." }, { status: 400 });
+    }
+
     // Check if email already exists
-    const existingUser = await User.findOne({ email: lead.email });
+    const existingUser = await User.findOne({ email: leadEmail });
     if (existingUser) {
       return Response.json({ error: "User with this email already exists" }, { status: 400 });
     }
 
-    const existingClient = await Client.findOne({ email: lead.email });
+    const existingClient = await Client.findOne({ email: leadEmail });
     if (existingClient) {
       return Response.json({ error: "Client with this email already exists" }, { status: 400 });
     }
@@ -61,7 +73,7 @@ export async function POST(request, { params }) {
     const passwordHash = await bcrypt.hash(validated.password, 12);
     const user = await User.create({
       name: lead.name,
-      email: lead.email,
+      email: leadEmail,
       passwordHash,
       role: "client",
       isActive: true,
@@ -71,7 +83,7 @@ export async function POST(request, { params }) {
     // Create Client entry
     const client = await Client.create({
       name: lead.name,
-      email: lead.email,
+      email: leadEmail,
       phone: lead.phone,
       services: lead.services,
       budget: lead.budget,
@@ -84,7 +96,7 @@ export async function POST(request, { params }) {
       source: "lead-conversion",
       linkedUser: user._id,
       createdBy: session.user.id,
-      finalBudget: validated.finalBudget,
+      finalBudget: "0",
       projectName: validated.projectName,
       projectDescription: validated.projectDescription,
     });
@@ -96,6 +108,7 @@ export async function POST(request, { params }) {
     await Lead.findByIdAndUpdate(
       leadId,
       {
+        email: leadEmail,
         convertedToClient: true,
         convertedToClientDate: new Date(),
         convertedToClientBy: session.user.id,
@@ -107,13 +120,18 @@ export async function POST(request, { params }) {
     const adminIds = (await User.find({ role: "admin" }).select("_id")).map((item) => item._id?.toString?.() || item._id).filter(Boolean);
 
     if (adminIds.length) {
-      emitToUsers(adminIds, "notification", {
+      await notificationService.createAndEmitNotification({
+        userIds: adminIds,
         type: "lead",
         title: "Lead converted",
+        message: `${lead.name} was converted into a client account.`,
         text: `${lead.name} was converted into a client account.`,
-        leadId: lead._id.toString(),
-        clientId: client._id.toString(),
-        userId: user._id.toString(),
+        source: "lead",
+        payload: {
+          leadId: lead._id.toString(),
+          clientId: client._id.toString(),
+          userId: user._id.toString(),
+        },
       });
     }
 
@@ -147,7 +165,12 @@ export async function POST(request, { params }) {
             <p><b>Temporary Password:</b> ${validated.password}</p>
             <p><b>Contract Valid From:</b> ${new Date(validated.validFrom).toLocaleDateString()}</p>
             <p><b>Contract Valid To:</b> ${new Date(validated.validTo).toLocaleDateString()}</p>
-            <p>Please change your password after login.</p>
+           <p>
+  Please change your password after signing in.
+  <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://localhost:3000'}/login" className="text-blue-500 underline">
+    Click here to login
+  </a>
+</p>
           `,
         });
       } else {

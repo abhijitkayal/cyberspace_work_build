@@ -289,21 +289,21 @@ export default function EmployeeContractsPage() {
                       : "—"}
                   </p>
                 </div>
-                {viewingContract.signature && (
-                  <>
-                    <div>
-                      <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Your Signature</label>
-                      <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.signature}</p>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Signed Date</label>
-                      <p className="text-sm text-gray-900 dark:text-white mt-1">
-                        {viewingContract.signedDate
-                          ? new Date(viewingContract.signedDate).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
-                          : "—"}
-                      </p>
-                    </div>
-                  </>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Owner Signature</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.adminSignature || "—"}</p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Your Signature</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.signature || "—"}</p>
+                </div>
+                {viewingContract.signedDate && (
+                  <div>
+                    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Signed Date</label>
+                    <p className="text-sm text-gray-900 dark:text-white mt-1">
+                      {new Date(viewingContract.signedDate).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+                    </p>
+                  </div>
                 )}
               </div>
 

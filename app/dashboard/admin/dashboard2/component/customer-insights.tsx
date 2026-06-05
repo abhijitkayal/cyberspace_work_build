@@ -182,7 +182,7 @@ export function CustomerInsights() {
                     <TableHead className="py-5 px-6 font-semibold">Age Group</TableHead>
                     <TableHead className="text-right py-5 px-6 font-semibold">Customers</TableHead>
                     <TableHead className="text-right py-5 px-6 font-semibold">Percentage</TableHead>
-                    <TableHead className="text-right py-5 px-6 font-semibold">Growth</TableHead>
+                    {/* <TableHead className="text-right py-5 px-6 font-semibold">Growth</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody className="">
@@ -191,9 +191,9 @@ export function CustomerInsights() {
                       <TableCell className="font-medium py-5 px-6">{row.ageGroup}</TableCell>
                       <TableCell className="text-right py-5 px-6">{row.customers.toLocaleString()}</TableCell>
                       <TableCell className="text-right py-5 px-6">{row.percentage}</TableCell>
-                      <TableCell className="text-right py-5 px-6">
+                      {/* <TableCell className="text-right py-5 px-6">
                         <span className={`font-medium ${row.growthColor}`}>{row.growth}</span>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -223,7 +223,7 @@ export function CustomerInsights() {
                     <TableHead className="py-5 px-6 font-semibold">Region</TableHead>
                     <TableHead className="text-right py-5 px-6 font-semibold">Customers</TableHead>
                     <TableHead className="text-right py-5 px-6 font-semibold">Revenue</TableHead>
-                    <TableHead className="text-right py-5 px-6 font-semibold">Growth</TableHead>
+                    {/* <TableHead className="text-right py-5 px-6 font-semibold">Growth</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody className="">
@@ -232,9 +232,9 @@ export function CustomerInsights() {
                       <TableCell className="font-medium py-5 px-6">{row.region}</TableCell>
                       <TableCell className="text-right py-5 px-6">{row.customers.toLocaleString()}</TableCell>
                       <TableCell className="text-right py-5 px-6">{row.revenue}</TableCell>
-                      <TableCell className="text-right py-5 px-6">
+                      {/* <TableCell className="text-right py-5 px-6">
                         <span className={`font-medium ${row.growthColor}`}>{row.growth}</span>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,116 +1,3 @@
-// // "use client"
-
-// // import { useEffect, useState } from "react"
-// // import { Button } from "@/components/ui/button"
-// // import ContractForm from "@/components/contactForm"
-
-// // export default function ContractPage() {
-// //   const [contracts, setContracts] = useState([])
-// //   const [open, setOpen] = useState(false)
-
-// //   const loadData = async () => {
-// //     const res = await fetch("/api/contracts")
-// //     const data = await res.json()
-// //     setContracts(data.contracts || [])
-// //   }
-
-// //   useEffect(() => {
-// //     loadData()
-// //   }, [])
-
-// //   return (
-// //     <div className="p-6 space-y-6">
-
-// //       {/* HEADER */}
-// //       <div className="flex justify-between items-center">
-// //         <h2 className="text-xl font-bold">Contracts</h2>
-// //         <Button onClick={() => setOpen(true)}>
-// //           Add Contract
-// //         </Button>
-// //       </div>
-
-// //       {/* LIST */}
-// //       <div className="grid gap-4 text-black dark:text-white dark:bg-black">
-// //         {contracts.map((c: any) => (
-// //           <div key={c._id} className="border rounded p-4">
-// //             <p><strong>Description:</strong> {c.description}</p>
-// //             <p><strong>Date:</strong> {new Date(c.date).toLocaleDateString()}</p>
-// //             <p><strong>Reference:</strong> {c.reference}</p>
-// //             <p><strong>Client Email:</strong> {c.clientEmail}</p>
-
-// //             {c.signature && (
-// //               <p className="text-sm text-blue-500">
-// //                 Signature: {c.signature}
-// //               </p>
-// //             )}
-// //           </div>
-// //         ))}
-// //       </div>
-
-// //       {/* MODAL */}
-// //       <ContractForm open={open} setOpen={setOpen} onSuccess={loadData} />
-
-// //     </div>
-// //   )
-// // }
-
-
-// "use client"
-
-// import { useEffect, useState } from "react"
-// import { Button } from "@/components/ui/button"
-// import ContractForm from "@/components/contactForm"
-
-// export default function AdminContracts() {
-//   const [contracts, setContracts] = useState([])
-//   const [open, setOpen] = useState(false)
-
-//   const loadContracts = async () => {
-//     const res = await fetch("/api/contracts")
-//     const data = await res.json()
-//     setContracts(data.contracts || [])
-//     console.log(data.contracts);
-//   }
-
-//   useEffect(() => {
-//     loadContracts()
-//   }, [])
-
-//   return (
-//     <div className="p-6 space-y-6">
-
-//       {/* HEADER */}
-//       <div className="flex justify-between items-center text-black dark:text-white ">
-//         <h2 className="text-xl font-bold">All Contracts</h2>
-//         <Button onClick={() => setOpen(true)} className="">
-//           Add Contact
-//         </Button>
-//       </div>
-
-//       {/* LIST */}
-//       <div className="grid gap-4">
-//         {contracts.map((c: any) => (
-//           <div key={c._id} className="border p-4 rounded text-black dark:text-white dark:bg-black space-y-2">
-//             <p><b>Email:</b> {c.clientEmail}</p>
-//             <p><b>Reference:</b>{c.reference}</p>
-//             <p><b>Description</b>{c.description}</p>
-//             <p>Status: {c.status} ({new Date(c.signedDate).toLocaleDateString()})</p>
-//           </div>
-//         ))}
-//       </div>
-
-//       <ContractForm
-//         open={open}
-//         setOpen={setOpen}
-//         onSuccess={loadContracts}
-//       />
-
-//     </div>
-//   )
-// }
-
-
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -123,17 +10,18 @@ export default function AdminContracts() {
   const [open, setOpen] = useState(false)
   const [editingContract, setEditingContract] = useState(null)
   const [viewingContract, setViewingContract] = useState(null)
+  const [activeTab, setActiveTab] = useState("client")
 
-  const loadContracts = async () => {
-    const res = await fetch("/api/contracts?recipientType=client")
+  const loadContracts = async (recipientType = activeTab) => {
+    const res = await fetch(`/api/contracts?recipientType=${recipientType}`)
     const data = await res.json()
     setContracts(data.contracts || [])
     console.log(data.contracts)
   }
 
   useEffect(() => {
-    loadContracts()
-  }, [])
+    loadContracts(activeTab)
+  }, [activeTab])
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this contract?")) return
@@ -164,7 +52,7 @@ export default function AdminContracts() {
   }
 
   const handleFormSuccess = () => {
-    loadContracts()
+    loadContracts(activeTab)
     handleFormClose()
   }
 
@@ -185,7 +73,7 @@ export default function AdminContracts() {
       {/* ── Header ── */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Client Contracts</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Contracts</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {contracts.length} contract{contracts.length !== 1 ? "s" : ""} found
           </p>
@@ -193,6 +81,27 @@ export default function AdminContracts() {
         <Button onClick={() => setOpen(true)}>
           + Add Contract
         </Button>
+      </div>
+
+      <div className="inline-flex rounded-full border border-gray-200 bg-gray-100 p-1 dark:border-white/10 dark:bg-white/5">
+        {[
+          { key: "client", label: "Client" },
+          { key: "employee", label: "Employee" },
+          { key: "vendor", label: "Vendor" },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => setActiveTab(tab.key)}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === tab.key
+                ? "bg-white text-gray-900 shadow-sm dark:bg-zinc-900 dark:text-white"
+                : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* ── Table ── */}
@@ -203,7 +112,16 @@ export default function AdminContracts() {
             {/* Head */}
             <thead>
               <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
-                {["Client Email", "Reference", "Description", "Status", "Signed Date", "Actions"].map((col) => (
+                {[
+                  (activeTab === "employee" ? "Employee" : activeTab === "vendor" ? "Vendor" : "Client") + " Name",
+                  (activeTab === "employee" ? "Employee" : activeTab === "vendor" ? "Vendor" : "Client") + " Email",
+                  "Reference",
+                  "Description",
+                  "Status",
+                  "Validity",
+                  "Signed Date",
+                  "Actions",
+                ].map((col) => (
                   <th
                     key={col}
                     className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap"
@@ -218,7 +136,7 @@ export default function AdminContracts() {
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 bg-gray-50 dark:bg-white/5">
               {contracts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-gray-400 dark:text-gray-500">
+                  <td colSpan={8} className="px-5 py-12 text-center text-gray-400 dark:text-gray-500">
                     <div className="flex flex-col items-center gap-2">
                       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -240,9 +158,14 @@ export default function AdminContracts() {
                       key={c._id}
                       className="hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                     >
-                      {/* Email */}
+                      {/* Recipient Name */}
                       <td className="px-5 py-4 text-gray-900 dark:text-white font-medium whitespace-nowrap">
-                        {c.clientEmail || "—"}
+                        {activeTab === "employee" ? c.employeeName || "—" : activeTab === "vendor" ? c.vendorName || "—" : c.clientName || "—"}
+                      </td>
+
+                      {/* Recipient Email */}
+                      <td className="px-5 py-4 text-gray-900 dark:text-white font-medium whitespace-nowrap">
+                        {activeTab === "employee" ? c.employeeEmail || "—" : activeTab === "vendor" ? c.vendorEmail || "—" : c.clientEmail || "—"}
                       </td>
 
                       {/* Reference */}
@@ -272,6 +195,13 @@ export default function AdminContracts() {
                           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
                           {c.status || "pending"}
                         </span>
+                      </td>
+
+                      {/* Validity */}
+                      <td className="px-5 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                        {c.validFrom || c.validTo
+                          ? `From ${c.validFrom ? new Date(c.validFrom).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—"} to ${c.validTo ? new Date(c.validTo).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—"}`
+                          : "—"}
                       </td>
 
                       {/* Signed Date */}
@@ -329,6 +259,7 @@ export default function AdminContracts() {
         setOpen={handleFormClose} 
         onSuccess={handleFormSuccess}
         initialData={editingContract}
+        initialRecipientType={activeTab}
       />
 
       {/* ── Contract Detail Modal ── */}
@@ -351,8 +282,20 @@ export default function AdminContracts() {
               {/* Details Grid */}
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Client Email</label>
-                  <p className="text-sm text-gray-900 dark:text-white mt-1 break-all">{viewingContract.clientEmail || "—"}</p>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {viewingContract.recipientType === "employee"
+                      ? "Employee Email"
+                      : viewingContract.recipientType === "vendor"
+                        ? "Vendor Email"
+                        : "Client Email"}
+                  </label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1 break-all">
+                    {viewingContract.recipientType === "employee"
+                      ? viewingContract.employeeEmail || "—"
+                      : viewingContract.recipientType === "vendor"
+                        ? viewingContract.vendorEmail || "—"
+                        : viewingContract.clientEmail || "—"}
+                  </p>
                 </div>
                 <div>
                   <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Reference</label>
@@ -367,7 +310,27 @@ export default function AdminContracts() {
                   </p>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Signature</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Valid From</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">
+                    {viewingContract.validFrom
+                      ? new Date(viewingContract.validFrom).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+                      : "—"}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Valid To</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">
+                    {viewingContract.validTo
+                      ? new Date(viewingContract.validTo).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+                      : "—"}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Owner Signature</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.adminSignature || "—"}</p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Client Signature</label>
                   <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.signature || "—"}</p>
                 </div>
               </div>

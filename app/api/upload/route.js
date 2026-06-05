@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import { getServerSession } from "next-auth";
-
 import { authOptions } from "@/lib/auth-options";
 
 cloudinary.config({
@@ -19,29 +18,64 @@ export async function POST(req) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const data = await req.formData();
-    const file = data.get("file");
+    const contentType = String(req.headers.get("content-type") || "").toLowerCase();
 
-    if (!file || typeof file.arrayBuffer !== "function") {
-      return Response.json({ error: "No file received" }, { status: 400 });
+    let buffer;
+    let sourceName = "document";
+    let sourceType = "";
+
+    if (contentType.includes("multipart/form-data")) {
+      const data = await req.formData();
+      const file = data.get("file");
+
+      if (!file || typeof file.arrayBuffer !== "function") {
+        return Response.json({ error: "No file received" }, { status: 400 });
+      }
+
+      const bytes = await file.arrayBuffer();
+      buffer = Buffer.from(bytes);
+      sourceName = String(file.name || "document");
+      sourceType = String(file.type || "");
+    } else {
+      const raw = await req.arrayBuffer();
+      if (!raw || raw.byteLength === 0) {
+        return Response.json({ error: "No file received" }, { status: 400 });
+      }
+
+      buffer = Buffer.from(raw);
+      sourceName = decodeURIComponent(String(req.headers.get("x-file-name") || "document.pdf"));
+      sourceType = contentType.split(";")[0].trim() || "application/pdf";
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const isPdf =
+      String(sourceType).toLowerCase() === "application/pdf" ||
+      sourceName.toLowerCase().endsWith(".pdf");
 
-    const sanitizedName = String(file.name || "document")
+    if (!isPdf) {
+      return Response.json({ error: "Only PDF files are accepted" }, { status: 400 });
+    }
+
+    // Validate it's actually a PDF by checking the magic bytes
+    const header = buffer.subarray(0, 5).toString("ascii");
+    if (header !== "%PDF-") {
+      return Response.json({ error: "Invalid PDF file" }, { status: 400 });
+    }
+
+    const sanitizedName = sourceName
       .trim()
-      .replace(/[^a-zA-Z0-9._-]+/g, "-");
-    const baseName = sanitizedName.replace(/\.[^.]+$/, "");
-    const isPdf = String(file.type || "").toLowerCase() === "application/pdf" || sanitizedName.toLowerCase().endsWith(".pdf");
-    const resourceType = isPdf ? "raw" : "image";
-    const publicId = `uploads/${Date.now()}_${baseName || "document"}`;
+      .replace(/[^a-zA-Z0-9._-]+/g, "-")
+      .replace(/\.[^.]+$/, ""); // strip extension, Cloudinary adds it
 
+    const publicId = `uploads/${Date.now()}_${sanitizedName || "document"}`;
+
+    // KEY FIX: Use resource_type "image" for PDFs so Cloudinary serves application/pdf
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
-          resource_type: resourceType,
+          resource_type: "image",
           public_id: publicId,
+          format: "pdf",
+          pages: true,
         },
         (error, result) => {
           if (error) reject(error);
@@ -59,6 +93,9 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error("Upload error:", error);
-    return Response.json({ error: error?.message || "Upload failed" }, { status: 500 });
+    return Response.json(
+      { error: error?.message || "Upload failed" },
+      { status: 500 }
+    );
   }
 }

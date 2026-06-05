@@ -4,7 +4,14 @@ import ThemeToggle from "@/components/ThemeToggle"
 import NotificationCenter from "@/components/NotificationCenter"
 import { cn } from "@/lib/utils"
 
-export function SiteHeader({ title = "Dashboard", subtitle = "", className, contentClassName }) {
+export function SiteHeader({
+  title = "Dashboard",
+  subtitle = "",
+  className = "",
+  contentClassName = "",
+}) {
+  const displayTitle = subtitle ? `${title} (${subtitle})` : title
+
   return (
     <header
       className={cn(
@@ -21,8 +28,7 @@ export function SiteHeader({ title = "Dashboard", subtitle = "", className, cont
         <SidebarTrigger className="-ml-1 text-foreground" />
         <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-10" />
         <div className="min-w-0">
-          <h1 className="truncate text-base font-medium text-foreground">{title} ({subtitle})</h1>
-          {/* {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null} */}
+          <h1 className="truncate text-base font-medium text-foreground">{displayTitle}</h1>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <NotificationCenter />

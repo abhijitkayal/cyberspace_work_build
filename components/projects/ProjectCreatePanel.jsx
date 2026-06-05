@@ -412,28 +412,56 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 function createEmptyTask() {
-  return { title: "", description: "", subtasks: [""] };
+  return { _id: null, title: "", description: "", subtasks: [{ _id: null, title: "" }] };
+}
+
+function normalizeTaskSubtasks(subtasks = []) {
+  if (!Array.isArray(subtasks) || subtasks.length === 0) {
+    return [{ _id: null, title: "" }];
+  }
+
+  return subtasks.map((subtask) => ({
+    _id: subtask?._id || subtask?.id || null,
+    title: subtask?.title || "",
+  }));
 }
 
 function flattenUsers(users = [], role) {
+  if (role === "assignable") {
+    // For assignable people, include both employees and admins
+    return users.filter((user) => ["employee", "admin"].includes(user.role));
+  }
   return users.filter((user) => user.role === role);
 }
 
 function buildFormFromProject(project) {
+  const tasks = Array.isArray(project?.tasks) && project.tasks.length
+    ? project.tasks.map((task) => ({
+        _id: task?._id || task?.id || null,
+        title: task?.title || "",
+        description: task?.description || "",
+        subtasks: normalizeTaskSubtasks(task?.subtasks),
+      }))
+    : [createEmptyTask()];
+
   return {
     title: project?.title || "",
     description: project?.description || "",
     clientId: project?.client?._id || project?.client?.id || project?.client || "",
+    assignedVendorId: project?.assignedVendor?._id || project?.assignedVendor?.id || project?.assignedVendor || "",
     deadline: project?.deadline ? new Date(project.deadline).toISOString().slice(0, 10) : "",
     priority: project?.priority || "medium",
     status: project?.status || "planning",
+    projectCost: project?.projectCost ?? "",
     tags: Array.isArray(project?.tags) ? project.tags.join(", ") : "",
-    tasks: [createEmptyTask()],
+    tasks,
   };
 }
 
 export default function ProjectCreatePanel({
   users = [],
+  role,
+  sessionUserId,
   initialProject = null,
   onSaved,
   onCancel,
@@ -441,17 +469,25 @@ export default function ProjectCreatePanel({
   showTaskOutline = true,
 }) {
   const employees = useMemo(() => flattenUsers(users, "employee"), [users]);
+  const assignableUsers = useMemo(() => flattenUsers(users, "assignable"), [users]);
   const clients = useMemo(() => flattenUsers(users, "client"), [users]);
+  const vendors = useMemo(() => flattenUsers(users, "vendor"), [users]);
 
   const [form, setForm] = useState(() => buildFormFromProject(initialProject));
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [selectedEmployeeIds, setSelectedEmployeeIds] = useState(() =>
-    Array.isArray(initialProject?.assignedEmployees)
-      ? initialProject.assignedEmployees.map((e) => e?._id || e?.id || e).filter(Boolean)
-      : []
-  );
+  const [selectedEmployeeIds, setSelectedEmployeeIds] = useState(() => {
+    // For create mode with employee role, auto-select current user
+    if (mode === "create" && role === "employee" && sessionUserId) {
+      return [sessionUserId];
+    }
+    // For edit mode, use existing assignments
+    if (Array.isArray(initialProject?.assignedEmployees)) {
+      return initialProject.assignedEmployees.map((e) => e?._id || e?.id || e).filter(Boolean);
+    }
+    return [];
+  });
 
   useEffect(() => {
     setForm(buildFormFromProject(initialProject));
@@ -473,7 +509,10 @@ export default function ProjectCreatePanel({
       ...c,
       tasks: c.tasks.map((t, i) => {
         if (i !== taskIndex) return t;
-        return { ...t, subtasks: t.subtasks.map((s, si) => (si === subtaskIndex ? value : s)) };
+        return {
+          ...t,
+          subtasks: t.subtasks.map((s, si) => (si === subtaskIndex ? { ...s, title: value } : s)),
+        };
       }),
     }));
   }
@@ -492,22 +531,26 @@ export default function ProjectCreatePanel({
         title: form.title,
         description: form.description,
         clientId: form.clientId || null,
+        assignedVendorId: form.assignedVendorId || null,
         assignedEmployeeIds: selectedEmployeeIds,
         deadline: form.deadline,
         priority: form.priority,
         status: form.status,
+        projectCost: form.projectCost === "" ? 0 : Number(form.projectCost) || 0,
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-        ...(mode === "create"
-          ? {
-              tasks: form.tasks
-                .filter((t) => t.title.trim())
-                .map((t) => ({
-                  title: t.title,
-                  description: t.description,
-                  subtasks: t.subtasks.map((s) => s.trim()).filter(Boolean).map((s) => ({ title: s })),
-                })),
-            }
-          : {}),
+        tasks: form.tasks
+          .filter((t) => t.title.trim())
+          .map((t) => ({
+            _id: t._id || undefined,
+            title: t.title.trim(),
+            description: t.description.trim(),
+            subtasks: t.subtasks
+              .map((subtask) => ({
+                _id: subtask._id || undefined,
+                title: subtask.title.trim(),
+              }))
+              .filter((subtask) => subtask.title),
+          })),
       };
 
       const response = await fetch(
@@ -807,7 +850,7 @@ export default function ProjectCreatePanel({
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-4">
                 <div>
                   <label className="pcf-label">Deadline</label>
                   <input
@@ -846,6 +889,19 @@ export default function ProjectCreatePanel({
                     <option value="paused">⏸️ Paused</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="pcf-label">Project Cost</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.projectCost}
+                    onChange={(e) => setForm((c) => ({ ...c, projectCost: e.target.value }))}
+                    placeholder="0"
+                    className="pcf-input"
+                  />
+                </div>
               </div>
 
               <div>
@@ -878,6 +934,22 @@ export default function ProjectCreatePanel({
                 </select>
               </div>
 
+              <div>
+                <label className="pcf-label">Vendor / Partner</label>
+                <select
+                  value={form.assignedVendorId || ""}
+                  onChange={(e) => setForm((c) => ({ ...c, assignedVendorId: e.target.value }))}
+                  className="pcf-select"
+                >
+                  <option value="">No vendor assigned</option>
+                  {vendors.map((vendor) => (
+                    <option key={vendor._id} value={vendor._id}>
+                      {vendor.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Employees */}
               <div>
                 <div className="flex items-center justify-between mb-1">
@@ -890,7 +962,7 @@ export default function ProjectCreatePanel({
                   )}
                 </div>
                 <div className="pcf-emp-list space-y-2 max-h-48 overflow-y-auto pr-0.5">
-                  {employees.length ? employees.map((emp) => {
+                  {assignableUsers.length ? assignableUsers.map((emp) => {
                     const checked = selectedEmployeeIds.includes(emp._id);
                     return (
                       <label key={emp._id} className={`pcf-emp ${checked ? "checked" : ""}`}>
@@ -907,7 +979,7 @@ export default function ProjectCreatePanel({
                       </label>
                     );
                   }) : (
-                    <p className="text-sm py-3 text-center" style={{ color: "var(--label-color)" }}>No employees available</p>
+                    <p className="text-sm py-3 text-center" style={{ color: "var(--label-color)" }}>No users available</p>
                   )}
                 </div>
               </div>
@@ -977,7 +1049,7 @@ export default function ProjectCreatePanel({
                         {task.subtasks.map((subtask, subtaskIndex) => (
                           <div key={subtaskIndex} className="flex items-center gap-2">
                             <input
-                              value={subtask}
+                              value={subtask.title || ""}
                               onChange={(e) => updateSubtask(taskIndex, subtaskIndex, e.target.value)}
                               placeholder={`Subtask ${subtaskIndex + 1}`}
                               className="pcf-input flex-1"

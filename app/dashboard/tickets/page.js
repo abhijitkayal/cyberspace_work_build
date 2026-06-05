@@ -675,6 +675,7 @@ const roleNotes = {
   admin:    "Monitor the queue, assign work, and close tickets when the issue is resolved.",
   employee: "Take ownership of open requests, update progress, and collaborate with clients.",
   client:   "Create support requests and follow updates on your own tickets.",
+  vendor:   "Track requests, coordinate with the team, and keep partner work moving.",
 };
 
 function formatUser(user) {
@@ -696,8 +697,18 @@ function normalizeTicket(ticket) {
   };
 }
 
+function resolveProjectTitle(project, projects = []) {
+  if (!project) return "—";
+
+  if (typeof project === "string") {
+    return projects.find((item) => (item._id || item.id) === project)?.title || "—";
+  }
+
+  return project.title || project.name || "—";
+}
+
 function isClientOrEmployee(role) {
-  return role === "client" || role === "employee";
+  return role === "client" || role === "employee" || role === "vendor";
 }
 
 /* ── Shared input class ── */
@@ -718,9 +729,116 @@ const textareaCls = `w-full rounded-lg border border-gray-200 dark:border-white/
 const sectionCls = `min-w-0 rounded-2xl border border-gray-200 dark:border-white/10
   bg-white dark:bg-zinc-900 p-5 shadow-sm`;
 
+function CreateTicketForm({
+  forClient = false,
+  actionLoading,
+  createForm,
+  projects,
+  users,
+  isAdmin,
+  isEmployee,
+  isVendor,
+  onSubmit,
+  onChange,
+}) {
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="space-y-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4"
+    >
+      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        {forClient ? "New support request" : "Create ticket"}
+      </p>
+
+      <input
+        className={inputCls}
+        placeholder="Short, descriptive title"
+        value={createForm.title}
+        onChange={(e) => onChange((current) => ({ ...current, title: e.target.value }))}
+        required
+      />
+
+      <select
+        className={inputCls}
+        value={createForm.project}
+        onChange={(e) => onChange((current) => ({ ...current, project: e.target.value }))}
+        required
+      >
+        {projects.length === 0 && (
+          <option value="" className="text-black">No accessible projects</option>
+        )}
+        {projects.map((project) => (
+          <option key={project._id} value={project._id} className="text-black">
+            {project.title}
+          </option>
+        ))}
+      </select>
+
+      <textarea
+        className={`${textareaCls} min-h-24`}
+        placeholder="Describe the issue, request, or context…"
+        value={createForm.description}
+        onChange={(e) => onChange((current) => ({ ...current, description: e.target.value }))}
+        required
+      />
+
+      {!forClient ? (
+        <div className="grid grid-cols-2 gap-3">
+          <select
+            className={inputCls}
+            value={createForm.priority}
+            onChange={(e) => onChange((current) => ({ ...current, priority: e.target.value }))}
+          >
+            <option value="low" className="text-black">🟢 Low priority</option>
+            <option value="medium" className="text-black">🟡 Medium priority</option>
+            <option value="high" className="text-black">🔴 High priority</option>
+          </select>
+
+          {isAdmin ? (
+            <select
+              className={inputCls}
+              value={createForm.assignedTo}
+              onChange={(e) => onChange((current) => ({ ...current, assignedTo: e.target.value }))}
+            >
+              <option value="" className="text-black">Unassigned</option>
+              {users.filter((u) => u.role === "employee").map((u) => (
+                <option className="text-black" key={u._id} value={u._id}>{u.name} ({u.email})</option>
+              ))}
+            </select>
+          ) : isVendor ? (
+            <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
+              Vendor tickets cannot be assigned
+            </div>
+          ) : (
+            <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
+              {isEmployee ? "Auto-owned by you" : "Assigned after review"}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
+          Priority is set by support after review.
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={actionLoading || !projects.length || !createForm.project}
+        className="flex h-10 w-full items-center justify-center rounded-lg
+          bg-gray-900 text-white dark:bg-white dark:text-black
+          text-sm font-semibold hover:opacity-90 transition-opacity
+          disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {actionLoading ? "Creating…" : "Create ticket"}
+      </button>
+    </form>
+  );
+}
+
 export default function TicketsPage() {
   const [session, setSession] = useState(null);
   const [tickets, setTickets] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedId, setSelectedId] = useState("");
   const [loading, setLoading] = useState(true);
@@ -730,7 +848,7 @@ export default function TicketsPage() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const socketRef = useRef(null);
 
-  const [createForm, setCreateForm] = useState({ title: "", description: "", priority: "medium", assignedTo: "" });
+  const [createForm, setCreateForm] = useState({ title: "", description: "", priority: "medium", assignedTo: "", project: "" });
   const [replyForm, setReplyForm] = useState({ message: "", file: null });
   const [ticketForm, setTicketForm] = useState({ status: "", priority: "", assignedTo: "" });
 
@@ -758,9 +876,14 @@ export default function TicketsPage() {
     if (!userId) return;
 
     const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || window.location.origin;
-    const socket = io(socketUrl, { transports: ["websocket", "polling"] });
+    const socket = io(socketUrl, {
+      transports: ["websocket", "polling"],
+      auth: {
+        userId,
+      },
+    });
     socketRef.current = socket;
-    socket.emit("join", userId);
+    socket.emit("join", { userId });
 
     socket.on("ticket-updated", (payload) => {
       if (!payload?.ticket) return;
@@ -788,21 +911,37 @@ export default function TicketsPage() {
     setLoading(true);
     setError("");
     try {
-      const [sessionRes, ticketRes, usersRes] = await Promise.all([
+      const [sessionRes, ticketRes, usersRes, projectsRes] = await Promise.all([
         fetch("/api/auth/session", { cache: "no-store" }),
         fetch("/api/tickets", { cache: "no-store" }),
         fetch("/api/users/list", { credentials: "include", cache: "no-store" }),
+        fetch("/api/projects", { cache: "no-store" }),
       ]);
       const sessionData = await sessionRes.json();
       const ticketData  = await ticketRes.json();
       const usersData   = await usersRes.json();
+      const projectsData = await projectsRes.json();
 
       if (!sessionRes.ok) throw new Error(sessionData.error || "Failed to load session");
       if (!ticketRes.ok)  throw new Error(ticketData.error  || "Failed to load tickets");
+      if (!projectsRes.ok) throw new Error(projectsData.error || "Failed to load projects");
 
       setSession(sessionData);
       setTickets((ticketData.tickets || []).map(normalizeTicket));
       setUsers((usersData.users || []).filter((u) => ["employee","client","admin"].includes(u.role)));
+      setProjects(projectsData.projects || []);
+
+      const accessibleProjects = projectsData.projects || [];
+      setCreateForm((current) => {
+        if (current.project && accessibleProjects.some((project) => project._id === current.project)) {
+          return current;
+        }
+
+        return {
+          ...current,
+          project: accessibleProjects[0]?._id || "",
+        };
+      });
 
       if (!selectedId && ticketData.tickets?.length) {
         setSelectedId(normalizeTicket(ticketData.tickets[0])._id);
@@ -823,10 +962,19 @@ export default function TicketsPage() {
       const res  = await fetch("/api/tickets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(createForm) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create ticket");
-      const next = normalizeTicket(data.ticket);
+      const next = normalizeTicket({
+        ...data.ticket,
+        project: data.ticket?.project || projects.find((project) => (project._id || project.id) === createForm.project) || createForm.project,
+      });
       setTickets((cur) => [next, ...cur.filter((t) => t._id !== next._id)]);
       setSelectedId(next._id);
-      setCreateForm({ title: "", description: "", priority: "medium", assignedTo: "" });
+      setCreateForm((current) => ({
+        title: "",
+        description: "",
+        priority: "medium",
+        assignedTo: "",
+        project: current.project,
+      }));
       setShowCreateTicket(false);
       setNotice("Ticket created successfully.");
     } catch (err) {
@@ -883,82 +1031,10 @@ export default function TicketsPage() {
   const isAdmin          = role === "admin";
   const isEmployee       = role === "employee";
   const isClient         = role === "client";
-  const canManageSelected = Boolean(selectedTicket) && (isAdmin || isEmployee);
+  const isVendor         = role === "vendor";
+  const canManageSelected = Boolean(selectedTicket) && (isAdmin || isEmployee || isVendor);
   const wrapperCls       = "grid gap-4 xl:grid-cols-[0.3fr_0.7fr]";
-
-  /* ── Shared form section (create ticket) ── */
-  const CreateTicketForm = ({ forClient = false }) => (
-    <form
-      onSubmit={createTicket}
-      className="space-y-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4"
-    >
-      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-        {forClient ? "New support request" : "Create ticket"}
-      </p>
-
-      <input
-        className={inputCls}
-        placeholder="Short, descriptive title"
-        value={createForm.title}
-        onChange={(e) => setCreateForm((c) => ({ ...c, title: e.target.value }))}
-        required
-      />
-
-      <textarea
-        className={`${textareaCls} min-h-24`}
-        placeholder="Describe the issue, request, or context…"
-        value={createForm.description}
-        onChange={(e) => setCreateForm((c) => ({ ...c, description: e.target.value }))}
-        required
-      />
-
-      {!forClient ? (
-        <div className="grid grid-cols-2 gap-3">
-          <select
-            className={inputCls}
-            value={createForm.priority}
-            onChange={(e) => setCreateForm((c) => ({ ...c, priority: e.target.value }))}
-          >
-            <option value="low" className="text-black">🟢 Low priority</option>
-            <option value="medium" className="text-black">🟡 Medium priority</option>
-            <option value="high" className="text-black">🔴 High priority</option>
-          </select>
-
-          {isAdmin ? (
-            <select
-              className={inputCls}
-              value={createForm.assignedTo}
-              onChange={(e) => setCreateForm((c) => ({ ...c, assignedTo: e.target.value }))}
-            >
-              <option value="" className="text-black">Unassigned</option>
-              {users.filter((u) => u.role === "employee").map((u) => (
-                <option className="text-black" key={u._id} value={u._id}>{u.name} ({u.email})</option>
-              ))}
-            </select>
-          ) : (
-            <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
-              {isEmployee ? "Auto-owned by you" : "Assigned after review"}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
-          Priority is set by support after review.
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={actionLoading}
-        className="flex h-10 w-full items-center justify-center rounded-lg
-          bg-gray-900 text-white dark:bg-white dark:text-black
-          text-sm font-semibold hover:opacity-90 transition-opacity
-          disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {actionLoading ? "Creating…" : "Create ticket"}
-      </button>
-    </form>
-  );
+  const selectedTicketProjectTitle = resolveProjectTitle(selectedTicket?.project, projects);
 
   return (
     <div className={wrapperCls}>
@@ -1020,7 +1096,7 @@ export default function TicketsPage() {
                       <div className="truncate text-sm font-semibold text-gray-900 dark:text-white">{ticket.title}</div>
                       <div className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">{ticket.description}</div>
                     </div>
-                    <span className={`flex-shrink-0 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${priority.tone}`}>
+                    <span className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${priority.tone}`}>
                       {priority.label}
                     </span>
                   </div>
@@ -1029,6 +1105,7 @@ export default function TicketsPage() {
                     <span className={`rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[ticket.status] || statusStyles.open}`}>
                       {ticket.status}
                     </span>
+                    <span>{resolveProjectTitle(ticket.project, projects) !== "—" ? resolveProjectTitle(ticket.project, projects) : "No project"}</span>
                     <span>By {formatUser(ticket.createdBy)}</span>
                     <span>→ {formatUser(ticket.assignedTo)}</span>
                     <span className="ml-auto">{ticket.messages?.length || 0} msg</span>
@@ -1053,7 +1130,7 @@ export default function TicketsPage() {
                   <h3 className="mt-1 text-xl font-bold text-gray-900 dark:text-white leading-snug">{selectedTicket.title}</h3>
                   <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">{selectedTicket.description}</p>
                 </div>
-                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
                   <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${statusStyles[selectedTicket.status] || statusStyles.open}`}>
                     {selectedTicket.status}
                   </span>
@@ -1066,6 +1143,7 @@ export default function TicketsPage() {
               {/* Meta grid */}
               <div className="mt-4 grid gap-2 lg:grid-cols-3">
                 {[
+                  { label: "Project",    val: selectedTicketProjectTitle },
                   { label: "Created by", val: formatUser(selectedTicket.createdBy) },
                   { label: "Assigned to", val: formatUser(selectedTicket.assignedTo) },
                   { label: "Updated",    val: formatDate(selectedTicket.updatedAt) },
@@ -1138,15 +1216,21 @@ export default function TicketsPage() {
                     <option value="high" className="text-black">🔴 High priority</option>
                   </select>
 
-                  <select className={inputCls} value={ticketForm.assignedTo}
-                    onChange={(e) => setTicketForm((c) => ({ ...c, assignedTo: e.target.value }))}>
-                    <option value="" className="text-black">Unassigned</option>
-                    {users.filter((u) => u.role === "employee").map((u) => (
-                      <option key={u._id} value={u._id} className="text-black">
-                        {u.name}
-                      </option>
-                    ))}
-                  </select>
+                  {isVendor ? (
+                    <div className="flex h-10 items-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 text-xs text-gray-500 dark:text-gray-400">
+                      Vendor tickets cannot be assigned
+                    </div>
+                  ) : (
+                    <select className={inputCls} value={ticketForm.assignedTo}
+                      onChange={(e) => setTicketForm((c) => ({ ...c, assignedTo: e.target.value }))}>
+                      <option value="" className="text-black">Unassigned</option>
+                      {users.filter((u) => ["admin", "employee", "vendor"].includes(u.role)).map((u) => (
+                        <option key={u._id} value={u._id} className="text-black">
+                          {u.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               )}
 
@@ -1168,7 +1252,7 @@ export default function TicketsPage() {
                   </label>
 
                   {replyForm.file && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[140px]">{replyForm.file.name}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-35">{replyForm.file.name}</span>
                   )}
 
                   <div className="flex gap-2 ml-auto">
@@ -1246,7 +1330,18 @@ export default function TicketsPage() {
             </div>
 
             <div className="mt-5">
-              <CreateTicketForm forClient={isClient} />
+              <CreateTicketForm
+                forClient={isClient}
+                actionLoading={actionLoading}
+                createForm={createForm}
+                projects={projects}
+                users={users}
+                isAdmin={isAdmin}
+                isEmployee={isEmployee}
+                isVendor={isVendor}
+                onSubmit={createTicket}
+                onChange={setCreateForm}
+              />
             </div>
           </div>
         </div>

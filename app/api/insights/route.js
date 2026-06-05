@@ -117,6 +117,15 @@ export async function GET() {
         $group: {
           _id: "$region",
           count: { $sum: 1 },
+          totalBudget: {
+            $sum: {
+              $convert: {
+                input: "$finalBudget",
+                to: "double",
+                onError: 0,
+              },
+            },
+          },
         },
       },
       {
@@ -126,7 +135,7 @@ export async function GET() {
       },
       {
         $sort: {
-          count: -1,
+          totalBudget: -1,
         },
       },
       {
@@ -137,9 +146,9 @@ export async function GET() {
     const regionsData = regionsAgg.map((region) => ({
       region: region._id || "Unspecified",
       customers: region.count,
-      revenue: formatRevenue(region.count * 2500), // Estimate: ₹2500 per client
-      growth: calculateGrowth(region.count),
-      growthColor: region.count > 4000 ? "text-green-600" : region.count > 2000 ? "text-blue-600" : "text-orange-600",
+      revenue: formatRevenue(region.totalBudget), // Actual total budget from clients
+      // growth: calculateGrowth(region.count),
+      // growthColor: region.count > 4000 ? "text-green-600" : region.count > 2000 ? "text-blue-600" : "text-orange-600",
     }));
 
     // Calculate total metrics

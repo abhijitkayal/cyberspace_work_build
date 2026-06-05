@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
-import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -111,19 +111,18 @@ Sent via website contact form
     // -------------------------------
     await transporter.sendMail(mailOptions);
 
-    try {
-      await connectToDatabase();
-      const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
+    await connectToDatabase();
+    const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
 
-      if (adminIds.length) {
-        emitToUsers(adminIds, "notification", {
-          type: "request",
-          title: "New project request",
-          text: `${name} requested ${service} via the contact form.`,
-        });
-      }
-    } catch (dbError) {
-      console.error("Contact notification DB error:", dbError);
+    if (adminIds.length) {
+      await notificationService.createAndEmitNotification({
+        userIds: adminIds,
+        type: "request",
+        title: "New project request",
+        message: `${name} requested ${service} via the contact form.`,
+        text: `${name} requested ${service} via the contact form.`,
+        source: "contact",
+      });
     }
 
     return new Response(

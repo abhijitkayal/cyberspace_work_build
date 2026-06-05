@@ -4,15 +4,17 @@ import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
-export default function ContractForm({ open, setOpen, onSuccess, initialData = null }) {
+export default function ContractForm({ open, setOpen, onSuccess, initialData = null, initialRecipientType = "client" }) {
   const [form, setForm] = useState({
     description: "",
-    date: "",
-    signature: "",
+    validFrom: "",
+    validTo: "",
+    adminSignature: "",
     reference: "",
     clientEmail: "",
     employeeEmail: "",
-    recipientType: "client",
+    vendorEmail: "",
+    recipientType: initialRecipientType,
   })
 
   const [recipients, setRecipients] = useState([])
@@ -23,29 +25,33 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
     if (initialData) {
       setForm({
         description: initialData.description || "",
-        date: initialData.signedDate ? new Date(initialData.signedDate).toISOString().split('T')[0] : "",
-        signature: initialData.signature || "",
+        validFrom: initialData.validFrom ? new Date(initialData.validFrom).toISOString().split('T')[0] : "",
+        validTo: initialData.validTo ? new Date(initialData.validTo).toISOString().split('T')[0] : "",
+        adminSignature: initialData.adminSignature || "",
         reference: initialData.reference || "",
         clientEmail: initialData.clientEmail || "",
         employeeEmail: initialData.employeeEmail || "",
+        vendorEmail: initialData.vendorEmail || "",
         recipientType: initialData.recipientType || "client",
       })
     } else {
       setForm({
         description: "",
-        date: "",
-        signature: "",
+        validFrom: "",
+        validTo: "",
+        adminSignature: "",
         reference: "",
         clientEmail: "",
         employeeEmail: "",
-        recipientType: "client",
+        vendorEmail: "",
+        recipientType: initialRecipientType,
       })
     }
-  }, [initialData, open])
+  }, [initialData, open, initialRecipientType])
 
   // Fetch recipients when dialog opens or recipientType changes
   useEffect(() => {
-    if (open && !initialData) {
+    if (open) {
       fetchRecipients(form.recipientType)
     }
   }, [open, form.recipientType, initialData])
@@ -67,10 +73,14 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const recipientEmail = form.recipientType === "employee" ? form.employeeEmail : form.clientEmail
+    const recipientEmail = form.recipientType === "employee"
+      ? form.employeeEmail
+      : form.recipientType === "vendor"
+        ? form.vendorEmail
+        : form.clientEmail
 
     if (!recipientEmail) {
-      alert(`Please select a ${form.recipientType === "employee" ? "employee" : "client"}`)
+      alert(`Please select a ${form.recipientType === "employee" ? "employee" : form.recipientType === "vendor" ? "vendor" : "client"}`)
       return
     }
 
@@ -82,6 +92,20 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
     if (!form.reference.trim()) {
       alert("Please enter reference")
       return
+    }
+
+    // Validate validity dates if provided
+    if (form.validFrom && form.validTo) {
+      const from = new Date(form.validFrom)
+      const to = new Date(form.validTo)
+      if (isNaN(from.getTime()) || isNaN(to.getTime())) {
+        alert("Please enter valid dates for the contract validity period")
+        return
+      }
+      if (to.getTime() < from.getTime()) {
+        alert("Contract end date must be on or after start date")
+        return
+      }
     }
 
     setSubmitting(true)
@@ -96,16 +120,27 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
         recipientType: form.recipientType,
       }
 
+      const adminSignature = form.adminSignature.trim()
+      if (adminSignature) requestBody.adminSignature = adminSignature
+
       if (form.recipientType === "employee") {
         requestBody.employeeEmail = form.employeeEmail.toLowerCase().trim()
+      } else if (form.recipientType === "vendor") {
+        requestBody.vendorEmail = form.vendorEmail.toLowerCase().trim()
       } else {
         requestBody.clientEmail = form.clientEmail.toLowerCase().trim()
       }
 
       // Add optional fields if editing
       if (initialData) {
-        if (form.signature) requestBody.signature = form.signature.trim()
-        if (form.date) requestBody.signedDate = form.date
+        if (form.validFrom) requestBody.validFrom = form.validFrom
+        if (form.validTo) requestBody.validTo = form.validTo
+      }
+
+      // When creating, include validity dates if provided
+      if (!initialData) {
+        if (form.validFrom) requestBody.validFrom = form.validFrom
+        if (form.validTo) requestBody.validTo = form.validTo
       }
 
       const res = await fetch(url, {
@@ -132,7 +167,11 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
   }
 
   const isEditing = !!initialData
-  const currentRecipientEmail = form.recipientType === "employee" ? form.employeeEmail : form.clientEmail
+  const currentRecipientEmail = form.recipientType === "employee"
+    ? form.employeeEmail
+    : form.recipientType === "vendor"
+      ? form.vendorEmail
+      : form.clientEmail
   const selectedRecipient = recipients.find(r => r.email === currentRecipientEmail)
 
   return (
@@ -157,7 +196,7 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
               <button
                 type="button"
                 onClick={() => {
-                  setForm({ ...form, recipientType: "client", clientEmail: "", employeeEmail: "" })
+                  setForm({ ...form, recipientType: "client", clientEmail: "", employeeEmail: "", vendorEmail: "" })
                 }}
                 className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition ${
                   form.recipientType === "client"
@@ -170,7 +209,7 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
               <button
                 type="button"
                 onClick={() => {
-                  setForm({ ...form, recipientType: "employee", clientEmail: "", employeeEmail: "" })
+                  setForm({ ...form, recipientType: "employee", clientEmail: "", employeeEmail: "", vendorEmail: "" })
                 }}
                 className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition ${
                   form.recipientType === "employee"
@@ -180,20 +219,35 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
               >
                 Employee
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setForm({ ...form, recipientType: "vendor", clientEmail: "", employeeEmail: "", vendorEmail: "" })
+                }}
+                className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition ${
+                  form.recipientType === "vendor"
+                    ? "bg-blue-50 dark:bg-zinc-950 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-zinc-700"
+                    : "bg-gray-50 dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 border-gray-300 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-600"
+                }`}
+              >
+                Vendor
+              </button>
             </div>
           </div>
 
           {/* Recipient Email Dropdown */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">
-              Select {form.recipientType === "employee" ? "Employee" : "Client"}
+              Select {form.recipientType === "employee" ? "Employee" : form.recipientType === "vendor" ? "Vendor" : "Client"}
             </label>
             <select
               value={currentRecipientEmail}
-              aria-label={`Select ${form.recipientType === "employee" ? "Employee" : "Client"}`}
+              aria-label={`Select ${form.recipientType === "employee" ? "Employee" : form.recipientType === "vendor" ? "Vendor" : "Client"}`}
               onChange={(e) => {
                 if (form.recipientType === "employee") {
                   setForm({ ...form, employeeEmail: e.target.value })
+                } else if (form.recipientType === "vendor") {
+                  setForm({ ...form, vendorEmail: e.target.value })
                 } else {
                   setForm({ ...form, clientEmail: e.target.value })
                 }
@@ -202,7 +256,7 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
               className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-50 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600 focus:border-transparent disabled:opacity-50 cursor-pointer"
             >
               <option value="">
-                {loadingRecipients ? "Loading..." : `Select ${form.recipientType === "employee" ? "employee" : "client"}...`}
+                {loadingRecipients ? "Loading..." : `Select ${form.recipientType === "employee" ? "employee" : form.recipientType === "vendor" ? "vendor" : "client"}...`}
               </option>
               {recipients.map((recipient) => (
                 <option key={recipient.email} value={recipient.email}>
@@ -224,6 +278,28 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
             />
           </div>
 
+          {/* Validity period */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Valid From</label>
+              <input
+                type="date"
+                className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-50 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600 focus:border-transparent"
+                value={form.validFrom}
+                onChange={(e) => setForm({ ...form, validFrom: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Valid To</label>
+              <input
+                type="date"
+                className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-50 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600 focus:border-transparent"
+                value={form.validTo}
+                onChange={(e) => setForm({ ...form, validTo: e.target.value })}
+              />
+            </div>
+          </div>
+
           {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Terms & Description</label>
@@ -236,15 +312,15 @@ export default function ContractForm({ open, setOpen, onSuccess, initialData = n
             />
           </div>
 
-          {/* Admin Signature */}
+          {/* Admin/Owner Signature */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">Your Signature (Optional)</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-zinc-300">OwnerSignature</label>
             <input
               type="text"
-              placeholder="Type your name"
+              placeholder="Admin name"
               className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-50 placeholder-gray-500 dark:placeholder-zinc-400 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400 dark:focus:ring-zinc-600 focus:border-transparent"
-              value={form.signature}
-              onChange={(e) => setForm({ ...form, signature: e.target.value })}
+              value={form.adminSignature}
+              onChange={(e) => setForm({ ...form, adminSignature: e.target.value })}
             />
           </div>
 

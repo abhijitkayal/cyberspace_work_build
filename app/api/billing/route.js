@@ -6,7 +6,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
 import Billing from "@/lib/models/Billing";
 import { computeBillingTotals, parseAmount } from "@/lib/billing";
-import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -145,10 +145,17 @@ export async function GET() {
 
   await connectToDatabase();
 
-  const bills =
-    session.user.role === "admin"
-      ? await loadBilling({})
-      : await loadBilling({ recipientUser: session.user.id });
+  let bills;
+  if (session.user.role === "admin") {
+    bills = await loadBilling({});
+  } else {
+    // For clients, look up their actual MongoDB user ID
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) {
+      return Response.json({ error: "User not found" }, { status: 404 });
+    }
+    bills = await loadBilling({ recipientUser: user._id });
+  }
 
   return Response.json({ bills });
 }
@@ -250,21 +257,27 @@ export async function POST(request) {
     const recipientId = createdBill.recipientUser?._id?.toString?.();
 
     if (recipientId) {
-      emitToUsers([recipientId], "notification", {
+      await notificationService.createAndEmitNotification({
+        userIds: [recipientId],
         type: "billing",
         title: `New ${createdBill.documentTitle || "billing document"}`,
+        message: `${createdBill.documentTitle || "A billing document"} has been issued.`,
         text: `${createdBill.documentTitle || "A billing document"} has been issued.`,
-        billId: createdBill._id?.toString?.() || createdBill._id,
+        source: "billing",
+        payload: { billId: createdBill._id?.toString?.() || createdBill._id },
       });
     }
 
     const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
     if (adminIds.length) {
-      emitToUsers(adminIds, "notification", {
+      await notificationService.createAndEmitNotification({
+        userIds: adminIds,
         type: "billing",
         title: "Billing created",
+        message: `${createdBill.documentTitle || "A billing document"} was created for ${createdBill.recipientName || "a client"}.`,
         text: `${createdBill.documentTitle || "A billing document"} was created for ${createdBill.recipientName || "a client"}.`,
-        billId: createdBill._id?.toString?.() || createdBill._id,
+        source: "billing",
+        payload: { billId: createdBill._id?.toString?.() || createdBill._id },
       });
     }
   } catch (err) {

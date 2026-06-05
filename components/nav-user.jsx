@@ -21,7 +21,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { EllipsisVerticalIcon, CircleUserRoundIcon, Settings2Icon } from "lucide-react"
 
 export function NavUser({
   user
@@ -83,20 +83,17 @@ export function NavUser({
                   Account
                 </Link>
               </DropdownMenuItem>
-              {/* <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
-              </DropdownMenuItem> */}
+
+              {user?.role === "admin" ? (
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/settings" className="flex w-full items-center gap-2">
+                    <Settings2Icon />
+                    Business Settings
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem>
-              <LogOutIcon />
-              Log out
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

@@ -15,6 +15,7 @@ import {
   normalizeListValues,
 } from "@/lib/project-utils";
 import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ const createProjectSchema = z.object({
   title: z.string().min(2).max(160),
   description: z.string().max(5000).optional().default(""),
   clientId: z.string().optional().nullable(),
+  assignedVendorId: z.string().optional().nullable(),
   assignedEmployeeIds: z.array(z.string()).optional().default([]),
   tags: z.array(z.string()).optional().default([]),
   startDate: z.string().optional(),
@@ -40,6 +42,7 @@ const createProjectSchema = z.object({
   priority: z.enum(["low", "medium", "high"]).default("medium"),
   status: z.enum(["planning", "in-progress", "at-risk", "completed", "paused"]).default("planning"),
   tasks: z.array(taskInputSchema).optional().default([]),
+  projectCost: z.coerce.number().min(0).optional().default(0),
 });
 
 function parseDate(value, fallback = null) {
@@ -53,10 +56,12 @@ function parseDate(value, fallback = null) {
 
 async function populateProject(projectId) {
   return Project.findById(projectId)
-    .populate("client", "name email role")
+    .populate("client", "name email role source finalBudget")
+    .populate("assignedVendor", "name email role")
     .populate("assignedEmployees", "name email role")
     .populate("createdBy", "name email role")
-    .populate("updatedBy", "name email role");
+    .populate("updatedBy", "name email role")
+    .populate({ path: "tasks.assignee", select: "name email role" });
 }
 
 async function recordProjectActivity(projectId, actorId, type, summary, details = "", metadata = {}) {
@@ -85,16 +90,18 @@ async function broadcastProjectChange(project, actorId, changeType, message) {
     project,
   });
 
-  const ok2 = emitToUsers(recipients, "notification", {
+  const notifications = await notificationService.createAndEmitNotification({
+    userIds: recipients,
     type: "project",
     title: changeType === "created" ? "Project created" : "Project updated",
+    message,
     text: message,
-    projectId: project._id?.toString?.() || project._id,
     route: "/dashboard/admin/projects",
-    sourceTab: "project",
+    source: "project",
+    payload: { projectId: project._id?.toString?.() || project._id },
   });
 
-  return Boolean(ok1 || ok2);
+  return Boolean(ok1 || notifications.length);
 }
 
 function normalizeTasks(tasks = []) {
@@ -128,7 +135,8 @@ export async function GET() {
 
   const projects = await Project.find(query)
     .sort({ deadline: 1, updatedAt: -1 })
-    .populate("client", "name email role")
+    .populate("client", "name email role source finalBudget")
+    .populate("assignedVendor", "name email role")
     .populate("assignedEmployees", "name email role")
     .populate("createdBy", "name email role")
     .populate("updatedBy", "name email role")
@@ -140,7 +148,7 @@ export async function GET() {
 export async function POST(request) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user || session.user.role !== "admin") {
+  if (!session?.user || !["admin", "employee"].includes(session.user.role)) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -154,7 +162,8 @@ export async function POST(request) {
   await connectToDatabase();
 
   const clientId = parsed.data.clientId?.trim() || null;
-  const assignedEmployeeIds = normalizeListValues(parsed.data.assignedEmployeeIds);
+  const vendorId = parsed.data.assignedVendorId?.trim() || null;
+  let assignedEmployeeIds = normalizeListValues(parsed.data.assignedEmployeeIds);
   const tags = normalizeListValues(parsed.data.tags);
   const deadline = parseDate(parsed.data.deadline);
   const startDate = parseDate(parsed.data.startDate, new Date());
@@ -172,11 +181,36 @@ export async function POST(request) {
     }
   }
 
-  const employees = assignedEmployeeIds.length
-    ? await User.find({ _id: { $in: assignedEmployeeIds }, role: "employee" }).select("_id")
+  let vendor = null;
+  if (vendorId) {
+    vendor = await User.findById(vendorId);
+
+    if (!vendor || vendor.role !== "vendor") {
+      return Response.json({ error: "Vendor not found" }, { status: 400 });
+    }
+  }
+
+  // For employees, allow self-assignment and assignment to other employees/admins
+  // For admins, allow self-assignment and assignment to any employees/admins
+  if (session.user.role === "employee") {
+    // Add current user (employee) to assignedEmployeeIds if not already present
+    const userIdString = session.user.id;
+    if (!assignedEmployeeIds.includes(userIdString)) {
+      assignedEmployeeIds.push(userIdString);
+    }
+  } else if (session.user.role === "admin") {
+    // Add current user (admin) to assignedEmployeeIds if not already present
+    const userIdString = session.user.id;
+    if (!assignedEmployeeIds.includes(userIdString)) {
+      assignedEmployeeIds.push(userIdString);
+    }
+  }
+
+  const assignedUsers = assignedEmployeeIds.length
+    ? await User.find({ _id: { $in: assignedEmployeeIds }, role: { $in: ["employee", "admin"] } }).select("_id")
     : [];
 
-  const normalizedEmployeeIds = employees.map((employee) => employee._id.toString());
+  const normalizedEmployeeIds = assignedUsers.map((user) => user._id.toString());
   const tasks = normalizeTasks(parsed.data.tasks || []);
   const { progress } = calculateProjectProgress(tasks);
   const status = deriveProjectStatus(progress, parsed.data.status);
@@ -185,6 +219,7 @@ export async function POST(request) {
     title: parsed.data.title.trim(),
     description: parsed.data.description?.trim?.() || "",
     client: client?._id || null,
+    assignedVendor: vendor?._id || null,
     assignedEmployees: normalizedEmployeeIds,
     tags,
     startDate,
@@ -193,6 +228,7 @@ export async function POST(request) {
     status,
     progress,
     tasks,
+    projectCost: parsed.data.projectCost ?? 0,
     createdBy: session.user.id,
     updatedBy: session.user.id,
     lastActivityAt: new Date(),

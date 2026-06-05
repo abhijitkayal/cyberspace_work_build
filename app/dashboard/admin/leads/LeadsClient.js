@@ -15,6 +15,7 @@ export default function LeadsClient() {
     services: "",
     requirement: "",
     budget: "",
+    nextFollowUpDate: "",
   });
 
   const [leads, setLeads] = useState([]);
@@ -34,6 +35,7 @@ export default function LeadsClient() {
     services: "",
     requirement: "",
     budget: "",
+    nextFollowUpDate: "",
   });
   const [editError, setEditError] = useState("");
   const [isUpdatingLead, setIsUpdatingLead] = useState(false);
@@ -104,6 +106,7 @@ export default function LeadsClient() {
           ...formData,
           services,
           source: "manual-admin",
+          nextFollowUpDate: formData.nextFollowUpDate ? new Date(formData.nextFollowUpDate).toISOString() : null,
         }),
       });
 
@@ -121,6 +124,7 @@ export default function LeadsClient() {
         services: "",
         requirement: "",
         budget: "",
+        nextFollowUpDate: "",
       });
 
       await loadLeads();
@@ -132,12 +136,26 @@ export default function LeadsClient() {
   }
 
   async function handleConvertToClient(leadId) {
+    const leadToConvert = leads.find((lead) => lead._id === leadId);
+    const email = String(convertDates[leadId]?.email ?? leadToConvert?.email ?? "").trim().toLowerCase();
+
     const password = convertDates[leadId]?.password;
     const from = convertDates[leadId]?.from;
     const to = convertDates[leadId]?.to;
     const finalBudget = convertDates[leadId]?.finalBudget;
     const projectName = convertDates[leadId]?.projectName || "";
     const projectDescription = convertDates[leadId]?.projectDescription || "";
+
+    if (!email) {
+      setError("Email is required to convert this lead.");
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
     if (!password || password.length < 8) {
       setError("Password must be at least 8 characters.");
@@ -172,6 +190,7 @@ export default function LeadsClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           password,
+          email,
           validFrom: from,
           validTo: to,
           finalBudget,
@@ -186,7 +205,7 @@ export default function LeadsClient() {
         throw new Error(data.error || "Failed to convert lead");
       }
 
-      toast.success("Lead converted to client successfully. Email sent with credentials.");
+      toast.success("Lead converted to client successfully.");
       setShowConvertModal(null);
       setConvertDates({});
 
@@ -200,6 +219,7 @@ export default function LeadsClient() {
 
   function openEditModal(lead) {
     setEditingLead(lead);
+    const followUpDate = lead?.nextFollowUpDate ? new Date(lead.nextFollowUpDate).toISOString().split('T')[0] : "";
     setEditForm({
       name: lead?.name || "",
       email: lead?.email || "",
@@ -207,6 +227,7 @@ export default function LeadsClient() {
       services: (lead?.services || []).join(", "),
       requirement: lead?.requirement || "",
       budget: lead?.budget || "",
+      nextFollowUpDate: followUpDate,
     });
     setEditError("");
   }
@@ -243,6 +264,7 @@ export default function LeadsClient() {
           services,
           requirement: editForm.requirement,
           budget: editForm.budget,
+          nextFollowUpDate: editForm.nextFollowUpDate ? new Date(editForm.nextFollowUpDate).toISOString() : null,
         }),
       });
 
@@ -327,8 +349,8 @@ export default function LeadsClient() {
               </div>
 
               <div>
-                <Label>Email</Label>
-                <Input name="email" type="email" value={formData.email} onChange={onFieldChange} required />
+                <Label>Email (optional)</Label>
+                <Input name="email" type="email" value={formData.email} onChange={onFieldChange} />
               </div>
 
               <div>
@@ -353,6 +375,11 @@ export default function LeadsClient() {
               <div>
                 <Label>Budget</Label>
                 <Input name="budget" value={formData.budget} onChange={onFieldChange} placeholder="Optional" />
+              </div>
+
+              <div>
+                <Label>Next Follow-up Date (optional)</Label>
+                <Input name="nextFollowUpDate" type="date" value={formData.nextFollowUpDate} onChange={onFieldChange} />
               </div>
 
               <div>
@@ -392,12 +419,13 @@ export default function LeadsClient() {
               <div className="overflow-x-auto">
                 <table className="min-w-[920px] w-full table-fixed text-left text-sm">
                   <colgroup>
-                    <col className="w-[16%]" />
-                    <col className="w-[24%]" />
-                    <col className="w-[20%]" />
                     <col className="w-[14%]" />
                     <col className="w-[18%]" />
+                    <col className="w-[16%]" />
                     <col className="w-[10%]" />
+                    <col className="w-[13%]" />
+                    <col className="w-[13%]" />
+                    <col className="w-[8%]" />
                   </colgroup>
                   <thead>
                     <tr className="border-b border-cyan-500/20 text-cyan-200">
@@ -405,7 +433,8 @@ export default function LeadsClient() {
                       <th className="py-2 pr-2">Contact</th>
                       <th className="py-2 pr-2">Services</th>
                       <th className="py-2 pr-2">Source</th>
-                      <th className="py-2 pr-2">Date</th>
+                      <th className="py-2 pr-2">Added Date</th>
+                      <th className="py-2 pr-2">Next Follow-up</th>
                       <th className="py-2">Action</th>
                     </tr>
                   </thead>
@@ -421,7 +450,7 @@ export default function LeadsClient() {
                           )}
                         </td>
                         <td className="py-2 pr-2">
-                          <p className="break-all whitespace-normal">{lead.email}</p>
+                          <p className="break-all whitespace-normal">{lead.email || "N/A"}</p>
                           <p className="text-xs text-cyan-100/70 break-all">{lead.phone}</p>
                         </td>
                         <td className="py-2 pr-2">
@@ -433,7 +462,10 @@ export default function LeadsClient() {
                           ) : null}
                         </td>
                         <td className="py-2 pr-2 uppercase break-words whitespace-normal">{lead.source}</td>
-                        <td className="py-2 break-words whitespace-normal">{new Date(lead.createdAt).toLocaleString()}</td>
+                        <td className="py-2 pr-2 break-words whitespace-normal">{new Date(lead.createdAt).toLocaleString()}</td>
+                        <td className="py-2 pr-2 break-words whitespace-normal">
+                          {lead.nextFollowUpDate ? new Date(lead.nextFollowUpDate).toLocaleDateString() : "N/A"}
+                        </td>
                         <td className="py-2">
                           <div className="flex flex-col gap-2">
                             <Button
@@ -489,6 +521,25 @@ export default function LeadsClient() {
             </CardHeader>
 
             <CardContent className="space-y-4">
+              <div>
+                <Label>Email*</Label>
+                <Input
+                  type="email"
+                  placeholder="Enter client email"
+                  value={convertDates[showConvertModal]?.email ?? leads.find((lead) => lead._id === showConvertModal)?.email ?? ""}
+                  onChange={(e) =>
+                    setConvertDates({
+                      ...convertDates,
+                      [showConvertModal]: {
+                        ...convertDates[showConvertModal],
+                        email: e.target.value,
+                      },
+                    })
+                  }
+                  required
+                />
+              </div>
+
               <div>
                 <Label>Password (min 8 characters)*</Label>
                 <Input
@@ -640,8 +691,8 @@ export default function LeadsClient() {
               </div>
 
               <div>
-                <Label>Email</Label>
-                <Input name="email" type="email" value={editForm.email} onChange={onEditFieldChange} required />
+                <Label>Email (optional)</Label>
+                <Input name="email" type="email" value={editForm.email} onChange={onEditFieldChange} />
               </div>
 
               <div>
@@ -663,6 +714,11 @@ export default function LeadsClient() {
               <div>
                 <Label>Budget</Label>
                 <Input name="budget" value={editForm.budget} onChange={onEditFieldChange} placeholder="Optional" />
+              </div>
+
+              <div>
+                <Label>Next Follow-up Date (optional)</Label>
+                <Input name="nextFollowUpDate" type="date" value={editForm.nextFollowUpDate} onChange={onEditFieldChange} />
               </div>
 
               <div>

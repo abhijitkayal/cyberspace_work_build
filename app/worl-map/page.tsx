@@ -1,4 +1,5 @@
 import { Home, User, Search, Sun } from "lucide-react";
+import Link from "next/link";
 
 const SiteNav = () => {
   // SVG geometry constants — keep JS layout in sync with the rail path
@@ -131,7 +132,7 @@ const SiteNav = () => {
               Templates
             </a>
 
-            <a
+            <Link
               href="/"
               aria-label="Home"
               className="mx-2 flex h-7 w-7 items-center justify-center rounded-full text-foreground hover:bg-accent/40 transition-colors"
@@ -139,7 +140,7 @@ const SiteNav = () => {
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
                 <path d="M21.35 3.65 2.7 10.55a.9.9 0 0 0 .05 1.72l7.07 2.04 2.04 7.07a.9.9 0 0 0 1.72.05l6.9-18.65a.9.9 0 0 0-1.13-1.13Z" />
               </svg>
-            </a>
+            </Link>
 
             <button
               type="button"

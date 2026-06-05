@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth-options";
 import { connectToDatabase } from "@/lib/mongodb";
 import Lead from "@/lib/models/Lead";
 import User from "@/lib/models/User";
-import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,7 +21,14 @@ function normalizePhone(value) {
 
 const createLeadSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  email: z.string().trim().email(),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .default("")
+    .refine((value) => value === "" || z.string().email().safeParse(value).success, {
+      message: "Invalid email address",
+    }),
   phone: z.preprocess(
     normalizePhone,
     z.string().regex(/^\+?[0-9]{10,15}$/, "Phone number must contain 10 to 15 digits and may start with +")
@@ -31,6 +38,7 @@ const createLeadSchema = z.object({
   budget: z.string().trim().max(120).optional().default(""),
   source: z.string().trim().max(120).optional().default("manual-admin"),
   status: z.enum(["active", "inactive"]).optional().default("active"),
+  nextFollowUpDate: z.string().datetime().optional().nullable(),
 });
 
 async function sendLeadEmailToAdmin(leadData) {
@@ -55,7 +63,7 @@ async function sendLeadEmailToAdmin(leadData) {
   await transporter.sendMail({
     from: `"CyberSpace Leads" <${EMAIL_USER}>`,
     to: recipient,
-    replyTo: leadData.email,
+    ...(leadData.email ? { replyTo: leadData.email } : {}),
     subject: `New Lead: ${leadData.name}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 620px; color:#222;">
@@ -63,7 +71,7 @@ async function sendLeadEmailToAdmin(leadData) {
         <p style="margin-top: 0; color: #666;">Source: ${leadData.source}</p>
         <hr style="border: 1px solid #eee; margin: 16px 0;" />
         <p><strong>Name:</strong> ${leadData.name}</p>
-        <p><strong>Email:</strong> ${leadData.email}</p>
+        <p><strong>Email:</strong> ${leadData.email || "N/A"}</p>
         <p><strong>Phone:</strong> ${leadData.phone}</p>
         <p><strong>Budget:</strong> ${leadData.budget || "N/A"}</p>
         <p><strong>Services:</strong></p>
@@ -79,7 +87,7 @@ New Lead Submission
 
 Source: ${leadData.source}
 Name: ${leadData.name}
-Email: ${leadData.email}
+Email: ${leadData.email || "N/A"}
 Phone: ${leadData.phone}
 Budget: ${leadData.budget || "N/A"}
 Services: ${servicesText}
@@ -130,7 +138,7 @@ export async function POST(request) {
 
     const leadPayload = {
       name: parsed.data.name,
-      email: parsed.data.email.toLowerCase(),
+      email: parsed.data.email ? parsed.data.email.toLowerCase() : "",
       phone: normalizePhone(parsed.data.phone),
       services: parsed.data.services,
       requirement: parsed.data.requirement,
@@ -138,6 +146,7 @@ export async function POST(request) {
       source: parsed.data.source,
       status: parsed.data.status,
       createdBy: isAdmin ? session.user.id : null,
+      nextFollowUpDate: parsed.data.nextFollowUpDate ? new Date(parsed.data.nextFollowUpDate) : null,
     };
 
     const createdLead = await Lead.create(leadPayload);
@@ -145,11 +154,14 @@ export async function POST(request) {
     const adminIds = (await User.find({ role: "admin" }).select("_id")).map((user) => user._id?.toString?.() || user._id).filter(Boolean);
 
     if (adminIds.length) {
-      emitToUsers(adminIds, "notification", {
+      await notificationService.createAndEmitNotification({
+        userIds: adminIds,
         type: "lead",
         title: "New lead received",
+        message: `${leadPayload.name} submitted a lead for ${leadPayload.services.join(", ")}`,
         text: `${leadPayload.name} submitted a lead for ${leadPayload.services.join(", ")}`,
-        leadId: createdLead._id.toString(),
+        source: "lead",
+        payload: { leadId: createdLead._id.toString() },
       });
     }
 

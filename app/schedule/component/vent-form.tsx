@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
-  CalendarIcon, Clock, MapPin, Users, Trash2, X, Plus, Bell, AlarmClock,
+  CalendarIcon, Clock, MapPin, Users, Trash2, X, Plus, Bell, AlarmClock, Link2,LucideIcon
 } from "lucide-react"
 import { format } from "date-fns"
 
@@ -35,6 +35,13 @@ interface EventFormProps {
   currentUserId?: string
 }
 
+type UserSuggestion = {
+  _id: string
+  name: string
+  email: string
+  role?: string
+}
+
 const eventTypes = [
   { value: "meeting",  label: "Meeting",  hex: "#3b82f6", bg: "bg-blue-500",    pill: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800" },
   { value: "event",    label: "Event",    hex: "#10b981", bg: "bg-emerald-500", pill: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800" },
@@ -57,7 +64,7 @@ const AVATAR_COLORS = [
   "bg-violet-100 text-violet-700","bg-cyan-100 text-cyan-700",
 ]
 
-function FieldRow({ icon: Icon, label, children }: { icon: React.ElementType; label: string; children: React.ReactNode }) {
+function FieldRow({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
       <div className="flex w-28 shrink-0 items-center gap-2 pt-2.5">
@@ -69,6 +76,25 @@ function FieldRow({ icon: Icon, label, children }: { icon: React.ElementType; la
   )
 }
 
+function normalizeEmail(value: string) {
+  return String(value || "").trim().toLowerCase()
+}
+
+function splitEmails(value: string) {
+  return Array.from(
+    new Set(
+      String(value || "")
+        .split(",")
+        .map(normalizeEmail)
+        .filter(Boolean)
+    )
+  )
+}
+
+function mergeEmails(currentValue: string, emailsToAdd: string[]) {
+  return Array.from(new Set([...splitEmails(currentValue), ...emailsToAdd.map(normalizeEmail).filter(Boolean)])).join(", ")
+}
+
 export function EventForm({ event, open, onOpenChange, onSave, onDelete, currentUserEmail, currentUserId }: EventFormProps) {
   const notify = useNotification()
   const [formData, setFormData] = useState({
@@ -78,6 +104,7 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
     duration: event?.duration || "1 hour",
     type: event?.type || "meeting",
     location: event?.location || "",
+    meetingLink: (event as any)?.meetingLink || "",
     description: event?.description || "",
     attendees: event?.attendees || [] as string[],
     assignedEmails: event?.assignedToEmails?.join(", ") || (currentUserEmail ?? ""),
@@ -86,17 +113,63 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
   })
   const [showCalendar, setShowCalendar] = useState(false)
   const [newAttendee, setNewAttendee] = useState("")
+  const [userSuggestions, setUserSuggestions] = useState<UserSuggestion[]>([])
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [saveError, setSaveError] = useState("")
 
   const selectedType = eventTypes.find(t => t.value === formData.type) ?? eventTypes[0]
 
+  useEffect(() => {
+    if (!open) return
+
+    let cancelled = false
+
+    const loadUsers = async () => {
+      setIsLoadingSuggestions(true)
+      try {
+        const response = await fetch("/api/users/list")
+        const data = await response.json()
+        if (!cancelled) setUserSuggestions(Array.isArray(data.users) ? data.users : [])
+      } catch {
+        if (!cancelled) setUserSuggestions([])
+      } finally {
+        if (!cancelled) setIsLoadingSuggestions(false)
+      }
+    }
+
+    loadUsers()
+
+    return () => {
+      cancelled = true
+    }
+  }, [open])
+
+  const attendeeSuggestions = userSuggestions.filter(user => {
+    const query = newAttendee.trim().toLowerCase()
+    if (!query) return false
+
+    const attendeeNames = formData.attendees.map(name => name.trim().toLowerCase())
+    return !attendeeNames.includes(user.name.trim().toLowerCase()) && (
+      user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
+    )
+  }).slice(0, 6)
+
+  const addAttendeeFromUser = (user: UserSuggestion) => {
+    setFormData(p => ({
+      ...p,
+      attendees: Array.from(new Set([...p.attendees, user.name])),
+      assignedEmails: mergeEmails(p.assignedEmails, [user.email]),
+    }))
+    setNewAttendee("")
+  }
+
   const handleSave = async () => {
     if (!formData.title.trim()) { setSaveError("Event title is required"); notify.error("Event not saved", "Title is required"); return }
     setIsSaving(true); setSaveError("")
     try {
-      let emails = formData.assignedEmails.split(",").map(e => e.trim().toLowerCase()).filter(Boolean)
+      let emails = splitEmails(formData.assignedEmails)
       if (currentUserEmail && !emails.includes(currentUserEmail.toLowerCase()))
         emails = [currentUserEmail.toLowerCase(), ...emails]
 
@@ -104,7 +177,7 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
         title: formData.title,
         date: formData.date instanceof Date ? formData.date.toISOString() : new Date(formData.date).toISOString(),
         time: formData.time, duration: formData.duration, type: formData.type,
-        location: formData.location, description: formData.description,
+        location: formData.location, meetingLink: formData.meetingLink, description: formData.description,
         attendees: formData.attendees, allDay: formData.allDay, reminder: formData.reminder,
         color: selectedType.bg, assignedToEmails: emails, actorUserId: currentUserId,
       }
@@ -134,7 +207,18 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
   const handleDelete = () => { if (event?.id && onDelete) { onDelete(event.id); onOpenChange(false) } }
   const addAttendee = () => {
     const t = newAttendee.trim()
-    if (t && !formData.attendees.includes(t)) { setFormData(p => ({ ...p, attendees: [...p.attendees, t] })); setNewAttendee("") }
+    if (!t) return
+
+    const matchedUser = userSuggestions.find(user => user.name.trim().toLowerCase() === t.toLowerCase())
+    if (matchedUser) {
+      addAttendeeFromUser(matchedUser)
+      return
+    }
+
+    if (!formData.attendees.includes(t)) {
+      setFormData(p => ({ ...p, attendees: [...p.attendees, t] }))
+    }
+    setNewAttendee("")
   }
   const removeAttendee = (name: string) => setFormData(p => ({ ...p, attendees: p.attendees.filter(a => a !== name) }))
 
@@ -183,7 +267,7 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
               />
 
               {/* Type pills */}
-              <div>
+              {/* <div>
                 <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">Type</p>
                 <div className="flex flex-wrap gap-2">
                   {eventTypes.map(type => (
@@ -203,7 +287,7 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Schedule */}
               <div>
@@ -268,14 +352,24 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
                 />
               </FieldRow>
 
+              <FieldRow icon={Link2} label="Meeting link">
+                <Input
+                  placeholder="Paste meeting URL…"
+                  value={formData.meetingLink}
+                  onChange={e => setFormData(p => ({ ...p, meetingLink: e.target.value }))}
+                  className="h-9 rounded-lg text-sm"
+                />
+              </FieldRow>
+
               {/* Attendees */}
               <div>
                 <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">Attendees</p>
-                <p className="mb-2.5 text-xs text-muted-foreground/60">Names for reference only. Use &quot;Share with&quot; to control visibility.</p>
+                <p className="mb-2.5 text-xs text-muted-foreground/60">Search a name to add the attendee and its email to Share with.</p>
+
                 {formData.attendees.length > 0 && (
                   <div className="mb-2 flex flex-wrap gap-1.5">
                     {formData.attendees.map((name, i) => (
-                      <span key={name} className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-2 py-0.5 text-xs shadow-sm">
+                      <span key={`${name}-${i}`} className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-2 py-0.5 text-xs shadow-sm">
                         <Avatar className="h-4 w-4">
                           <AvatarFallback className={cn("text-[9px] font-bold", AVATAR_COLORS[i % AVATAR_COLORS.length])}>
                             {name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
@@ -289,17 +383,43 @@ export function EventForm({ event, open, onOpenChange, onSave, onDelete, current
                     ))}
                   </div>
                 )}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Attendee name…"
-                    value={newAttendee}
-                    onChange={e => setNewAttendee(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && addAttendee()}
-                    className="h-9 rounded-lg text-sm"
-                  />
-                  <Button type="button" variant="outline" size="sm" onClick={addAttendee} className="h-9 gap-1 rounded-lg px-3 text-xs">
-                    <Plus className="h-3 w-3" /> Add
-                  </Button>
+
+                <div className="relative">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Attendee name…"
+                      value={newAttendee}
+                      onChange={e => setNewAttendee(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && addAttendee()}
+                      className="h-9 rounded-lg text-sm"
+                    />
+                    <Button type="button" variant="outline" size="sm" onClick={addAttendee} className="h-9 gap-1 rounded-lg px-3 text-xs">
+                      <Plus className="h-3 w-3" /> Add
+                    </Button>
+                  </div>
+
+                  {newAttendee.trim() && (
+                    <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-border/60 bg-background shadow-xl">
+                      {isLoadingSuggestions ? (
+                        <div className="px-3 py-2 text-xs text-muted-foreground/60">Loading people…</div>
+                      ) : attendeeSuggestions.length > 0 ? (
+                        attendeeSuggestions.map(user => (
+                          <button
+                            key={user._id}
+                            type="button"
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => addAttendeeFromUser(user)}
+                            className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition-colors hover:bg-muted/60"
+                          >
+                            <span className="min-w-0 truncate font-medium">{user.name}</span>
+                            <span className="min-w-0 truncate text-xs text-muted-foreground/60">{user.email}</span>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-xs text-muted-foreground/60">No matching people found.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

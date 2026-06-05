@@ -1,14 +1,15 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import Client from "@/lib/models/Client";
+import logger from "@/lib/logger";
 
 export async function GET(req) {
   try {
-    console.log("=== Active Clients API Started ===");
+    logger.info("=== Active Clients API Started ===");
     
     // Step 1: Connect to DB
     try {
       await connectToDatabase();
-      console.log("✓ Database connected");
+      logger.info("✓ Database connected");
     } catch (dbError) {
       console.error("✗ Database connection error:", dbError);
       throw new Error(`DB Connection failed: ${dbError.message}`);
@@ -18,7 +19,7 @@ export async function GET(req) {
     let allClients = [];
     try {
       allClients = await Client.find({});
-      console.log("✓ Fetched all clients:", allClients.length);
+      logger.info("✓ Fetched all clients:", { count: allClients.length });
     } catch (fetchError) {
       console.error("✗ Error fetching clients:", fetchError);
       throw new Error(`Failed to fetch clients: ${fetchError.message}`);
@@ -28,12 +29,12 @@ export async function GET(req) {
     let activeClients = [];
     try {
       activeClients = allClients.filter(c => c.status === "active");
-      console.log("✓ Active clients filtered:", activeClients.length);
+      logger.info("✓ Active clients filtered:", { count: activeClients.length });
       
       if (allClients.length > 0) {
-        console.log("Sample client:", {
+        logger.info("Sample client:", {
           name: allClients[0].name,
-          status: allClients[0].status
+          status: allClients[0].status,
         });
       }
     } catch (filterError) {
@@ -56,12 +57,12 @@ export async function GET(req) {
       }
     };
 
-    console.log("✓ Response ready:", response);
+    logger.info("✓ Response ready:", { debug: response.debug });
     return Response.json(response);
     
   } catch (error) {
-    console.error("✗ Active Clients API error:", error.message);
-    console.error("Stack:", error.stack);
+    logger.error("✗ Active Clients API error:", error.message);
+    logger.error("Stack:", error.stack);
     
     return Response.json(
       { 

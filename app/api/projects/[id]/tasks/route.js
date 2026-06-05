@@ -11,6 +11,7 @@ import {
   deriveProjectStatus,
 } from "@/lib/project-utils";
 import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ const createTaskSchema = z.object({
   title: z.string().min(1).max(160),
   description: z.string().max(1000).optional().default(""),
   subtasks: z.array(z.string().min(1).max(120)).optional().default([]),
+  assigneeId: z.string().optional().nullable(),
 });
 
 const toggleTaskSchema = z.object({
@@ -32,7 +34,8 @@ async function populateProject(projectId) {
     .populate("client", "name email role")
     .populate("assignedEmployees", "name email role")
     .populate("createdBy", "name email role")
-    .populate("updatedBy", "name email role");
+    .populate("updatedBy", "name email role")
+    .populate({ path: "tasks.assignee", select: "name email role" });
 }
 
 async function recordProjectActivity(projectId, actorId, type, summary, details = "", metadata = {}) {
@@ -80,17 +83,22 @@ async function broadcastProjectChange(project, actorId, changeType, message) {
     project,
   });
 
-  emitToUsers(recipients, "notification", {
+  await notificationService.createAndEmitNotification({
+    userIds: recipients,
     type: "project",
+    title: changeType === "created" ? "Project created" : "Project updated",
+    message,
     text: message,
-    projectId: project._id?.toString?.() || project._id,
+    source: "project",
+    payload: { projectId: project._id?.toString?.() || project._id },
   });
 }
 
 export async function POST(request, { params }) {
   const session = await getServerSession(authOptions);
+  const { id } = await params;
 
-  if (!session?.user || session.user.role !== "admin") {
+  if (!session?.user || !["admin", "employee"].includes(session.user.role)) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -103,7 +111,7 @@ export async function POST(request, { params }) {
 
   await connectToDatabase();
 
-  const project = await Project.findById(params.id);
+  const project = await Project.findById(id);
 
   if (!project) {
     return Response.json({ error: "Project not found" }, { status: 404 });
@@ -117,6 +125,7 @@ export async function POST(request, { params }) {
       title: subtaskTitle.trim(),
       isDone: false,
     })),
+    assignee: parsed.data.assigneeId ? parsed.data.assigneeId : null,
   };
 
   project.tasks.push(task);
@@ -148,6 +157,7 @@ export async function POST(request, { params }) {
 
 export async function PATCH(request, { params }) {
   const session = await getServerSession(authOptions);
+  const { id } = await params;
 
   if (!session?.user || !["admin", "employee"].includes(session.user.role)) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
@@ -162,7 +172,7 @@ export async function PATCH(request, { params }) {
 
   await connectToDatabase();
 
-  const project = await Project.findById(params.id);
+  const project = await Project.findById(id);
 
   if (!project) {
     return Response.json({ error: "Project not found" }, { status: 404 });
@@ -185,6 +195,7 @@ export async function PATCH(request, { params }) {
       isDone: subtask.isDone,
     })),
   };
+  const wasPreviouslyCompleted = project.status === "completed";
 
   let changeType = "task-updated";
   let summary = `Updated task ${task.title}`;
@@ -216,6 +227,13 @@ export async function PATCH(request, { params }) {
   const { progress } = calculateProjectProgress(project.tasks);
   project.progress = progress;
   project.status = deriveProjectStatus(progress, project.status);
+  const isNowCompleted = project.status === "completed";
+
+  if (!wasPreviouslyCompleted && isNowCompleted) {
+    project.completedAt = new Date();
+  } else if (wasPreviouslyCompleted && !isNowCompleted) {
+    project.completedAt = null;
+  }
   project.updatedBy = session.user.id;
   project.lastActivityAt = new Date();
 
@@ -244,6 +262,34 @@ export async function PATCH(request, { params }) {
         : `${summary} on ${project.title}`;
 
   await broadcastProjectChange(populatedProject, session.user.id, changeType, notificationText);
+
+  if (!wasPreviouslyCompleted && isNowCompleted) {
+    await recordProjectActivity(
+      project._id,
+      session.user.id,
+      "project-completed",
+      `Project completed: ${project.title}`,
+      `Project was marked completed due to task updates.`,
+      { completedAt: project.completedAt }
+    );
+
+    const completionMessage = `Project completed: ${project.title} on ${new Date(project.completedAt).toLocaleString()}`;
+    // notify recipients specifically about completion
+    const recipients = (project.assignedEmployees || []).map((e) => e?._id?.toString?.() || e?.toString?.() || e);
+    const clientId = project.client?._id?.toString?.() || project.client?.toString?.() || project.client;
+    if (clientId) recipients.push(clientId);
+    if (session.user.id) recipients.push(session.user.id);
+
+    await notificationService.createAndEmitNotification({
+      userIds: Array.from(new Set(recipients.filter(Boolean))),
+      type: "project",
+      title: "Project completed",
+      message: completionMessage,
+      text: completionMessage,
+      source: "project",
+      payload: { projectId: project._id?.toString?.() || project._id, completedAt: project.completedAt },
+    });
+  }
 
   return Response.json({ project: populatedProject });
 }

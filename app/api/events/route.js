@@ -218,8 +218,8 @@ import { authOptions } from "@/lib/auth-options";
 import { connectToDatabase } from "@/lib/mongodb";
 import Event from "@/lib/models/Event";
 import User from "@/lib/models/User";
-import { emitToUsers } from "@/lib/socket/server";
 import { sendTicketEmail } from "@/lib/email/sendTicketEmail";
+import notificationService from "@/lib/notifications/notification-service";
 
 function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
@@ -261,12 +261,14 @@ async function emitScheduleNotification({ emails, excludeUserIds = [], type, tit
 
   if (targetUserIds.length === 0) return;
 
-  emitToUsers(targetUserIds, "notification", {
+  await notificationService.createAndEmitNotification({
+    userIds: targetUserIds,
     type,
     title,
-    text: message,
     message,
-    category: "schedule",
+    text: message,
+    source: "schedule",
+    payload: { category: "schedule" },
   });
 }
 
@@ -317,6 +319,7 @@ export async function POST(req) {
       duration: body.duration,
       type: body.type,
       location: body.location,
+      meetingLink: body.meetingLink || "",
       description: body.description,
       attendees: body.attendees || [],
       assignedRoles: body.assignedRoles || [],
@@ -351,6 +354,7 @@ export async function POST(req) {
               timeStyle: "short",
             })}.</p>
             <p><strong>Location:</strong> ${newEvent.location || "TBD"}</p>
+            ${newEvent.meetingLink ? `<p><strong>Meeting link:</strong> <a href="${newEvent.meetingLink}">${newEvent.meetingLink}</a></p>` : ""}
             <p><strong>Description:</strong> ${newEvent.description || "No description provided."}</p>
             <p><strong>Assigned Emails:</strong> ${normalizedEmails.join(", ")}</p>
           </div>
@@ -415,15 +419,38 @@ export async function DELETE(req) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
+    const recipients = uniqueEmails(existing.assignedToEmails || []);
+
     await Event.findByIdAndDelete(id);
 
     await emitScheduleNotification({
-      emails: existing.assignedToEmails || [],
+      emails: recipients,
       excludeUserIds: session?.user?.id || actorUserId ? [String(session?.user?.id || actorUserId)] : [],
       type: "warning",
       title: "Event cancelled",
       message: `${existing.title} was removed from the schedule.`,
     });
+
+    try {
+      await sendEventEmail({
+        to: recipients,
+        subject: `Event cancelled: ${existing.title}`,
+        html: `
+          <div style="font-family:Arial;padding:10px">
+            <h2>Event Cancelled</h2>
+            <p><strong>${existing.title}</strong> was removed from the schedule.</p>
+            <p><strong>Date/time:</strong> ${formatEventDateTime(existing.date, existing.time).toLocaleString("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}</p>
+            <p><strong>Location:</strong> ${existing.location || "TBD"}</p>
+            ${existing.meetingLink ? `<p><strong>Meeting link:</strong> <a href="${existing.meetingLink}">${existing.meetingLink}</a></p>` : ""}
+          </div>
+        `,
+      });
+    } catch (emailErr) {
+      console.error("Event cancellation email send error:", emailErr);
+    }
 
     return NextResponse.json({ message: "Deleted" });
   } catch (error) {
@@ -487,6 +514,7 @@ export async function PUT(req) {
               timeStyle: "short",
             })}</p>
             <p><strong>Location:</strong> ${updated.location || "TBD"}</p>
+            ${updated.meetingLink ? `<p><strong>Meeting link:</strong> <a href="${updated.meetingLink}">${updated.meetingLink}</a></p>` : ""}
             <p><strong>Description:</strong> ${updated.description || "No description provided."}</p>
             <p><strong>Assigned Emails:</strong> ${(updated.assignedToEmails || []).join(", ")}</p>
           </div>

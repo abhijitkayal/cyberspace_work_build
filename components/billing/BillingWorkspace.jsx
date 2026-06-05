@@ -9,6 +9,7 @@ import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 import { BillingDocument } from "./BillingDocument";
 import { computeBillingTotals, createBillingDraft, formatDateInput } from "@/lib/billing";
+import { Download, Image, X, Edit2, FileText } from "lucide-react";
 
 function normalizeBillingType(value) {
   const normalized = String(value || "").trim().toLowerCase();
@@ -53,7 +54,7 @@ function hydrateFormFromRecord(record) {
       description: record.advanceRow?.description || "",
       amount: Number(record.advanceRow?.amount || 0),
     },
-    notes: [record.notes?.[0] || "", record.notes?.[1] || ""],
+    notes: (record.notes && record.notes.length > 0) ? record.notes : [""],
     paymentHeading: record.paymentHeading || "",
     paymentDetails: {
       upiId: record.paymentDetails?.upiId || "",
@@ -150,13 +151,16 @@ export default function BillingWorkspace({ mode = "client" }) {
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
-  const [adminMode, setAdminMode] = useState("upload");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [form, setForm] = useState(() => createBillingDraft(defaultTemplate));
   const [uploadForm, setUploadForm] = useState(() => createUploadDraft());
   const [uploadFile, setUploadFile] = useState(null);
   const printableRef = useRef(null);
+
+  // Default to template mode for admin so they see the form editor first
+  const [adminMode, setAdminMode] = useState(canManage ? "template" : "upload");
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const selectedBill = useMemo(() => bills.find((bill) => bill._id === selectedId) || null, [bills, selectedId]);
   const livePreview = useMemo(() => {
@@ -169,6 +173,7 @@ export default function BillingWorkspace({ mode = "client" }) {
 
     return {
       ...form,
+      type: form.type || (canManage ? "invoice" : "bill"),
       recipientName: form.recipientName || recipient?.name || "",
       recipientEmail: form.recipientEmail || recipient?.email || "",
       subtotal: totals.subtotal,
@@ -177,7 +182,7 @@ export default function BillingWorkspace({ mode = "client" }) {
       advanceAmount: totals.advance,
       dueAmount: totals.dueAmount,
     };
-  }, [clients, form]);
+  }, [clients, form, canManage]);
 
   useEffect(() => {
     loadData();
@@ -344,6 +349,20 @@ export default function BillingWorkspace({ mode = "client" }) {
       notes[index] = value;
       return { ...current, notes };
     });
+  }
+
+  function addNote() {
+    setForm((current) => ({
+      ...current,
+      notes: [...current.notes, ""],
+    }));
+  }
+
+  function removeNote(index) {
+    setForm((current) => ({
+      ...current,
+      notes: current.notes.filter((_, i) => i !== index),
+    }));
   }
 
   function handleRecipientChange(clientId) {
@@ -719,14 +738,16 @@ export default function BillingWorkspace({ mode = "client" }) {
   }
 
   const templatePreview = livePreview;
-  const previewBill = canManage && adminMode === "upload" ? selectedBill : templatePreview;
+  const previewBill = canManage && adminMode === "upload" ? selectedBill : { ...templatePreview, type: templatePreview.type || "invoice" };
   const isUploadedPreview = previewBill?.sourceType === "uploaded" && Boolean(previewBill?.fileUrl);
   const uploadedBills = useMemo(() => bills.filter((bill) => isUploadedRecord(bill)), [bills]);
   const templateBills = useMemo(() => bills.filter((bill) => !isUploadedRecord(bill)), [bills]);
 
   return (
     <div className="grid gap-4">
-      <div className="space-y-4">
+      <div className="grid gap-4 lg:grid-cols-[1fr_400px]">
+        {/* LEFT COLUMN: FORM */}
+        <div className="space-y-4">
         {canManage ? (
           <Card>
             <CardHeader>
@@ -734,11 +755,14 @@ export default function BillingWorkspace({ mode = "client" }) {
               <CardDescription>Create a bill/invoice template or upload an existing file and assign it to a client.</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* <div className="mb-5 flex flex-wrap gap-2">
-                <Button type="button" variant={adminMode === "upload" ? "default" : "outline"} onClick={() => setAdminMode("upload")}>
-                  Upload & Assign
+              <div className="mb-5 flex flex-wrap gap-2">
+                <Button type="button" variant={adminMode === "template" ? "default" : "outline"} onClick={() => setAdminMode("template")}>
+                  Create Template
                 </Button>
-              </div> */}
+                {/* <Button type="button" variant={adminMode === "upload" ? "default" : "outline"} onClick={() => setAdminMode("upload")}>
+                  Upload & Assign
+                </Button> */}
+              </div>
 
               {adminMode === "template" ? (
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -892,23 +916,35 @@ export default function BillingWorkspace({ mode = "client" }) {
                 </Field>
 
                 <label className="mb-10 p-2 text-xl font-semibold text-foreground">Terms & Payment</label>
-                <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Note 1">
-                    <textarea
-                      value={form.notes[0]}
-                      onChange={(event) => updateNotes(0, event.target.value)}
-                      rows={3}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm outline-none transition focus:ring-2 focus:ring-ring/50 dark:border-white/15 dark:bg-background dark:text-foreground"
-                    />
-                  </Field>
-                  <Field label="Note 2">
-                    <textarea
-                      value={form.notes[1]}
-                      onChange={(event) => updateNotes(1, event.target.value)}
-                      rows={3}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm outline-none transition focus:ring-2 focus:ring-ring/50 dark:border-white/15 dark:bg-background dark:text-foreground"
-                    />
-                  </Field>
+                <div className="space-y-3">
+                  {form.notes.map((note, index) => (
+                    <div key={index} className="flex gap-2">
+                      <div className="flex-1">
+                        <Field label={`Note ${index + 1}`}>
+                          <textarea
+                            value={note}
+                            onChange={(event) => updateNotes(index, event.target.value)}
+                            rows={3}
+                            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm outline-none transition focus:ring-2 focus:ring-ring/50 dark:border-white/15 dark:bg-background dark:text-foreground"
+                          />
+                        </Field>
+                      </div>
+                      {form.notes.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeNote(index)}
+                          className="h-fit mt-8"
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" onClick={addNote} className="w-full">
+                    + Add Terms & Conditions
+                  </Button>
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-2">
@@ -968,63 +1004,8 @@ export default function BillingWorkspace({ mode = "client" }) {
                   </Button>
                 </div>
                 </form>
-              ) : (
-                <form onSubmit={handleUploadAssignSubmit} className="space-y-5">
-                  <div className="grid gap-3 md:grid-cols-3">
-                    <Field label="Document Type">
-                      <select
-                        value={uploadForm.type}
-                        onChange={(event) => updateUploadField("type", event.target.value)}
-                          className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base text-foreground transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
-                        required
-                      >
-                          <option value="invoice" className="bg-background text-foreground dark:bg-background dark:text-foreground">Invoice</option>
-                          <option value="bill" className="bg-background text-foreground dark:bg-background dark:text-foreground">Bill</option>
-                      </select>
-                    </Field>
-                    <Field label="Reference Number">
-                      <Input
-                        value={uploadForm.referenceNumber}
-                        onChange={(event) => updateUploadField("referenceNumber", event.target.value)}
-                        required
-                      />
-                    </Field>
-                    <Field label="Recipient Client">
-                      <select
-                        value={uploadForm.recipientUserId}
-                        onChange={(event) => updateUploadField("recipientUserId", event.target.value)}
-                          className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base text-foreground transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
-                        required
-                      >
-                          <option value="" className="bg-background text-foreground dark:bg-background dark:text-foreground">
-                          Select client
-                        </option>
-                        {clients.map((client) => (
-                            <option key={client._id} value={client._id} className="bg-background text-foreground dark:bg-background dark:text-foreground">
-                            {client.name} ({client.email})
-                          </option>
-                        ))}
-                      </select>
-                    </Field>
-                  </div>
-
-                  <Field label="Upload File (PDF/Image)">
-                    <Input
-                      type="file"
-                      accept="application/pdf,image/*"
-                      onChange={(event) => setUploadFile(event.target.files?.[0] || null)}
-                      required
-                    />
-                  </Field>
-
-                  {notice ? <p className="text-sm text-emerald-400">{notice}</p> : null}
-                  {error ? <p className="text-sm text-red-400">{error}</p> : null}
-
-                  <Button type="submit" disabled={saving}>
-                    {saving ? "Assigning..." : "Upload and Assign"}
-                  </Button>
-                </form>
-              )}
+              ) : null}
+              {/* UPLOAD & ASSIGN SECTION - COMMENTED OUT FOR NOW */}
             </CardContent>
           </Card>
         ) : (
@@ -1061,23 +1042,39 @@ export default function BillingWorkspace({ mode = "client" }) {
                           <p className="mt-2 text-sm text-muted-foreground">{bill.documentTitle} - {bill.documentSubtitle}</p>
                         </button>
 
-                        <div className="shrink-0">
+                        <div className="shrink-0 flex flex-wrap gap-2">
                           {isUploadedRecord(bill) ? (
-                            <Button type="button" variant="outline" onClick={() => downloadUploadedFile(bill)}>
-                              Download File
+                            <Button type="button" variant="outline" size="sm" onClick={() => downloadUploadedFile(bill)}>
+                              <Download className="w-4 h-4 mr-1" />
+                              Download
                             </Button>
                           ) : (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {
-                                setSelectedId(bill._id);
-                                downloadPreviewAsPdf();
-                              }}
-                              disabled={exporting && selectedId === bill._id}
-                            >
-                              {exporting && selectedId === bill._id ? "Downloading..." : "Download PDF"}
-                            </Button>
+                            <>
+                              {canManage && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => loadBillIntoForm(bill)}
+                                >
+                                  <Edit2 className="w-4 h-4 mr-1" />
+                                  Edit
+                                </Button>
+                              )}
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedId(bill._id);
+                                  downloadPreviewAsPdf();
+                                }}
+                                disabled={exporting && selectedId === bill._id}
+                              >
+                                <Download className="w-4 h-4 mr-1" />
+                                {exporting && selectedId === bill._id ? "..." : "PDF"}
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>
@@ -1178,9 +1175,62 @@ export default function BillingWorkspace({ mode = "client" }) {
             </CardContent>
           </Card>
         ) : null}
+        </div>
+
+        {/* RIGHT COLUMN: LIVE PREVIEW */}
+        {canManage && adminMode === "template" && previewBill ? (
+          <Card className="sticky top-4 h-fit cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => setShowPreviewModal(true)}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Live Preview (Click to expand)
+              </CardTitle>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); downloadPreviewAsPdf(); }} disabled={exporting}>
+                  <Download className="w-4 h-4 mr-1" />
+                  {exporting ? "Downloading..." : "PDF"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); downloadPreviewAsImage(); }} disabled={exportingImage}>
+                  <Image className="w-4 h-4 mr-1" />
+                  {exportingImage ? "Exporting..." : "Image"}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="overflow-hidden text-xs text-muted-foreground">
+              <p>Click card to view full preview...</p>
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
 
-      
+      {/* PREVIEW MODAL */}
+      {showPreviewModal && previewBill && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-lg shadow-xl flex flex-col">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-800">
+              <h2 className="text-xl font-bold text-foreground dark:text-white">Invoice Preview</h2>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={downloadPreviewAsPdf} disabled={exporting}>
+                  <Download className="w-4 h-4 mr-1" />
+                  {exporting ? "..." : "PDF"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={downloadPreviewAsImage} disabled={exportingImage}>
+                  <Image className="w-4 h-4 mr-1" />
+                  {exportingImage ? "..." : "Image"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowPreviewModal(false)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="overflow-y-auto flex-1 bg-gray-50 dark:bg-slate-950 p-4">
+              <div ref={printableRef} className="bg-white p-8 mx-auto" style={{ maxWidth: "900px" }}>
+                <BillingDocument bill={previewBill} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {!canManage && selectedBill && !isUploadedRecord(selectedBill) ? (
         <div className="pointer-events-none fixed top-0 z-[-1]" style={{ left: -10000 }}>

@@ -83,8 +83,8 @@ function ChatInner({
     if (!currentUserId) return undefined
 
     const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "")
-    const resolvedSocketUrl = typeof window !== "undefined" && window.location.hostname === "localhost" && socketUrl.includes("localhost:3000")
-      ? "http://localhost:5000"
+    const resolvedSocketUrl = (typeof window !== "undefined" && window.location.hostname === "localhost")
+      ? (process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000")
       : socketUrl
 
     // Create socket with authentication and auto-reconnect
@@ -243,7 +243,7 @@ function ChatInner({
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="h-full min-h-[600px] max-h-[calc(100vh-200px)] flex min-w-0 overflow-hidden rounded-lg border border-zinc-200 bg-background dark:border-border">
+      <div className="h-full min-h-150 max-h-[calc(100vh-200px)] flex min-w-0 overflow-hidden rounded-lg border border-zinc-200 bg-background dark:border-border">
         {/* Mobile Sidebar Overlay */}
         {isSidebarOpen && (
           <div
@@ -254,7 +254,7 @@ function ChatInner({
 
         {/* Conversations Sidebar - Responsive */}
         <div className={`
-          w-[360px] max-w-full border-r border-zinc-200 bg-background flex-shrink-0 dark:border-border
+          w-90 max-w-full border-r border-zinc-200 bg-background shrink-0 dark:border-border
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           lg:relative lg:block
           fixed inset-y-0 left-0 z-50

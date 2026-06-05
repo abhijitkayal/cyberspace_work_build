@@ -5,6 +5,7 @@ import User from "@/lib/models/User";
 import Conversation from "@/lib/models/Conversation";
 import Message from "@/lib/models/Message";
 import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,10 +29,12 @@ export async function POST(req) {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
-  // Block only client <-> employee direct chats.
+  // Block role combinations that should not chat directly.
   if (
     (sender.role === "client" && receiver.role === "employee") ||
-    (sender.role === "employee" && receiver.role === "client")
+    (sender.role === "employee" && receiver.role === "client") ||
+    (sender.role === "vendor" && !["admin", "vendor"].includes(receiver.role)) ||
+    (receiver.role === "vendor" && !["admin", "vendor"].includes(sender.role))
   ) {
     return Response.json({ error: "Not allowed" }, { status: 403 });
   }
@@ -55,9 +58,13 @@ export async function POST(req) {
   });
 
   emitToUsers([receiver._id], "receive-message", message);
-  emitToUsers([receiver._id], "notification", {
+  await notificationService.createAndEmitNotification({
+    userIds: [receiver._id],
     type: "chat",
+    title: "New message",
+    message: "New message",
     text: "New message",
+    source: "chat",
   });
 
   // Fallback: if the socket server runs as a separate process (e.g., on Render),
@@ -75,21 +82,6 @@ export async function POST(req) {
           userIds: [receiver._id?.toString?.() || receiver._id],
           eventName: "receive-message",
           payload: message,
-          secret: process.env.SOCKET_EMIT_SECRET || undefined,
-        }),
-      }).catch(() => {})
-
-      // send notification
-      await fetch(`${socketUrl}/emit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userIds: [receiver._id?.toString?.() || receiver._id],
-          eventName: "notification",
-          payload: {
-            type: "chat",
-            text: "New message",
-          },
           secret: process.env.SOCKET_EMIT_SECRET || undefined,
         }),
       }).catch(() => {})

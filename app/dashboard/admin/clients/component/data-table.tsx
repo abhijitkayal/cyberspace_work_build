@@ -258,14 +258,14 @@ export function DataTable({ users, onDeleteUser, onEditUser, onAddUser }: DataTa
                   Reset Password
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   variant="destructive"
                   className="cursor-pointer"
                   onClick={() => onDeleteUser(user.id)}
                 >
                   <Trash2 className="mr-2 size-4" />
                   Delete User
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

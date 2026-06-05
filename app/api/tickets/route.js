@@ -3,7 +3,10 @@ import { authOptions } from "@/lib/auth-options";
 import { connectToDatabase } from "@/lib/mongodb";
 import Ticket from "@/lib/models/Ticket";
 import User from "@/lib/models/User";
+import Project from "@/lib/models/Project";
+import { buildProjectVisibilityQuery } from "@/lib/project-utils";
 import { emitToUsers } from "@/lib/socket/server";
+import notificationService from "@/lib/notifications/notification-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,6 +16,7 @@ async function loadTickets(query) {
     .sort({ updatedAt: -1, createdAt: -1 })
     .populate("createdBy", "name email role")
     .populate("assignedTo", "name email role")
+    .populate("project", "title client assignedEmployees")
     .populate("messages.sender", "name email role");
 }
 
@@ -29,7 +33,7 @@ export async function GET() {
 
   if (session.user.role === "admin") {
     tickets = await loadTickets({});
-  } else if (session.user.role === "employee") {
+  } else if (session.user.role === "employee" || session.user.role === "vendor") {
     tickets = await loadTickets({
       $or: [
         { assignedTo: session.user.id },
@@ -53,32 +57,56 @@ export async function POST(req) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!["admin", "employee", "client"].includes(session.user.role)) {
+  if (!["admin", "employee", "client", "vendor"].includes(session.user.role)) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   await connectToDatabase();
 
-  const { title, description, priority, assignedTo } = await req.json();
+  const { title, description, priority, assignedTo, project: projectId } = await req.json();
 
   if (!title?.trim() || !description?.trim()) {
     return Response.json({ error: "Title and description are required" }, { status: 400 });
+  }
+
+  if (!projectId) {
+    return Response.json({ error: "Project is required" }, { status: 400 });
+  }
+
+  const projectVisibilityQuery = buildProjectVisibilityQuery(session.user);
+
+  if (!projectVisibilityQuery) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const accessibleProject = await Project.findOne({
+    _id: projectId,
+    ...projectVisibilityQuery,
+  }).select("_id title");
+
+  if (!accessibleProject) {
+    return Response.json({ error: "You are not allowed to raise a ticket for this project" }, { status: 403 });
   }
 
   const payload = {
     title: title.trim(),
     description: description.trim(),
     priority:
-      session.user.role === "client"
+      session.user.role === "client" || session.user.role === "vendor"
         ? "medium"
         : ["low", "medium", "high"].includes(priority)
           ? priority
           : "medium",
     createdBy: session.user.id,
+            project: accessibleProject._id,
   };
 
   if (session.user.role === "employee") {
     payload.assignedTo = session.user.id;
+  }
+
+  if (session.user.role === "vendor") {
+    payload.assignedTo = null;
   }
 
   if (session.user.role === "admin" && assignedTo) {
@@ -123,11 +151,14 @@ export async function POST(req) {
       changeType: "created",
     });
 
-    emitToUsers(recipients, "notification", {
+    await notificationService.createAndEmitNotification({
+      userIds: recipients,
       type: "ticket",
       title: "New ticket created",
+      message: "New ticket created",
       text: "New ticket created",
-      ticketId: populatedTicket._id?.toString?.() || populatedTicket._id,
+      source: "ticket",
+      payload: { ticketId: populatedTicket._id?.toString?.() || populatedTicket._id },
     });
   }
 

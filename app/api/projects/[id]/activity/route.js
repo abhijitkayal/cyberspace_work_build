@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(_request, { params }) {
   const session = await getServerSession(authOptions);
+  const { id } = await params;
 
   if (!session?.user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,7 +19,7 @@ export async function GET(_request, { params }) {
 
   await connectToDatabase();
 
-  const project = await Project.findById(params.id)
+  const project = await Project.findById(id)
     .populate("client", "name email role")
     .populate("assignedEmployees", "name email role")
     .populate("createdBy", "name email role")

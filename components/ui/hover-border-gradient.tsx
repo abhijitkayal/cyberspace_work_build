@@ -44,6 +44,7 @@ export function HoverBorderGradient({
       "radial-gradient(16.2% 41.199999999999996% at 100% 50%, hsl(0, 0%, 100%) 0%, rgba(255, 255, 255, 0) 100%)",
   };
 
+    const TagEl = Tag as any;
   const highlight =
   "radial-gradient(100% 300% at 50% 50%, rgba(0,255,255,1) 0%, rgba(0,255,255,0.6) 25%, rgba(0,200,255,0.3) 50%, rgba(0,100,150,0.15) 70%, transparent 100%)";
   useEffect(() => {
@@ -55,44 +56,44 @@ export function HoverBorderGradient({
     }
   }, [hovered, duration, rotateDirection]);
   return (
-    <Tag
+    <TagEl
       onMouseEnter={(event: React.MouseEvent<HTMLDivElement>) => {
         setHovered(true);
       }}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex rounded-full border  content-center bg-transparent hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col flex-nowrap gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit",
+        "relative flex rounded-full border content-center bg-transparent hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col flex-nowrap gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit",
         containerClassName
       )}
       {...props}
     >
-      <div
-        className={cn(
-          "w-auto text-white z-10 bg-transparent px-4 py-2 rounded-[inherit]",
-          className
-        )}
-      >
-        {children}
-      </div>
-      <motion.div
-        className={cn(
-          "flex-none inset-0 overflow-hidden absolute z-0 rounded-[inherit]"
-        )}
-        style={{
-          filter: "blur(2px)",
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        initial={{ background: movingMap[direction] }}
-        animate={{
-          background: hovered
-            ? [movingMap[direction], highlight]
-            : movingMap[direction],
-        }}
-        transition={{ ease: "linear", duration: duration ?? 1 }}
-      />
-      <div className="bg-black absolute z-1 flex-none inset-[2px] rounded-[100px]" />
-    </Tag>
+      <React.Fragment>{/* ✅ wrap all children in a fragment */}
+        <div
+          className={cn(
+            "w-auto text-white z-10 bg-transparent px-4 py-2 rounded-[inherit]",
+            className
+          )}
+        >
+          {children}
+        </div>
+        <motion.div
+          className={cn(
+            "flex-none inset-0 overflow-hidden absolute z-0 rounded-[inherit]"
+          )}
+          style={{
+            filter: "blur(2px)",
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+          }}
+          initial={{ background: movingMap[direction] }}
+          animate={{
+            background: hovered ? [movingMap[direction], highlight] : movingMap[direction],
+          }}
+          transition={{ ease: "linear", duration: duration ?? 1 }}
+        />
+        <div className="bg-black absolute z-1 flex-none inset-[2px] rounded-[100px]" />
+      </React.Fragment>
+    </TagEl>
   );
 }

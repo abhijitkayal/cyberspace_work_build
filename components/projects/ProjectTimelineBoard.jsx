@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { Trash2 } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -77,7 +78,31 @@ function buildTimelineRange(project) {
 
   const startDate = toDate(project.startDate || project.createdAt) || new Date();
   const deadline = toDate(project.deadline) || addDays(startDate, 7);
-  const span = Math.max(7, Math.ceil((deadline.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+
+  // Extend timeline to include any work done after the deadline so those days appear
+  // in the timeline (e.g., tasks completed after the deadline).
+  let endDate = deadline;
+  try {
+    for (const task of project.tasks || []) {
+      if (task?.doneAt) {
+        const d = toDate(task.doneAt);
+        if (d && d > endDate) endDate = d;
+      }
+      for (const sub of task.subtasks || []) {
+        if (sub?.doneAt) {
+          const sd = toDate(sub.doneAt);
+          if (sd && sd > endDate) endDate = sd;
+        }
+      }
+    }
+  } catch (e) {
+    // ignore malformed tasks
+  }
+
+  const span = Math.max(
+    7,
+    Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  );
 
   return {
     start: startDate,
@@ -109,7 +134,6 @@ function buildDailyDoneMap(project, timelineDays, deadlineDate) {
     if (task?.isDone && task?.doneAt) {
       const doneDate = toDate(task.doneAt);
       if (doneDate) {
-        if (deadlineDate && doneDate > deadlineDate && !isSameDay(doneDate, deadlineDate)) continue;
         const key = formatDayKey(doneDate);
         if (validKeys.has(key)) {
           const existing = doneMap.get(key) || [];
@@ -123,7 +147,6 @@ function buildDailyDoneMap(project, timelineDays, deadlineDate) {
       if (!subtask?.isDone || !subtask?.doneAt) continue;
       const doneDate = toDate(subtask.doneAt);
       if (!doneDate) continue;
-      if (deadlineDate && doneDate > deadlineDate && !isSameDay(doneDate, deadlineDate)) continue;
       const key = formatDayKey(doneDate);
       if (!validKeys.has(key)) continue;
       const existing = doneMap.get(key) || [];
@@ -146,6 +169,20 @@ function cloneProjectTasks(project) {
   };
 }
 
+async function readResponseBody(response) {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: text };
+  }
+}
+
 export default function ProjectTimelineBoard({
   role,
   sessionUserId,
@@ -156,6 +193,7 @@ export default function ProjectTimelineBoard({
   onEditProject,
 }) {
   const [activeTaskError, setActiveTaskError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   // Optimistic local project state — makes checkboxes feel instant
   const [localProject, setLocalProject] = useState(null);
   const dayWidth = 144;
@@ -301,7 +339,7 @@ export default function ProjectTimelineBoard({
           }),
         });
 
-        const data = await response.json();
+        const data = await readResponseBody(response);
 
         if (!response.ok) {
           throw new Error(data.error || "Failed to update task");
@@ -320,6 +358,39 @@ export default function ProjectTimelineBoard({
     },
     [localProject, project, onProjectUpdated, onRefresh]
   );
+
+  const handleDeleteProject = useCallback(async () => {
+    if (!displayProject?._id || role !== "admin") return;
+
+    const confirmed = window.confirm(
+      `Delete project "${displayProject.title}"? This will remove the project and its activity history.`
+    );
+
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    setActiveTaskError("");
+
+    try {
+      const response = await fetch(`/api/projects/${displayProject._id}`, {
+        method: "DELETE",
+      });
+
+      const data = await readResponseBody(response);
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete project");
+      }
+
+      pendingServerProject.current = null;
+      setLocalProject(null);
+      onRefresh?.();
+    } catch (deleteError) {
+      setActiveTaskError(deleteError.message || "Failed to delete project");
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [displayProject, onRefresh, role]);
 
   return (
     <div className="space-y-6">
@@ -356,13 +427,29 @@ export default function ProjectTimelineBoard({
                 {displayProject.assignedEmployees?.length || 0} assigned
               </span>
               {role === "admin" ? (
-                <button
-                  type="button"
-                  onClick={() => onEditProject?.(displayProject)}
-                  className="rounded-full border border-gray-300 dark:border-white/20 px-3 py-1 text-gray-700 dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-zinc-900/50"
-                >
-                  Edit details
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onEditProject?.(displayProject)}
+                    className="rounded-full border border-gray-300 dark:border-white/20 px-3 py-1 text-gray-700 dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-zinc-900/50"
+                  >
+                    Edit details
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteProject}
+                    disabled={isDeleting}
+                    aria-label="Delete project"
+                    title="Delete project"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-300/70 bg-rose-500/10 text-rose-700 transition-colors hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:text-rose-300"
+                  >
+                    {isDeleting ? (
+                      <span className="text-[10px] font-medium leading-none">...</span>
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               ) : null}
             </div>
           </CardHeader>
@@ -373,12 +460,17 @@ export default function ProjectTimelineBoard({
               <Metric label="Tasks done" value={`${progressSummary.completed}/${progressSummary.total || 0}`} />
               <Metric label="Deadline" value={formatLongDate(toDate(displayProject.deadline) || new Date())} />
             </div>
+            {displayProject?.completedAt ? (
+              <div className="mt-3">
+                <Metric label="Completed" value={formatLongDate(toDate(displayProject.completedAt) || new Date())} />
+              </div>
+            ) : null}
 
             <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
 
               {/* ── Gantt timeline bar ── */}
               <div className="overflow-x-auto pb-2">
-                <div className="min-w-[1200px] space-y-3">
+                <div className="min-w-300 space-y-3">
                   <div
                     className="grid gap-2 border-b border-gray-200 dark:border-white/10 pb-3"
                     style={{ gridTemplateColumns: `repeat(${timeline.days.length}, minmax(${dayWidth}px, ${dayWidth}px))` }}
@@ -407,7 +499,7 @@ export default function ProjectTimelineBoard({
 
                     <div
                       aria-hidden="true"
-                      className="absolute inset-0 rounded-[26px] border border-gray-200 dark:border-white/5 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:144px_100%,100%_82px]"
+                      className="absolute inset-0 rounded-[26px] border border-gray-200 dark:border-white/5 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[144px_100%,100%_82px]"
                     />
 
                     {/* Project bar — spans exactly from start to deadline */}
@@ -476,7 +568,7 @@ export default function ProjectTimelineBoard({
                 {role !== "client" ? (
                   <div className="space-y-3">
                     <div className="text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-white/50">Tasks</div>
-                    <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                    <div className="space-y-3 max-h-105 overflow-y-auto pr-1">
                       {(displayProject.tasks || []).map((task) => (
                         <div
                           key={task._id || task.id || task.title}
@@ -543,7 +635,7 @@ export default function ProjectTimelineBoard({
                   Done items are only populated up to and including the deadline day.
               ── */}
               <div className="xl:col-span-2 overflow-x-auto pb-2">
-                <div className="min-w-[1200px] space-y-3">
+                <div className="min-w-300 space-y-3">
                   <div
                     className="grid gap-2"
                     style={{ gridTemplateColumns: `repeat(${timeline.days.length}, minmax(${dayWidth}px, ${dayWidth}px))` }}
@@ -557,38 +649,36 @@ export default function ProjectTimelineBoard({
                       return (
                         <div
                           key={`done-${day.toISOString()}`}
-                          className={`min-h-[88px] rounded-xl border p-2 transition-opacity ${
+                          className={`min-h-22 rounded-xl border p-2 transition-opacity ${
                             isAfterDeadline
                               ? "border-gray-100 dark:border-white/5 bg-gray-50/40 dark:bg-zinc-900/20 opacity-35 pointer-events-none"
                               : "border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-900/50 text-gray-900 dark:text-white"
                           }`}
                         >
-                          <p
-                            className={`text-[10px] uppercase tracking-[0.18em] ${
-                              isAfterDeadline
-                                ? "text-gray-300 dark:text-white/20"
-                                : "text-gray-500 dark:text-white/45"
-                            }`}
-                          >
-                            Done {formatDay(day)}
-                          </p>
+                              <p
+                                className={`text-[10px] uppercase tracking-[0.18em] ${
+                                  isAfterDeadline
+                                    ? "text-gray-300 dark:text-white/20"
+                                    : "text-gray-500 dark:text-white/45"
+                                }`}
+                              >
+                                Done {formatDay(day)}{isAfterDeadline ? " (after deadline)" : ""}
+                              </p>
 
-                          {!isAfterDeadline && (
-                            doneItems.length ? (
-                              <div className="mt-2 space-y-1.5">
-                                {doneItems.map((item, index) => (
-                                  <div
-                                    key={`${dayKey}-${item.type}-${index}`}
-                                    className="rounded-lg border border-gray-300 dark:border-white/20 bg-white dark:bg-zinc-900/50 px-2 py-1 text-[11px] text-gray-700 dark:text-white/80"
-                                  >
-                                    {item.type === "subtask" ? `${item.parent}: ${item.title}` : item.title}
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="mt-2 text-[11px] text-gray-400 dark:text-white/35">No task done</p>
-                            )
-                          )}
+                              {doneItems.length ? (
+                                <div className="mt-2 space-y-1.5">
+                                  {doneItems.map((item, index) => (
+                                    <div
+                                      key={`${dayKey}-${item.type}-${index}`}
+                                      className="rounded-lg border border-gray-300 dark:border-white/20 bg-white dark:bg-zinc-900/50 px-2 py-1 text-[11px] text-gray-700 dark:text-white/80"
+                                    >
+                                      {item.type === "subtask" ? `${item.parent}: ${item.title}` : item.title}
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="mt-2 text-[11px] text-gray-400 dark:text-white/35">No task done</p>
+                              )}
                         </div>
                       );
                     })}

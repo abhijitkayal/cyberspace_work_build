@@ -138,7 +138,7 @@ import { Button } from "@/components/ui/button";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -151,6 +151,14 @@ export default function LoginPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !session?.user) {
+      return;
+    }
+
+    localStorage.setItem("loggedInUser", JSON.stringify(session.user));
+  }, [status, session]);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -582,7 +590,13 @@ export default function LoginPage() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
               </svg>
-              Return to homepage
+              Return to HomePage
+            </Link>
+            <Link href="/signup" className="home-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Return to SignUpPage
             </Link>
           </div>
         </div>

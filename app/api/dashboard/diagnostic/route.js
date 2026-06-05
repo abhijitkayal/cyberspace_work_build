@@ -1,16 +1,17 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import Client from "@/lib/models/Client";
+import logger from "@/lib/logger";
 
 export async function GET(req) {
   try {
-    console.log("=== Diagnostic API ===");
+    logger.info("=== Diagnostic API ===");
     
     await connectToDatabase();
-    console.log("Database connected");
+    logger.info("Database connected");
 
     // Get ALL clients with detailed info
     const allClients = await Client.find({});
-    console.log("Total clients found:", allClients.length);
+    logger.info("Total clients found:", { count: allClients.length });
 
     // Get stats
     const activeCount = allClients.filter(c => c.status === "active").length;
@@ -26,7 +27,7 @@ export async function GET(req) {
       const budget = parseFloat(c.finalBudget);
       if (isNaN(budget)) {
         budgetErrors++;
-        console.log(`Invalid budget for ${c.name}: "${c.finalBudget}"`);
+        logger.warn("Invalid budget for client", { name: c.name });
       } else {
         totalBudget += budget;
         if (c.status === "active") {

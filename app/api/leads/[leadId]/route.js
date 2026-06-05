@@ -18,7 +18,14 @@ function normalizePhone(value) {
 
 const updateLeadSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  email: z.string().trim().email(),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .default("")
+    .refine((value) => value === "" || z.string().email().safeParse(value).success, {
+      message: "Invalid email address",
+    }),
   phone: z.preprocess(
     normalizePhone,
     z.string().regex(/^\+?[0-9]{10,15}$/, "Phone number must contain 10 to 15 digits and may start with +")
@@ -27,6 +34,7 @@ const updateLeadSchema = z.object({
   requirement: z.string().trim().max(3000).optional().default(""),
   budget: z.string().trim().max(120).optional().default(""),
   status: z.enum(["active", "inactive"]).optional(),
+  nextFollowUpDate: z.string().datetime().optional().nullable(),
 });
 
 export async function PATCH(request, { params }) {
@@ -51,12 +59,13 @@ export async function PATCH(request, { params }) {
       leadId,
       {
         name: validated.data.name,
-        email: validated.data.email.toLowerCase(),
+        email: validated.data.email ? validated.data.email.toLowerCase() : "",
         phone: normalizePhone(validated.data.phone),
         services: validated.data.services,
         requirement: validated.data.requirement,
         budget: validated.data.budget,
         ...(validated.data.status ? { status: validated.data.status } : {}),
+        ...(validated.data.nextFollowUpDate ? { nextFollowUpDate: new Date(validated.data.nextFollowUpDate) } : {}),
       },
       { new: true }
     );

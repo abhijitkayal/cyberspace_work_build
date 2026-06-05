@@ -243,7 +243,7 @@ export default function ClientContracts() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
-                {["#", "Description", "Status", "Signed On", "Action"].map((col) => (
+                {["#", "Description", "Status", "Owner Signed On", "Signed On", "Action"].map((col) => (
                   <th key={col}
                     className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap ${col === "Action" ? "text-right" : "text-left"}`}>
                     {col}
@@ -255,7 +255,7 @@ export default function ClientContracts() {
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 bg-white dark:bg-gray-900/50">
               {contracts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-gray-400 dark:text-gray-500">
+                  <td colSpan={6} className="px-5 py-12 text-center text-gray-400 dark:text-gray-500">
                     <div className="flex flex-col items-center gap-2">
                       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -305,6 +305,13 @@ export default function ClientContracts() {
                           Pending
                         </span>
                       )}
+                    </td>
+
+                    {/* Owner Signed On */}
+                    <td className="px-5 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                      {c.adminSignature && c.adminSignedDate
+                        ? new Date(c.adminSignedDate).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                        : <span className="text-gray-300 dark:text-gray-700 italic text-xs">Not signed</span>}
                     </td>
 
                     {/* Signed On */}
@@ -490,7 +497,19 @@ export default function ClientContracts() {
                   </p>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Signature</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Owner Signature</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.adminSignature || "—"}</p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Owner Signed On</label>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">
+                    {viewingContract.adminSignedDate
+                      ? new Date(viewingContract.adminSignedDate).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+                      : "Not signed yet"}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Your Signature</label>
                   <p className="text-sm text-gray-900 dark:text-white mt-1">{viewingContract.signature || "—"}</p>
                 </div>
               </div>

@@ -16,6 +16,26 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 
+function resolveSocketUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/$/, "");
+  }
+
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  if (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  ) {
+    return "http://localhost:5000";
+  }
+
+  return window.location.origin;
+}
+
 const NotificationCenter = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -28,18 +48,17 @@ const NotificationCenter = () => {
     markAllAsRead,
     clearAll,
     unreadCount,
+    isLoading,
   } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
-
-  const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "");
 
   useEffect(() => {
     const userId = session?.user?.id;
     if (!userId) return undefined;
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "");
+    const socketUrlToUse = resolveSocketUrl();
 
-    const socket = io(socketUrl, {
+    const socket = io(socketUrlToUse, {
       transports: ["websocket", "polling"],
       auth: {
         userId,
@@ -87,16 +106,21 @@ const NotificationCenter = () => {
       };
 
       addNotification({
+        id: payload?.id,
         type,
         title: payload?.title || titleByType[type] || "Notification",
-        message: payload?.text || payload?.message || "You have a new update.",
+        message: payload?.message || payload?.text || "You have a new update.",
         route:
           payload?.route ||
           payload?.path ||
           payload?.url ||
           payload?.href ||
           null,
-        sourceTab: payload?.tab || payload?.source || payload?.module || null,
+        sourceTab: payload?.sourceTab || payload?.source || payload?.tab || payload?.module || null,
+        source: payload?.source || payload?.sourceTab || payload?.tab || payload?.module || null,
+        timestamp: payload?.timestamp || payload?.createdAt || new Date().toISOString(),
+        read: Boolean(payload?.isRead || payload?.read),
+        persisted: payload?.persisted ?? true,
         autoClose: false,
       });
     });
@@ -108,7 +132,7 @@ const NotificationCenter = () => {
       socket.off("disconnect");
       socket.disconnect();
     };
-  }, [addNotification, session?.user?.id, socketUrl]);
+  }, [addNotification, session?.user?.id]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -182,7 +206,8 @@ const NotificationCenter = () => {
     const haystack = `${normalize(notification?.title)} ${normalize(notification?.message)} ${normalize(notification?.type)}`;
 
     if (/(schedule|meeting|appointment|calendar)/.test(haystack)) return "schedule";
-    if (/(payment|invoice|billing|paid|transaction)/.test(haystack)) return "payment";
+    if (/(billing|invoice)/.test(haystack)) return "billing";
+    if (/(payment|paid|transaction)/.test(haystack)) return "payment";
     if (/(ticket|support|issue|case)/.test(haystack)) return "ticket";
     if (/(project|milestone|task|delivery)/.test(haystack)) return "project";
     if (/(message|chat|conversation|sms)/.test(haystack)) return "chat";
@@ -377,13 +402,16 @@ const NotificationCenter = () => {
           <h2 className="text-sm font-semibold text-foreground">
             Notifications
           </h2>
-          {notifications.length > 0 && (
+          {isLoading ? (
+            <span className="text-xs text-muted-foreground">Syncing...</span>
+          ) : notifications.length > 0 ? (
             <div className="flex gap-2">
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"
                   size="sm"
                   className="h-auto py-1 px-2 text-xs"
+                  disabled={isLoading}
                   onClick={() => {
                     markAllAsRead();
                   }}
@@ -392,11 +420,19 @@ const NotificationCenter = () => {
                 </Button>
               )}
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Notifications List */}
-        {notifications.length === 0 ? (
+        {isLoading && notifications.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div className="h-10 w-10 rounded-full border-2 border-muted-foreground/20 border-t-foreground animate-spin mb-3" />
+            <p className="text-sm text-muted-foreground">Loading notifications</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Fetching your latest activity
+            </p>
+          </div>
+        ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
             <FaBell className="w-12 h-12 text-muted-foreground/30 mb-3" />
             <p className="text-sm text-muted-foreground">No notifications yet</p>
@@ -489,6 +525,7 @@ const NotificationCenter = () => {
               variant="outline"
               size="sm"
               className="w-full"
+              disabled={isLoading}
               onClick={() => clearAll()}
             >
               Clear all notifications

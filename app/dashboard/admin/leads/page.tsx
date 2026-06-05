@@ -54,6 +54,7 @@ export default function UsersPage() {
     budget: "",
     source: "manual-admin",
     status: "active",
+    nextFollowUpDate: "",
   })
 
   const [leads, setLeads] = useState([])
@@ -75,6 +76,7 @@ export default function UsersPage() {
     requirement: "",
     budget: "",
     status: "active",
+    nextFollowUpDate: "",
   })
   const [editError, setEditError] = useState("")
   const [isUpdatingLead, setIsUpdatingLead] = useState(false)
@@ -130,12 +132,16 @@ export default function UsersPage() {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, services }),
+        body: JSON.stringify({
+          ...formData,
+          services,
+          nextFollowUpDate: formData.nextFollowUpDate ? new Date(formData.nextFollowUpDate).toISOString() : null,
+        }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Failed to create lead")
       setMessage("Lead added successfully.")
-      setFormData({ name: "", email: "", phone: "", services: "", requirement: "", budget: "", source: "manual-admin", status: "active" })
+      setFormData({ name: "", email: "", phone: "", services: "", requirement: "", budget: "", source: "manual-admin", status: "active", nextFollowUpDate: "" })
       await loadLeads()
       setTimeout(() => { setOpen(false); setMessage("") }, 1200)
     } catch (err) {
@@ -146,16 +152,21 @@ export default function UsersPage() {
   }
 
   async function handleConvertToClient(leadId) {
+    const leadToConvert = leads.find((lead) => lead._id === leadId)
+    const email = String(convertDates[leadId]?.email ?? leadToConvert?.email ?? "").trim().toLowerCase()
+
     const password = convertDates[leadId]?.password
     const from = convertDates[leadId]?.from
     const to = convertDates[leadId]?.to
-    const finalBudget = convertDates[leadId]?.finalBudget
     const projectName = convertDates[leadId]?.projectName || ""
     const projectDescription = convertDates[leadId]?.projectDescription || ""
 
+    if (!email) { setError("Email is required to convert this lead."); return }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailPattern.test(email)) { setError("Please enter a valid email address."); return }
+
     if (!password || password.length < 8) { setError("Password must be at least 8 characters."); return }
     if (!from || !to) { setError("Please provide both valid from and valid to dates."); return }
-    if (!finalBudget || finalBudget.trim().length === 0) { setError("Final budget is required."); return }
     if (new Date(from) >= new Date(to)) { setError("Valid To date must be after Valid From date."); return }
 
     setConvertingLeadId(leadId)
@@ -164,11 +175,11 @@ export default function UsersPage() {
       const response = await fetch(`/api/leads/convert/${leadId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, validFrom: from, validTo: to, finalBudget, projectName, projectDescription }),
+        body: JSON.stringify({ password, email, validFrom: from, validTo: to, projectName, projectDescription }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Failed to convert lead")
-      toast.success("Lead converted to client successfully. Email sent with credentials.")
+      toast.success("Lead converted to client successfully.")
       setShowConvertModal(null)
       setConvertDates({})
       await loadLeads()
@@ -181,6 +192,7 @@ export default function UsersPage() {
 
   function openEditModal(lead) {
     setEditingLead(lead)
+    const followUpDate = lead?.nextFollowUpDate ? new Date(lead.nextFollowUpDate).toISOString().split('T')[0] : ""
     setEditForm({
       name: lead?.name || "",
       email: lead?.email || "",
@@ -189,6 +201,7 @@ export default function UsersPage() {
       requirement: lead?.requirement || "",
       budget: lead?.budget || "",
       status: lead?.status || "active",
+      nextFollowUpDate: followUpDate,
     })
     setEditError("")
   }
@@ -217,7 +230,16 @@ export default function UsersPage() {
       const response = await fetch(`/api/leads/${editingLead._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editForm.name, email: editForm.email, phone: editForm.phone, services, requirement: editForm.requirement, budget: editForm.budget, status: editForm.status }),
+        body: JSON.stringify({
+          name: editForm.name,
+          email: editForm.email,
+          phone: editForm.phone,
+          services,
+          requirement: editForm.requirement,
+          budget: editForm.budget,
+          status: editForm.status,
+          nextFollowUpDate: editForm.nextFollowUpDate ? new Date(editForm.nextFollowUpDate).toISOString() : null,
+        }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Failed to update lead")
@@ -311,8 +333,8 @@ export default function UsersPage() {
                     <Input name="name" type="text" value={formData.name} onChange={onFieldChange} placeholder="Rahul Sharma" required className={inputCls} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className={labelCls}>Email Address <span className="text-red-500 normal-case font-normal">*</span></Label>
-                    <Input name="email" type="email" value={formData.email} onChange={onFieldChange} placeholder="rahul@company.com" required className={inputCls} />
+                    <Label className={labelCls}>Email Address </Label>
+                    <Input name="email" type="email" value={formData.email} onChange={onFieldChange} placeholder="rahul@company.com" className={inputCls} />
                   </div>
                 </div>
 
@@ -380,6 +402,18 @@ export default function UsersPage() {
                       <option key={source} value={source} />
                     ))}
                   </datalist>
+                </div>
+
+                {/* Next Follow-up Date */}
+                <div className="space-y-1.5">
+                  <Label className={labelCls}>Next Follow-up Date <span className="text-gray-400 normal-case font-normal">(optional)</span></Label>
+                  <Input
+                    name="nextFollowUpDate"
+                    type="date"
+                    value={formData.nextFollowUpDate}
+                    onChange={onFieldChange}
+                    className={inputCls}
+                  />
                 </div>
 
                 {/* Requirement */}
@@ -492,7 +526,8 @@ export default function UsersPage() {
                       <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Contact</th>
                       <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Services</th>
                       <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Source</th>
-                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Date</th>
+                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Added Date</th>
+                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Next Follow-up</th>
                       <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Status</th>
                       <th className="px-4 py-3" />
                     </tr>
@@ -510,7 +545,7 @@ export default function UsersPage() {
                           )}
                         </td>
                         <td className="px-4 py-4">
-                          <p className="break-all text-sm text-foreground">{lead.email}</p>
+                          <p className="break-all text-sm text-foreground">{lead.email || "N/A"}</p>
                           <p className="mt-0.5 text-xs text-muted-foreground">{lead.phone}</p>
                         </td>
                         <td className="px-4 py-4 max-w-45">
@@ -533,6 +568,9 @@ export default function UsersPage() {
                         <td className="whitespace-nowrap px-4 py-4 text-xs text-muted-foreground">
                           {new Date(lead.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                           <p className="mt-0.5 text-[11px] text-muted-foreground/80">{new Date(lead.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</p>
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-4 text-xs text-muted-foreground">
+                          {lead.nextFollowUpDate ? new Date(lead.nextFollowUpDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "N/A"}
                         </td>
                         <td className="px-4 py-4">
                           {(() => {
@@ -607,6 +645,17 @@ export default function UsersPage() {
 
               <div className="px-6 py-5 space-y-4 overflow-y-auto max-h-[70vh]">
                 <div className="space-y-1.5">
+                  <Label className={labelCls}>Email <span className="text-red-500 normal-case font-normal">*</span></Label>
+                  <Input
+                    type="email"
+                    className={inputCls}
+                    placeholder="Enter client email"
+                    value={convertDates[showConvertModal]?.email ?? leads.find((lead) => lead._id === showConvertModal)?.email ?? ""}
+                    onChange={(e) => setConvertDates({ ...convertDates, [showConvertModal]: { ...convertDates[showConvertModal], email: e.target.value } })}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
                   <Label className={labelCls}>Password <span className="text-red-500 normal-case font-normal">*</span> <span className="text-gray-400 normal-case font-normal">(min 8 chars)</span></Label>
                   <Input
                     type="password"
@@ -634,19 +683,6 @@ export default function UsersPage() {
                       className={inputCls}
                       value={convertDates[showConvertModal]?.to || ""}
                       onChange={(e) => setConvertDates({ ...convertDates, [showConvertModal]: { ...convertDates[showConvertModal], to: e.target.value } })}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className={labelCls}>Final Budget <span className="text-red-500 normal-case font-normal">*</span></Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm select-none">₹</span>
-                    <Input
-                      placeholder="e.g. 1,20,000"
-                      className={`${inputCls} pl-7`}
-                      value={convertDates[showConvertModal]?.finalBudget || ""}
-                      onChange={(e) => setConvertDates({ ...convertDates, [showConvertModal]: { ...convertDates[showConvertModal], finalBudget: e.target.value } })}
                     />
                   </div>
                 </div>
@@ -736,8 +772,8 @@ export default function UsersPage() {
                     <Input name="name" value={editForm.name} onChange={onEditFieldChange} required className={inputCls} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className={labelCls}>Email <span className="text-red-500 normal-case font-normal">*</span></Label>
-                    <Input name="email" type="email" value={editForm.email} onChange={onEditFieldChange} required className={inputCls} />
+                    <Label className={labelCls}>Email <span className="text-gray-400 normal-case font-normal">(optional)</span></Label>
+                    <Input name="email" type="email" value={editForm.email} onChange={onEditFieldChange} className={inputCls} />
                   </div>
                 </div>
 
@@ -770,6 +806,11 @@ export default function UsersPage() {
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className={labelCls}>Next Follow-up Date <span className="text-gray-400 normal-case font-normal">(optional)</span></Label>
+                  <Input name="nextFollowUpDate" type="date" value={editForm.nextFollowUpDate} onChange={onEditFieldChange} className={inputCls} />
                 </div>
 
                 <div className="space-y-1.5">

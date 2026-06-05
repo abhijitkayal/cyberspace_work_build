@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import LogoutButton from "@/components/dashboard/LogoutButton"
 import {
@@ -12,199 +12,247 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { LayoutDashboardIcon, FolderIcon, UsersIcon, FileTextIcon, Settings2Icon, LifeBuoyIcon, ShoppingBagIcon, CommandIcon, TicketIcon, MessageSquareIcon, ReceiptIcon, UserCogIcon, UserRoundIcon, CalendarIcon, BookA, WalletCards, Handshake, KanbanSquare } from "lucide-react"
+import { LayoutDashboardIcon, FolderIcon, KanbanSquare, MessageSquareIcon, TicketIcon, UsersIcon, FileTextIcon, ReceiptIcon, WalletCards, Handshake, UserCogIcon, CalendarIcon, BookA, CalendarClock, Table2,FileUser, ShoppingCart } from "lucide-react"
 
 export function AppSidebar({
   role,
   user,
+  business = {},
   ...props
 }) {
+  const { state } = useSidebar()
   const normalizedRole = typeof role === "string" ? role.toLowerCase() : "client"
-
-  const roleHomePath =
+  const businessName = business?.businessName || "Project Management"
+  const businessLogoUrl = business?.logoUrl || ""
+  const showBusinessName = state !== "collapsed"
+  const isVendor = normalizedRole === "vendor"
+  const roleBasePath =
     normalizedRole === "admin"
       ? "/dashboard/admin"
       : normalizedRole === "employee"
         ? "/dashboard/employee"
-        : "/dashboard/client"
+        : isVendor
+          ? "/dashboard/vendor"
+          : "/dashboard/client"
 
-  const projectsPath =
+  const scopedPath = (slug) => `${roleBasePath}/${slug}`
+
+  const roleHomePath = roleBasePath
+  const projectsPath = scopedPath("projects")
+
+  const attendancePath =
     normalizedRole === "admin"
-      ? "/dashboard/admin/projects"
+      ? scopedPath("attendance")
       : normalizedRole === "employee"
-        ? "/dashboard/employee/projects"
-        : "/dashboard/client/projects"
+        ? scopedPath("attendance")
+        : null
 
-  const navMain = [
-    {
-      title: "Dashboard",
-      url: roleHomePath,
-      icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: "Projects",
-      url: projectsPath,
-      icon: <FolderIcon />,
-    },
-    {
-      title: "Kanban",
-      url: "/dashboard/kanban",
-      icon: <KanbanSquare />,
-    },
-    {
-      title: "Messages",
-      url: "/dashboard/messages",
-      icon: <MessageSquareIcon />,
-    },
-    {
-      title: "Tickets",
-      url: "/dashboard/tickets",
-      icon: <TicketIcon />,
-    },
-    {
-      title: "Marketplace",
-      url: "/dashboard/marketplace",
-      icon: <ShoppingBagIcon />,
-    },
-     {
-      title: "Schedule",
-      url: "/schedule",
-      icon: <CalendarIcon />,
-    },
-  ]
+  const messagesPath = isVendor ? "/dashboard/vendor/messages" : "/dashboard/messages"
+  const schedulePath = isVendor ? "/dashboard/vendor/schedule" : "/schedule"
+  const ticketsPath = isVendor ? "/dashboard/vendor/tickets" : "/dashboard/tickets"
+  const kanbanPath =
+    normalizedRole === "admin"
+      ? "/dashboard/kanban"
+      : isVendor
+      ? "/dashboard/vendor/kanban"
+      : scopedPath("kanban")
+  const quotationPath = normalizedRole === "client" ? scopedPath("quotations") : scopedPath("quotation")
+  const documentsPath = scopedPath("documents")
+  const sheetsPath = scopedPath("sheets")
+
+  const dashboardItem = {
+    title: "Dashboard",
+    url: roleHomePath,
+    icon: <LayoutDashboardIcon />,
+  }
+
+  let sidebarSections = []
 
   if (normalizedRole === "admin") {
-    navMain.push(
+    sidebarSections = [
       {
-        title: "Manage Users",
-        url: "/dashboard/admin/users",
-        icon: <UserCogIcon />,
+        label: "Project",
+        items: [
+          { title: "Projects", url: projectsPath, icon: <FolderIcon /> },
+          { title: "Kanban", url: kanbanPath, icon: <KanbanSquare /> },
+          { title: "Tickets", url: ticketsPath, icon: <TicketIcon /> },
+        ],
       },
       {
-        title: "Leads",
-        url: "/dashboard/admin/leads",
-        icon: <FileTextIcon />,
+        label: "Connect",
+        items: [
+          { title: "Messages", url: messagesPath, icon: <MessageSquareIcon /> },
+          { title: "Schedule", url: schedulePath, icon: <CalendarIcon /> },
+        ],
       },
       {
-        title: "Clients",
-        url: "/dashboard/admin/clients",
-        icon: <UsersIcon />,
+        label: "Users",
+        items: [
+          { title: "Manage Users", url: scopedPath("users"), icon: <UserCogIcon /> },
+          { title: "Leads", url: scopedPath("leads"), icon: <FileUser /> },
+          { title: "Clients", url: scopedPath("clients"), icon: <UsersIcon /> },
+          { title: "Attendance", url: attendancePath, icon: <CalendarClock /> },
+        ],
       },
       {
-        title: "Billing",
-        url: "/dashboard/admin/billing",
-        icon: <ReceiptIcon />,
+        label: "Business",
+        items: [
+          { title: "Billing", url: scopedPath("billing"), icon: <ReceiptIcon /> },
+          
+          { title: "Payment", url: scopedPath("payment"), icon: <WalletCards /> },
+          { title: "Quotation", url: quotationPath, icon: <BookA /> },
+          { title: "Contract", url: scopedPath("contracts"), icon: <Handshake /> },
+        ],
       },
       {
-      title: "Quotation",
-      url: "/dashboard/admin/quotation",
-      icon: <BookA />,
-    },
-    {
-      title: "Contract",
-      url: "/dashboard/admin/contracts",
-      icon: <Handshake />,
-    },
-    {
-      title: "Employee Contracts",
-      url: "/dashboard/admin/employee-contracts",
-      icon: <Handshake />,
-    },
-    {
-      title: "Payment",
-      url: "/dashboard/admin/payment",
-      icon: <WalletCards />,
-    },
-    )
+        label: "Ecommerce",
+        items: [
+          { title: "Marketplace", url: "/dashboard/marketplace", icon: <ShoppingCart /> },
+          { title: "Software", url: "/dashboard/software", icon: <Table2 /> },
+        ],
+      },
+      {
+        label: "Documents",
+        items: [
+          { title: "Notes", url: scopedPath("documents"), icon: <FileTextIcon /> },
+          { title: "Grids", url: scopedPath("sheets"), icon: <Table2 /> },
+        ],
+      },
+    ]
+  } else if (isVendor) {
+    sidebarSections = [
+      {
+        label: "Project",
+        items: [
+          { title: "Projects", url: projectsPath, icon: <FolderIcon /> },
+          { title: "Kanban", url: kanbanPath, icon: <KanbanSquare /> },
+          { title: "Tickets", url: ticketsPath, icon: <TicketIcon /> },
+        ],
+      },
+      {
+        label: "Connect",
+        items: [
+          { title: "Messages", url: messagesPath, icon: <MessageSquareIcon /> },
+          { title: "Schedule", url: schedulePath, icon: <CalendarIcon /> },
+        ],
+      },
+      {
+        label: "Business",
+        items: [
+          { title: "Contracts", url: scopedPath("contracts"), icon: <Handshake /> },
+          { title: "Marketplace", url: "/dashboard/marketplace", icon: <ShoppingCart /> },
+          { title: "Payment", url: scopedPath("payment"), icon: <WalletCards /> },
+        ],
+      },
+      {
+        label: "Documents",
+        items: [
+          { title: "Notes", url: documentsPath, icon: <FileTextIcon /> },
+          { title: "Grids", url: sheetsPath, icon: <Table2 /> },
+        ],
+      },
+    ]
+  } else if (normalizedRole === "employee") {
+    sidebarSections = [
+      {
+        label: "Project",
+        items: [
+          { title: "Projects", url: projectsPath, icon: <FolderIcon /> },
+          { title: "Kanban", url: kanbanPath, icon: <KanbanSquare /> },
+        ],
+      },
+      {
+        label: "Users",
+        items: attendancePath
+          ? [{ title: "Attendance", url: attendancePath, icon: <CalendarClock /> }]
+          : [],
+      },
+      {
+        label: "Business",
+        items: [
+          { title: "Marketplace", url: "/dashboard/marketplace", icon: <ShoppingCart /> },
+          { title: "Payment", url: scopedPath("payment"), icon: <WalletCards /> },
+        ],
+      },
+      {
+        label: "Documents",
+        items: [
+          { title: "Notes", url: documentsPath, icon: <FileTextIcon /> },
+          { title: "Grids", url: sheetsPath, icon: <Table2 /> },
+        ],
+      },
+    ]
+  } else {
+    sidebarSections = [
+      {
+        label: "Project",
+        items: [
+          { title: "Projects", url: projectsPath, icon: <FolderIcon /> },
+          { title: "Kanban", url: kanbanPath, icon: <KanbanSquare /> },
+        ],
+      },
+      {
+        label: "Business",
+        items: [
+          { title: "Billing", url: scopedPath("billing"), icon: <ReceiptIcon /> },
+          { title: "Marketplace", url: "/dashboard/marketplace", icon: <ShoppingCart /> },
+          { title: "Quotation", url: quotationPath, icon: <BookA /> },
+          { title: "Payments", url: scopedPath("payment"), icon: <WalletCards /> },
+        ],
+      },
+      {
+        label: "Documents",
+        items: [
+          { title: "Notes", url: documentsPath, icon: <FileTextIcon /> },
+          { title: "Grids", url: sheetsPath, icon: <Table2 /> },
+        ],
+      },
+    ]
   }
-
-  if (normalizedRole === "client") {
-    navMain.push({
-      title: "Billing",
-      url: "/dashboard/client/billing",
-      icon: <ReceiptIcon />,
-    },
-    {
-      title: "Contracts",
-      url: "/dashboard/client/contracts",
-      icon: <Handshake />,
-    },
-    {
-      title: "Payments",
-      url: "/dashboard/client/payment",
-      icon: <WalletCards />,
-    },
-     {
-      title: "Quotations",
-      url: "/dashboard/client/quotations",
-      icon: <BookA />,
-    }
-  )
-  }
-
-  if (normalizedRole === "employee") {
-    navMain.push({
-      title: "Contracts",
-      url: "/dashboard/employee/contracts",
-      icon: <Handshake />,
-    }
-  )
-  }
-
-  const navSecondary = [
-    // {
-    //   title: "Profile",
-    //   url: roleHomePath,
-    //   icon: <UserRoundIcon />,
-    // },
-    // {
-    //   title: "Settings",
-    //   url: roleHomePath,
-    //   icon: <Settings2Icon />,
-    // },
-    // {
-    //   title: "Get Help",
-    //   url: "/contact-us",
-    //   icon: <LifeBuoyIcon />,
-    // },
-  ]
-
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="py-3">
+      <SidebarHeader className="py-3 group-data-[collapsible=icon]:px-1">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-2! h-auto"
+            <Link
+              href={roleHomePath}
+              className="flex items-center gap-4 rounded-lg p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-0"
             >
-              <a href="/" className="flex items-center gap-3">
+              {businessLogoUrl ? (
                 <img
-                  src="/logo2 copy.png"
-                  alt="Cyberspace Works"
-                  className="size-12 shrink-0 object-contain group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-9"
+                  src={businessLogoUrl}
+                  alt={businessName}
+                  className="h-12 w-12 shrink-0 rounded-xl object-contain ring-1 ring-border/60"
                 />
-                <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">
-                  Cyberspace Works
+              ) : (
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-muted text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  Logo
                 </span>
-              </a>
-            </SidebarMenuButton>
+              )}
+              {showBusinessName ? (
+                <span className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
+                  <span className="truncate text-base font-semibold leading-tight">
+                    {businessName}
+                  </span>
+                </span>
+              ) : null}
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
-        <NavSecondary items={navSecondary} className="mt-auto" />
+        <NavMain dashboard={dashboardItem} sections={sidebarSections} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser
           user={{
             name: user?.name || "User",
             email: user?.email || "",
-            avatar: user?.avatar || "/logo2.png",
+            avatar: user?.avatar || "",
+            role: normalizedRole,
           }}
         />
         <div className="px-2 pb-2 group-data-[collapsible=icon]:px-0">

@@ -219,8 +219,12 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import { SessionProvider } from "next-auth/react";
 import { NotificationProvider } from "@/context/NotificationContext";
+import { QuoteModalProvider } from "@/context/QuoteModalContext";
 import { ThemeProvider } from "next-themes";
 import { usePathname } from "next/navigation";
+// import Script from "next/script";
+
+
 
 
 const GTM_ID = "GTM-KCNJRZVR";
@@ -244,6 +248,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+     
         <Script
           id="theme-init"
           strategy="beforeInteractive"
@@ -312,9 +317,9 @@ export default function RootLayout({ children }) {
         className={`${rubik.variable} antialiased relative min-h-screen bg-background text-foreground`}
         style={{ cursor: "url('/cursor.png') 16 16, default" }}
       > */}
-         <body
-  className={`${rubik.variable} antialiased relative min-h-screen bg-background text-foreground`}
-  style={{ cursor: "url('') 16 16, default" }}>
+          <body
+        className={`${rubik.variable} antialiased relative min-h-screen bg-background text-foreground`}
+        style={{ cursor: "default" }}>
         {/* GTM noscript */}
         <noscript>
           <iframe
@@ -339,24 +344,25 @@ export default function RootLayout({ children }) {
           ) : (
             <SessionProvider>
               <NotificationProvider>
-                {loading && (
-                  <div className="fixed inset-0 z-9999 flex items-center justify-center bg-background">
-                    <Loader />
-                  </div>
-                )}
+                <QuoteModalProvider>
+                  {loading && (
+                    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-background">
+                      <Loader />
+                    </div>
+                  )}
 
-                {!loading && (
-                  <div className="relative min-h-screen flex flex-col">
-                    
-                    <Navbar />
-                    {/* <LenisProvider> */}
-                       <main className="flex-1 relative z-10 w-full">{children}</main>
-                    {/* </LenisProvider> */}
-                   
-                    <Footer />
-                    <BackToTopButton />
-                  </div>
-                )}
+                  {!loading && (
+                    <div className="relative min-h-screen flex flex-col">
+                      <Navbar />
+                      {/* <LenisProvider> */}
+                      <main className="flex-1 relative z-10 w-full">{children}</main>
+                      {/* </LenisProvider> */}
+
+                      <Footer />
+                      <BackToTopButton />
+                    </div>
+                  )}
+                </QuoteModalProvider>
               </NotificationProvider>
             </SessionProvider>
           )}
