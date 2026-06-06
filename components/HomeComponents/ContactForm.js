@@ -314,6 +314,27 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+const productOptions = [
+  "CyberDine - Restaurant Management Software",
+  "CyberPayroll - HR Management Software",
+  "CyberClinic - Clinic Management Software",
+  "CyberPharma - Pharmacy Management Software",
+  "CyberLedger - Tally Software",
+  "CyberProjects - Project Management Software",
+  "CyberRetail - Store Management Software",
+  "CyberInvoice - GST & Billing Software",
+  
+];
+const serviceOptions = [
+  "AI & Intelligent Systems",
+  "Web Development",
+  "App Development",
+  "Software Development",
+  "UI/UX Design",
+  "Digital Marketing",
+  "Graphic Design",
+  "Research and Analytics",
+];
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -321,7 +342,8 @@ const ContactSection = () => {
     email: "",
     countryCode: "+91",
     contact: "",
-    service: "AI & Intelligent Systems", // ✅ Default is now AI
+    type: "service",
+    service: "AI & Intelligent Systems",
     requirement: "",
   });
 
@@ -369,14 +391,15 @@ const ContactSection = () => {
       const data = await res.json();
       if (res.ok) {
         setMessage("Message sent successfully!");
-        setFormData({
-          name: "",
-          email: "",
-          countryCode: "+91",
-          contact: "",
-          service: "AI & Intelligent Systems", // ✅ Reset to AI
-          requirement: "",
-        });
+         setFormData({
+  name: "",
+  email: "",
+  countryCode: "+91",
+  contact: "",
+  type: "service",
+  service: "AI & Intelligent Systems",
+  requirement: "",
+});
         setEmailError("");
         setContactError("");
       } else {
@@ -541,26 +564,70 @@ const ContactSection = () => {
 
               {/* Service Selection */}
               <div>
-                <label className="block mb-1 text-sm text-black font-medium">
-                  Service you&apos;re interested in
-                </label>
-                <select
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  className="w-full p-3 rounded bg-gray-800 text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                >
-                  {/* ✅ AI & Intelligent Systems is now first */}
-                  <option>AI & Intelligent Systems</option>
-                  <option>Web Development</option>
-                  <option>App Development</option>
-                  <option>Software Development</option>
-                  <option>UI/UX Design</option>
-                  <option>Digital Marketing</option>
-                  <option>Graphic Design</option>
-                  <option>Research and Analytics</option>
-                </select>
-              </div>
+  <label className="block mb-2 text-sm text-black font-medium">
+    What are you interested in?
+  </label>
+
+  <div className="flex gap-2 mb-4">
+    <button
+      type="button"
+      onClick={() =>
+        setFormData((prev) => ({
+          ...prev,
+          type: "service",
+          service: serviceOptions[0],
+        }))
+      }
+      className={`px-4 py-2 rounded-lg font-medium transition ${
+        formData.type === "service"
+          ? "bg-black text-white"
+          : "bg-white text-black"
+      }`}
+    >
+      Service
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setFormData((prev) => ({
+          ...prev,
+          type: "product",
+          service: productOptions[0],
+        }))
+      }
+      className={`px-4 py-2 rounded-lg font-medium transition ${
+        formData.type === "product"
+          ? "bg-black text-white"
+          : "bg-white text-black"
+      }`}
+    >
+      Product
+    </button>
+  </div>
+
+  <label className="block mb-1 text-sm text-black font-medium">
+    {formData.type === "service"
+      ? "Service you're interested in"
+      : "Product you're interested in"}
+  </label>
+
+  <select
+    name="service"
+    value={formData.service}
+    onChange={handleChange}
+    className="w-full p-3 rounded bg-gray-800 text-white focus:ring-2 focus:ring-blue-400 outline-none"
+  >
+    {(formData.type === "service"
+      ? serviceOptions
+      : productOptions
+    ).map((item) => (
+      <option key={item} value={item}>
+        {item}
+      </option>
+    ))}
+  </select>
+</div>
 
               {/* Requirement */}
               <div>

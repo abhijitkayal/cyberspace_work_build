@@ -14,39 +14,33 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'Is CyberProjects optimized for agile development environments and sprints?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Yes. It features dedicated developer sprint boards, backlog management spaces, task priority assignments, and custom workflow states to streamline software delivery cycles cleanly.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'Can we invite external clients to view project progress securely?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
+      'Yes. You can grant tailored access to external stakeholders, allowing them to track milestone progress, view specific task timelines, or sign off on deliverables while keeping internal team chatter completely hidden.',
   },
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'How does the platform help project managers identify team bottlenecks?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'The resource capacity matrix monitors task distribution across your team members, highlighting who is overloaded or under-allocated so you can reassign items and keep delivery timelines on track.',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'Can we create task dependencies to enforce strict workflow order?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'Yes. You can chain critical development milestones together, ensuring that dependent tasks (like feature deployment) cannot be mistakenly moved to production until the prerequisite stages (like QA testing) are complete.',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'Does it support recurring task creation for routine company processes?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
-  },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
+      'Yes, you can automate repetitive processes—such as setting up weekly sprint planning tasks, monthly maintenance reviews, or daily standup logs—ensuring they appear automatically on your teams board.',
   },
 ]
 

@@ -141,9 +141,9 @@ function updateStars() {
         </span>
 
         <p className="mt-4 max-w-2xl text-gray-300 text-center mx-auto">
-          Step into the AI-Powered Cyber-space and seize opportunity with our services, expert guidance,  strategic insights for unrivaled financial success,
+         Step into the AI-Powered Cyber-space and seize opportunity with our services and products,
           <br />
-          expert guidance, and strategic insights for unrivaled financial success.
+           expert guidance, strategic insights for unrivaled financial success.
         </p>
 
         <div className="mt-6 flex gap-4 justify-center">

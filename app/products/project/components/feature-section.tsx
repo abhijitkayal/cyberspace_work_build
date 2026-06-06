@@ -89,11 +89,11 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Integrated Agile Delivery Systems
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
-              </p>
+                Perfect for engineering structures. Manage backlogs, run structured feature tests, and handle formal handover documentation for clients transparently.
+                              </p>
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -132,10 +132,10 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Centralized Workflow and Documents
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
+                 Keep contextual feedback where it belongs. Centralize assets, design mockups, code links, and performance approvals inside the specific task cards using our in platform Notes and Grids.
               </p>
             </div>
 

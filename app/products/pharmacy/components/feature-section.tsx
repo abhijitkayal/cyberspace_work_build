@@ -89,10 +89,10 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Tight Stock Tracking & Safety Reorders
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
+                Never run out of critical life-saving medications. Set threshold alerts that automatically draft replenishment sheets when items drop low.
               </p>
             </div>
 
@@ -132,10 +132,10 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Prescriptions & Regulatory Controls
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
+                Seamlessly log doctor details, client information, and critical restricted drug records for regulatory audit compliance without slow workflows
               </p>
             </div>
 

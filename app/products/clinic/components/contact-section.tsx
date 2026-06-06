@@ -93,9 +93,9 @@ export function ContactSection() {
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-1">
           {/* Contact Options */}
-          <div className="space-y-6 order-2 lg:order-1">
+          {/* <div className="space-y-6 order-2 lg:order-1">
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -152,7 +152,7 @@ export function ContactSection() {
                 </Button>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
 
           {/* Contact Form */}
           <div className="lg:col-span-2 order-1 lg:order-2">

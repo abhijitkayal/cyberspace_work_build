@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'High-Volume POS Invoicing',
+    description: ' Process retail traffic efficiently. Features a clean, optimized cart interface handling returns, exchanges, and discounts in real-time.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Granular Matrix Stock Management',
+    description: ' Sort and track individual products by size variants, color profiles, material types, and specific rack placement tags.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Sleek Operational Dashboards',
+    description: 'Eliminate bulky interfaces. Our dark-mode layout provides instant data accessibility to your cashiers and store supervisors.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Customer Reward Engines',
+    description: 'Drive repeat visits via customer profile assignment, dynamic loyalty point rules, and custom tier metrics.'
   }
 ]
 

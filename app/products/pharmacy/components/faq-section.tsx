@@ -14,40 +14,35 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'How does the batch tracking and expiry alert system work?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Every batch of medicine is logged with its unique expiry date during stock entry. CyberPharma automatically triggers dashboard alerts months in advance, helping you liquidate or return near-expiry stock to vendors.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'Is the checkout interface fast enough for high-volume rush hours?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
+      'Yes, the billing UI is built for speed. It supports universal barcode scanning and keyboard-only shortcuts, allowing your pharmacists to pull up medicines, view alternatives, and finalize invoices in seconds',
   },
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'Can we quickly search for alternative medicines by salt or chemical composition?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'Yes. If a specific brand is out of stock, typing the generic name or chemical salt composition instantly displays all available matches on your shelves along with their real-time stock levels',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'Does CyberPharma comply with tax structures and purchase ledger requirements?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'Completely. It handles multi-tier tax rates, processes purchase invoices from distributors, automatically updates your supplier ledgers, and generates clean data summaries ready for your accounting audits.',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'Can it manage partial sales, like selling a single tablet from a strip?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
+      'Yes. CyberPharma handles fractional inventory mapping, allowing you to define pack sizes (e.g., 10 tablets per strip) and bill individual tablets while keeping your master stock count accurate.',
   },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
-  },
+ 
 ]
 
 const FaqSection = () => {

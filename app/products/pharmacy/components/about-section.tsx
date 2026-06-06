@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: ' Barcode-Driven Checkout',
+    description: ' Process prescriptions instantly using precise universal barcode scanning linked directly to active inventory.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Batch & Expiry Alarms',
+    description: 'Zero out wastage with intelligent notifications warning your team of upcoming medicine expirations months in advance.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Clean Drug Search Hierarchy',
+    description: 'Instantly filter alternatives by chemical composition, salt group, or manufacturer name during high-volume hours.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Supplier Ledger Automation',
+    description: 'Auto-populate purchase orders, record supplier invoices, and track outstanding vendor balances smoothly.'
   }
 ]
 

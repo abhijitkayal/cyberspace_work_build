@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'Real-Time Double Entry Systems',
+    description: 'Every transaction self-balances across corresponding asset, liability, revenue, and expense accounts without manual reconciliation.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Instant Profit & Loss Metrics',
+    description: 'Pull up-to-the-minute operational performance reports, dynamic balance sheets, and cash flow trends anytime.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: ' Clutter-Free Chart of Accounts',
+    description: 'Organize thousands of corporate accounts, vendor lists, and client ledgers under clean cascading folders.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: ' Airtight Internal Audit Trails',
+    description: 'Track every data modification, transaction record deletion, or modification timestamped to specific backend user profiles.'
   }
 ]
 

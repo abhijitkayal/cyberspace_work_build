@@ -14,40 +14,34 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'Is patient medical history and health data securely protected?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Yes, data privacy is a core priority. CyberClinic uses strict role-based access control (RBAC) and data encryption protocols, ensuring that sensitive patient Electronic Medical Records (EMR) are only viewable by authorized medical professionals.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'Can our reception desk manage live patient queues and walk-ins simultaneously?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
-  },
+      'Yes. The live appointment matrix splits advance bookings and unexpected walk-ins into a unified digital queue. Staff can check patients in, assign token numbers, and track live consultation statuses seamlessly.',},
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'How customizable are the digital prescription pads for specialty doctors?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'Highly customizable. Doctors can build tailored templates for their specific practices, save frequently prescribed medication combinations, pre-set dosage instructions, and generate print-ready prescriptions with one click.',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'Does CyberClinic link consultation data directly to billing and diagnostics?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'Yes. Once a doctor closes a session, any prescribed lab tests or procedure fees are instantly pushed to the billing desk terminal, eliminating manual data entry and preventing billing leakages',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'Can the platform automatically send appointment updates to patients?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
+      'Yes. CyberClinic features automated notification triggers that send instant confirmations, rescheduling alerts, and friendly follow-up reminders to patients via SMS or email to minimize no-shows.',
   },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
-  },
+  
 ]
 
 const FaqSection = () => {

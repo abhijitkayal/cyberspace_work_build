@@ -94,16 +94,14 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="mb-6 text-4xl font-mono tracking-tight sm:text-6xl lg:text-7xl">
-            Build Better Web Applications {" "}
-            
-            with Ready-Made Components
+            Create Impeccable Tax-Compliant Invoices in Seconds
+
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
-            Accelerate your development with our curated collection of blocks, templates, landing pages,
-            and admin dashboards. From free components to complete solutions, built with shadcn/ui.
-          </p>
+            Accelerate client receivables with clean billing automated for multi-tier GST calculations, outstanding dues reminders, and quick digital receipt management.
+                      </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">

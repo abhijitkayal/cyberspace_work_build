@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'Frictionless Task Matrix',
+    description: 'Assign tasks, update project progression statuses, and categorize priority tags via lightning-fast drag-and-drop actions.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Deep Milestone & Dependency Tracking',
+    description: 'Map complete development lifecycles visually to ensure team members stay aligned on blocking phases.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Minimalist Developer Sprint Boards ',
+    description: ' Filter active sprint items, technical issues, and documentation attachments cleanly without UI clutter.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Resource Capacity Auditing',
+    description: 'Track task distributions across team members to prevent burnout and clear delivery bottlenecks early.'
   }
 ]
 

@@ -89,10 +89,10 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Advanced Cash Flow Reconciliation
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
+                Match internal ledger lines against actual company bank records or payment gate notifications swiftly to ensure cash numbers stay accurate.
               </p>
             </div>
 
@@ -132,10 +132,11 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Multi-Vendor Settlement Ledgers
+
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
+                Engineered to handle intricate business formats, tracking vendor split payouts, operational fees, and complex corporate partner account adjustments easily.
               </p>
             </div>
 

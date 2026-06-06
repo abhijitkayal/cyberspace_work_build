@@ -94,21 +94,18 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="mb-6 text-4xl font-mono tracking-tight sm:text-6xl lg:text-7xl">
-            Build Better Web Applications {" "}
-            
-            with Ready-Made Components
+            Streamline Your Kitchen, Orders, and Guest Table Experiences
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
-            Accelerate your development with our curated collection of blocks, templates, landing pages,
-            and admin dashboards. From free components to complete solutions, built with shadcn/ui.
+            A comprehensive cloud POS and management platform engineered for modern restaurants, cloud kitchens, and cafes to optimize throughput and cut operational leaks.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Button size="lg" className="text-base cursor-pointer" asChild>
-              <Link href="/pricing">
+              <Link href="#pricing">
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

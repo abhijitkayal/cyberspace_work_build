@@ -94,15 +94,14 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="mb-6 text-4xl font-mono tracking-tight sm:text-6xl lg:text-7xl">
-            Build Better Web Applications {" "}
-            
-            with Ready-Made Components
+            Maintain Perfect Double-Entry Financial Clarity
+
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
-            Accelerate your development with our curated collection of blocks, templates, landing pages,
-            and admin dashboards. From free components to complete solutions, built with shadcn/ui.
+            A secure accounting system built to audit multi-vendor ecosystems, control company assets, track real-time cash positions, and build clean financial statements.
+
           </p>
 
           {/* CTA Buttons */}

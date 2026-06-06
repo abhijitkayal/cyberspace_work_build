@@ -89,10 +89,10 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Multicenter Stock Telemetry
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
+                Monitor inventory configurations across distinct branch warehouses or storefront displays seamlessly. Run cross-store stock balance requests instantly.
               </p>
             </div>
 
@@ -132,11 +132,11 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Automated Supplier Settlement
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
-              </p>
+                 Take control of your product pipelines. Track upcoming wholesale payment dates, organize incoming inventory shipments, and minimize vendor friction.
+                               </p>
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">

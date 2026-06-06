@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'Rapid Appointment Matrix',
+    description: 'Book, reschedule, or cancel patient visits across multiple medical consultants with zero scheduling conflicts.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Unified Digital Health Timelines (EMR)',
+    description: 'Access holistic patient histories, historical diagnoses, vitals logs, and imaging attachments on a single, secure page.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Frictionless Prescription Pads',
+    description: ' Type and generate clean, standardized print-ready digital prescriptions with integrated dosage instructions in seconds.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: ' Integrated Lab & Billing Channels',
+    description: 'Push diagnosis data directly into internal pharmacy checkouts or procedure billing lines seamlessly.'
   }
 ]
 

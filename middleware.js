@@ -27,6 +27,9 @@ function isPubliccontactRoute(pathname) {
 function isPublicproductRoute(pathname) {
   return pathname === "/product" || pathname.startsWith("/product/");
 }
+function isPublicaboutRoute(pathname) {
+  return pathname === "/about-us" || pathname.startsWith("/about-us/");
+}
 export async function middleware(request) {
   // Normalize pathname to avoid trailing-slash mismatches ("/login/" vs "/login")
   let pathname = request.nextUrl.pathname;
@@ -59,6 +62,7 @@ export async function middleware(request) {
   isPublicProductsRoute(pathname) ||
   isPublicServiceRoute(pathname) ||
   isPubliccontactRoute(pathname)||
+  isPublicaboutRoute(pathname) ||
   isPublicproductRoute(pathname);
 
   if (!pathname.startsWith("/api") && !authRoutes.has(pathname) && !isPublicRoute && !isProjectRoute(pathname) && pathname !== "/") {

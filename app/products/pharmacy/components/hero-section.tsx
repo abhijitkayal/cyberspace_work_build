@@ -94,15 +94,12 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="mb-6 text-4xl font-mono tracking-tight sm:text-6xl lg:text-7xl">
-            Build Better Web Applications {" "}
-            
-            with Ready-Made Components
+            Precision Inventory and Error-Free Retail Medical Billing
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
-            Accelerate your development with our curated collection of blocks, templates, landing pages,
-            and admin dashboards. From free components to complete solutions, built with shadcn/ui.
+            Empower your pharmacy with high-velocity billing layouts, proactive drug expiry monitoring, and airtight narcotic/schedule tracking capabilities.
           </p>
 
           {/* CTA Buttons */}

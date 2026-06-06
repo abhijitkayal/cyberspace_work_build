@@ -34,21 +34,21 @@ export function CTASection() {
               {/* Main Content */}
               <div className='space-y-6'>
                 <h1 className='text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl'>
-                  Supercharge your team&apos;s
+                  Ready to turn your kitchen into a 
+&apos;s
                   <span className='flex sm:inline-flex justify-center'>
                     <span className='relative mx-2'>
                       <span className='bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent'>
-                        performance
+                        high-efficiency
                       </span>
                       <div className='absolute start-0 -bottom-2 h-1 w-full bg-gradient-to-r from-primary/30 to-secondary/30' />
                     </span>
-                    today
+                     machine?
                   </span>
                 </h1>
 
                 <p className='text-muted-foreground mx-auto max-w-2xl text-balance lg:text-xl'>
-                  Stop building from scratch. Get production-ready components, templates and dashboards
-                  that integrate seamlessly with your shadcn/ui projects.
+                  Launch CyberDine today and experience frictionless table operations.
                 </p>
               </div>
 

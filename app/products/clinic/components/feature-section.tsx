@@ -89,10 +89,10 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Smart Doctor Calendars & Queues
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
+                 Reduce waiting room fatigue. Let your front desk track active walk-ins versus advance appointments via a live queue tracker.
               </p>
             </div>
 
@@ -132,10 +132,11 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Patient Engagement Communications
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
+                 Improve clinical adherence with automatic notification triggers for upcoming follow-up appointments, prescription renewals, or health tests.
+
               </p>
             </div>
 

@@ -14,40 +14,35 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'Can CyberPayroll handle diverse compensation structures like hourly wages and fixed stipends?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Yes. You can configure unique salary structures for permanent corporate employees, variable hourly contractors, or fixed monthly stipends for active interns within the same system.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'How does the platform capture employee attendance data?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
+      'CyberPayroll supports direct web/mobile clock-ins, geo-fenced check-ins, or seamless API integrations with physical biometric hardware devices to capture precise attendance and overtime inputs',
   },
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'Can employees view their records and download payslips independently?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'Yes, the platform includes an intuitive self-service portal for employees. Team members can securely view their shift logs, request leaves, upload expense receipts, and instantly download their monthly PDF payslips.',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'How are complex tax deductions and statutory calculations handled?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'All regional regulatory allocations, statutory insurance percentages, and professional taxes are automatically calculated and deducted based on the rules you configure, ensuring accurate compliance every pay cycle.',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'Can we customize multi-level approval workflows for leave requests?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
+      'Yes. You can build custom cascading approval rules, routing employee leave requests to their direct project managers first, before automatically escalating them to HR or administrative heads for final sign-off.',
   },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
-  },
+  
 ]
 
 const FaqSection = () => {

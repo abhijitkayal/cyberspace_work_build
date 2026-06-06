@@ -259,6 +259,7 @@ import {
 import { SiGoogleanalytics } from "react-icons/si";
 
 import ServiceCardSketch from "@/components/HomeComponents/ServiceCardSketch";
+import { ChefHat, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ShoppingBag, SquareKanban, Stethoscope } from "lucide-react";
 
 const values = [
   {
@@ -304,6 +305,16 @@ const services = [
   { name: "Graphic Design", icon: <FaBrush size={32} />, desc: "Transforming ideas into powerful, captivating visuals that leave a lasting impression.", href: "/services/graphic-design" },
   { name: "Research & Analytics", icon: <SiGoogleanalytics size={32} />, desc: "Delivering data-driven insights to fuel smarter decisions and business innovation.", href: "/services/research-and-analytics" },
 ];
+const products = [
+    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: " HR & payroll automation.",                  href: "/products/hrms" },
+    { name: "CyberDine",    icon: <ChefHat />,             subtext: "Cloud restaurant POS system.",          href: "/products/resturant" },
+    { name: "CyberPharma",  icon: <Pill />,                subtext: " Pharmacy inventory & billing.",    href: "/products/pharmacy" },
+    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: " Patient & EMR management.",     href: "/products/clinic" },
+    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "Retail store POS platform.",             href: "/products/store" },
+    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Corporate financial bookkeeping.",                          href: "/products/tally" },
+    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Fast GST billing & invoicing.", href: "/products/gst&billing" },
+    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "Agile team workspace planner.",            href: "/products/project" },
+  ]
 
 const AboutUs = () => {
   const swiperRef = useRef(null);
@@ -393,8 +404,8 @@ const AboutUs = () => {
                 Your <span className="text-cyan-400">Vision</span>, Powered by Innovation.
               </h2>
               <p className="text-gray-400 mb-6 lg:text-left text-center">
-                Discover the boundless potential of your online presence with Cyberspace Works – where innovation meets imagination, and web development is elevated to an art form. Our journey is fueled by innovation and guided by your unique goals. We believe in the power of collaboration, working closely with you to understand your needs and aspirations. Whether you are a startup striving for a digital debut or an established business aiming to revamp your online presence, we are your trusted partner on this transformative journey. We are not just here to build websites or apps; we are here to build your success. At Cyberspace Works, we merge cutting-edge technology with visionary design to create web solutions that not only impress but also drive growth.
-              </p>
+                Discover the boundless potential of your online presence with Cyberspace Works – where innovation meets imagination, and web development is elevated to an art form. Our journey is fueled by innovation and guided by your unique goals. We believe in the power of collaboration, working closely with you to understand your needs and aspirations. Whether you are a startup striving for a digital debut or an established business aiming to revamp your online presence or need a product to maximize your business potential, we are your trusted partner on this transformative journey. We are not just here to build websites or apps; we are here to build your success. At Cyberspace Works, we merge cutting-edge technology with visionary design to create web solutions that not only impress but also drive growth.
+                   </p>
             </div>
           </div>
 
@@ -429,6 +440,42 @@ const AboutUs = () => {
                     icon={service.icon}
                     title={service.name}
                     desc={service.desc}
+                    href={service.href}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+          <div className="relative w-full pt-10 pb-20">
+            <div className="hidden lg:block pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10" />
+            <div className="hidden lg:block pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10" />
+
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              slidesPerView="auto"
+              spaceBetween={30}
+              loop={true}
+              speed={5000}
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+              }}
+              allowTouchMove={true}
+              grabCursor={true}
+              freeMode={false}
+              modules={[Autoplay]}
+              className="mySwiper"
+            >
+              {[...products, ...products, ...products].map((service, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="flex justify-center items-center sm:w-[260px] md:w-[260px] w-full h-full max-w-[300px] py-5 px-3 mb-4"
+                >
+                  <ServiceCardSketch
+                    icon={service.icon}
+                    title={service.name}
+                    desc={service.subtext}
                     href={service.href}
                   />
                 </SwiperSlide>

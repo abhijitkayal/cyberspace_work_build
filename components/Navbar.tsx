@@ -132,14 +132,14 @@ const NavLink = ({ href, icon: Icon, label, active }: {
 
 // ─── Software options ─────────────────────────────────────────────────────────
 const SOFTWARE_OPTIONS = [
-  { id: "payroll",  label: "CyberPayroll",  desc: "Smart HR Management",           icon: <IdCardLanyard size={18} /> },
-  { id: "dine",     label: "CyberDine",     desc: "Restaurant Management",         icon: <ChefHat size={18} /> },
-  { id: "pharma",   label: "CyberPharma",   desc: "Pharmacy Management",           icon: <Pill size={18} /> },
-  { id: "clinic",   label: "CyberClinic",   desc: "Patient Management",            icon: <Stethoscope size={18} /> },
-  { id: "retail",   label: "CyberRetail",   desc: "Store Management",              icon: <ShoppingBag size={18} /> },
-  { id: "ledger",   label: "CyberLedger",   desc: "Smart Tally Software",          icon: <NotebookTabs size={18} /> },
-  { id: "invoice",  label: "CyberInvoice",  desc: "GST, Billing & Accounting",     icon: <ReceiptIndianRupee size={18} /> },
-  { id: "projects", label: "CyberProjects", desc: "Project Management",            icon: <SquareKanban size={18} /> },
+  { id: "payroll",  label: "CyberPayroll",  desc: " HR & payroll automation.",           icon: <IdCardLanyard size={18} /> },
+  { id: "dine",     label: "CyberDine",     desc: "Cloud restaurant POS system.",         icon: <ChefHat size={18} /> },
+  { id: "pharma",   label: "CyberPharma",   desc: " Pharmacy inventory & billing",           icon: <Pill size={18} /> },
+  { id: "clinic",   label: "CyberClinic",   desc: "Patient & EMR management",            icon: <Stethoscope size={18} /> },
+  { id: "retail",   label: "CyberRetail",   desc: "Retail store POS platform.",              icon: <ShoppingBag size={18} /> },
+  { id: "ledger",   label: "CyberLedger",   desc: "Corporate financial bookkeeping",          icon: <NotebookTabs size={18} /> },
+  { id: "invoice",  label: "CyberInvoice",  desc: "Fast GST billing & invoicing",     icon: <ReceiptIndianRupee size={18} /> },
+  { id: "projects", label: "CyberProjects", desc: "Agile team workspace planner",            icon: <SquareKanban size={18} /> },
 ]
   // const services = [
   //   { name: "AI & Intelligent Systems", icon: <FaBrain />,           subtext: "Automation, ML & LLM solutions",  href: "/services/ai-intelligent-systems" },
@@ -784,14 +784,14 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
   ]
 
   const products = [
-    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: "Smart HR Management Software.",                  href: "/products/hrms" },
-    { name: "CyberDine",    icon: <ChefHat />,             subtext: "A Robust Restaurant Management System.",          href: "/products/resturant" },
-    { name: "CyberPharma",  icon: <Pill />,                subtext: "Smart Medicine & Pharmacy Management System.",    href: "/products/pharmacy" },
-    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: "Smart & Robust Patient Management Solution.",     href: "/products/clinic" },
-    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "A Robust Store Management Software.",             href: "/products/store" },
-    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Smart Tally Software.",                          href: "/products/tally" },
-    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Simplifying GST, Billing & Business Accounting.", href: "/products/gst&billing" },
-    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "A Robust Project Management Software",            href: "/products/project" },
+    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: " HR & payroll automation.",                  href: "/products/hrms" },
+    { name: "CyberDine",    icon: <ChefHat />,             subtext: "Cloud restaurant POS system.",          href: "/products/resturant" },
+    { name: "CyberPharma",  icon: <Pill />,                subtext: " Pharmacy inventory & billing.",    href: "/products/pharmacy" },
+    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: " Patient & EMR management.",     href: "/products/clinic" },
+    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "Retail store POS platform.",             href: "/products/store" },
+    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Corporate financial bookkeeping.",                          href: "/products/tally" },
+    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Fast GST billing & invoicing.", href: "/products/gst&billing" },
+    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "Agile team workspace planner.",            href: "/products/project" },
   ]
 
   const handleDropdownClose = () => {

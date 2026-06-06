@@ -94,15 +94,12 @@ export function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="mb-6 text-4xl font-mono tracking-tight sm:text-6xl lg:text-7xl">
-            Build Better Web Applications {" "}
-            
-            with Ready-Made Components
+            Centralize Teams, Milestones, and Development Sprints
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto mb-10 max-w-2xl text-lg  sm:text-xl">
-            Accelerate your development with our curated collection of blocks, templates, landing pages,
-            and admin dashboards. From free components to complete solutions, built with shadcn/ui.
+            Eliminate task chaos. Track deep-tech delivery cycles, handle multi-vendor dependencies, and coordinate team performance in a highly scannable dashboard.
           </p>
 
           {/* CTA Buttons */}

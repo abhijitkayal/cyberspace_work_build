@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'Rapid Invoice Assembly',
+    description: 'Auto-populate client metadata, saved product catalogs, and matching tax profiles instantly onto professional templates.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Automated Multi-State GST Engines',
+    description: 'Process CGST, SGST, and IGST breakdowns dynamically based on client point-of-sale coordinates without manual computation.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Polished Glassmorphism Invoice Previews',
+    description: 'View live layouts exactly how your customers will receive them on their screens before committing the file.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Proactive Outstanding Receivables Reminders',
+    description: 'Keep your cash pipelines active with automated alerts tracking unpaid balances and overdue dates.'
   }
 ]
 

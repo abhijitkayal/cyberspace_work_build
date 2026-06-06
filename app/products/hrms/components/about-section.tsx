@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: 'One-Click Salary Calculation',
+    description: 'Compile base earnings, overtime additions, allowances, and statutory deductions in seconds across your entire organization.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Airtight Attendance Metrics',
+    description: 'Capture clear employee work hours, shifts, early departures, and overtime thresholds using integrated digital check-ins.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Clean Employee Document Hub',
+    description: ' Maintain secure corporate directories containing clear records of official onboarding data, offer paperwork, and certification trails.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Dynamic Leave Engine',
+    description: 'Configure unique corporate leave allocations, request channels, multi-level manager approvals, and automated carry-forward rules.'
   }
 ]
 

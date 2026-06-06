@@ -89,10 +89,11 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Smart Table & Seating Matrix
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
+                Track live table status, reservation bookings, and course progression visually. Minimize customer wait times and maximize floor occupancy smoothly.
+
               </p>
             </div>
 
@@ -132,11 +133,12 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+                Recipe Costing & Inventory Control
+
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
-              </p>
+                Link menu dishes directly to raw inventory consumption. Track and monitor food cost variances, and preserve your restaurant margins.
+                              </p>
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">

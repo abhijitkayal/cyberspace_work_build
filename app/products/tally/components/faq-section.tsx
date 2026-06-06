@@ -14,40 +14,35 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'Is CyberLedger a true double-entry accounting platform?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Yes, it is engineered strictly on standard double-entry bookkeeping principles. Every ledger transaction automatically self-balances across corresponding assets, liabilities, equities, revenues, and expenses.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'Can we generate professional financial statements like Balance Sheets instantly?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
+      'Yes. Because the ledger processes data in real-time, you can generate updated Balance Sheets, Trial Balances, Cash Flow trends, and Profit & Loss statements with a single click at any point in the fiscal year.',
   },
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'Does the system maintain a permanent audit trail for all entries?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'Security and compliance are absolute. CyberLedger logs a non-editable, timestamped historical record of every single journal entry creation, modification, or user access log, giving your auditors total transparency.',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'Can it handle multi-vendor payment settlements and commission splits?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'Yes, CyberLedger is built to navigate complex ecosystem frameworks. It can track individual marketplace vendor ledgers, calculate platform fee splits, and record outbound payouts cleanly.',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'How easily can we reconcile our company books with actual bank accounts?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
+      'Very easily. You can import your bank statements directly into our smart reconciliation module, which auto-matches transaction rows based on values and dates to identify discrepancies instantly.',
   },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
-  },
+  
 ]
 
 const FaqSection = () => {

@@ -11,23 +11,23 @@ import DotField from '@/components/DotField'
 const values = [
   {
     icon: Code,
-    title: 'Developer First',
-    description: 'Every component is built with the developer experience in mind, ensuring clean code and easy integration.'
+    title: ' Instant KOT Generation ',
+    description: 'Push orders from tables directly to kitchen displays or thermal printers instantly, eliminating staff transit delays.'
   },
   {
     icon: Palette,
-    title: 'Design Excellence',
-    description: 'We maintain the highest design standards, following shadcn/ui principles and modern UI patterns.'
+    title: 'Live Inventory Auditing',
+    description: 'Real-time tracking of raw ingredients with automated low-stock alerts down to the exact gram or item count.'
   },
   {
     icon: Layout,
-    title: 'Production Ready',
-    description: 'Battle-tested components used in real applications with proven performance and reliability across different environments.'
+    title: 'Intuitive Touch Billing',
+    description: 'A minimalist, lighting-fast POS interface built to finalize invoices in less than three clicks.'
   },
   {
     icon: Crown,
-    title: 'Premium Quality',
-    description: 'Hand-crafted with attention to detail and performance optimization, ensuring exceptional user experience and accessibility.'
+    title: 'Multi-Terminal Sync',
+    description: ' Keep your front-of-house, kitchen staff, and management dashboards perfectly synchronized across devices without server delay.'
   }
 ]
 

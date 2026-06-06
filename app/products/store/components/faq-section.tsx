@@ -14,40 +14,35 @@ type FaqItem = {
 const faqItems: FaqItem[] = [
   {
     value: 'item-1',
-    question: 'How do I integrate ShadcnStore components into my project?',
+    question: 'Can CyberRetail handle complex product variations like size, color, and material?',
     answer:
-      'Integration is simple! All our components are built with shadcn/ui and work with React, Next.js, and Vite. Just copy the component code, install any required dependencies, and paste it into your project. Each component comes with detailed installation instructions and examples.',
+      'Yes, it features a comprehensive product matrix. You can track single items across unlimited variations (e.g., Small/Blue, Large/Red) under distinct barcodes while maintaining a clean, unified inventory system.',
   },
   {
     value: 'item-2',
-    question: 'What\'s the difference between free and premium components?',
+    question: 'Does the software support split payments at checkout?',
     answer:
-      'Free components include essential UI elements like buttons, forms, and basic layouts. Premium components offer advanced features like complex data tables, analytics dashboards, authentication flows, and complete admin templates. Premium also includes Figma files, priority support, and commercial licenses.',
+      ' Yes. Your cashiers can process a single sales ticket using split tenders—such as a customer paying half in cash and the remainder via digital wallet or card—without messing up daily register balances.',
   },
   {
     value: 'item-3',
-    question: 'Can I use these components in commercial projects?',
+    question: 'How does the system help prevent stockouts on popular items?',
     answer:
-      'Yes! Free components come with an MIT license for unlimited use. Premium components include a commercial license that allows usage in client projects, SaaS applications, and commercial products without attribution requirements.',
+      'You can establish minimum safety stock thresholds for every item. The moment an item dips below your predefined safety limit, CyberRetail Flags it on your dashboard and drafts an automated replenishment sheet.',
   },
   {
     value: 'item-4',
-    question: 'Do you provide support and updates?',
+    question: 'Can we run customer loyalty programs and point-tier systems?',
     answer:
-      'Absolutely! We provide community support for free components through our Discord server and GitHub issues. Premium subscribers get priority email support, regular component updates, and early access to new releases. We also maintain compatibility with the latest shadcn/ui versions.',
+      'Yes. CyberRetail includes an integrated customer profiling engine. You can track buyer histories, assign customized loyalty point rules per purchase value, and set up tiered reward tiers to boost repeat business.',
   },
   {
     value: 'item-5',
-    question: 'What frameworks and tools do you support?',
+    question: 'Does it provide real-time sales performance indicators for multi-location stores?',
     answer:
-      'Our components work with React 18+, Next.js 13+, and Vite. We use TypeScript, Tailwind CSS, and follow shadcn/ui conventions. Components are tested with popular tools like React Hook Form, TanStack Query, and Zustand for state management.',
+      'Yes. The cloud telemetry dashboard aggregates live transaction updates across all your physical storefronts or warehouses, giving you immediate insights into top-performing products and profit margins.',
   },
-  {
-    value: 'item-6',
-    question: 'How often do you release new components?',
-    answer:
-      'We release new components and templates weekly. Premium subscribers get early access to new releases, while free components are updated regularly based on community feedback. You can track our roadmap and request specific components through our GitHub repository.',
-  },
+
 ]
 
 const FaqSection = () => {

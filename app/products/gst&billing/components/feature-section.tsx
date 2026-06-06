@@ -89,11 +89,11 @@ export function FeaturesSection() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Components that accelerate development
+                Custom Estimates & Proposals Integration
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Our curated marketplace offers premium blocks and templates designed to save time and ensure consistency across your admin projects.
-              </p>
+              Convert accepted digital quotes directly into formal, line-item active invoices with a single click, preserving historical workflow data.
+                            </p>
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -132,11 +132,11 @@ export function FeaturesSection() {
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                Built for modern development workflows
+               Recurring Retainer Subscriptions
               </h3>
               <p className="text-muted-foreground text-base text-pretty">
-                Every component follows best practices with TypeScript, responsive design, and clean code architecture that integrates seamlessly into your projects.
-              </p>
+               Perfect for service or long-term vendor partnerships. Automate your monthly, quarterly, or custom term client invoices smoothly.
+                             </p>
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
