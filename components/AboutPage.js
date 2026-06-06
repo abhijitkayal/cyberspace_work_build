@@ -410,7 +410,7 @@ const AboutUs = () => {
           </div>
 
           {/* SERVICES SWIPER */}
-          <div className="relative w-full pt-10 pb-20">
+          <div className="relative w-full pt-10 ">
             <div className="hidden lg:block pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10" />
             <div className="hidden lg:block pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10" />
 
@@ -446,7 +446,7 @@ const AboutUs = () => {
               ))}
             </Swiper>
           </div>
-          <div className="relative w-full pt-10 pb-20">
+          <div className="relative w-full pt-5 ">
             <div className="hidden lg:block pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10" />
             <div className="hidden lg:block pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10" />
 
