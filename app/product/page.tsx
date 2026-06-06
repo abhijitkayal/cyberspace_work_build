@@ -36,12 +36,12 @@ export const metadata: Metadata = {
     siteName: "Cyberspace Works",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Innovative Software Products & Digital Solutions | Cyberspace Works",
-    description:
-      "Explore Cyberspace Works' suite of digital products. From powerful Desktop and Mobile apps to ERP softwares, we build scalable solutions designed to drive real results and empower your business growth.",
-  },
+  // twitter: {
+  //   card: "summary_large_image",
+  //   title: "Innovative Software Products & Digital Solutions | Cyberspace Works",
+  //   description:
+  //     "Explore Cyberspace Works' suite of digital products. From powerful Desktop and Mobile apps to ERP softwares, we build scalable solutions designed to drive real results and empower your business growth.",
+  // },
 };
 const page = () => {
  
