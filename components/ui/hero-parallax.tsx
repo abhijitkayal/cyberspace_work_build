@@ -636,7 +636,7 @@ export const Header = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="text-2xl md:text-7xl font-bold text-white tracking-tight no-scrollbar"
+        className="text-2xl md:text-7xl font-medium text-white tracking-tight no-scrollbar "
       >
         The Ultimate <br /> <span className="text-cyan-400">Software Solutions</span>
       </motion.h1>

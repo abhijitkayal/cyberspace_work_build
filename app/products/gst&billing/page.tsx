@@ -3,7 +3,9 @@ import { LandingPageContent } from './landing-page-content'
 
 // Metadata for the landing page
 export const metadata: Metadata = {
-   title: "CyberInvoice: GST Billing & Invoicing Software | Cyberspace Works",
+  metadataBase: new URL("https://cyberspaceworks.com"),
+
+  title: "CyberInvoice: GST Billing & Invoicing Software | Cyberspace Works",
 
   description:
     "Create professional, tax-compliant invoices in seconds with CyberInvoice. Automate GST calculations, track outstanding client dues, and manage business bills smoothly.",
@@ -20,17 +22,20 @@ export const metadata: Metadata = {
     canonical:
       "https://cyberspaceworks.com/products/cyberinvoice-gst-billing-software",
   },
-  // openGraph: {
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
-  //   type: 'website',
-  // },
-  // twitter: {
-  //   card: 'summary_large_image',
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
-  // },
-}
+
+  openGraph: {
+    title: "CyberInvoice: GST Billing & Invoicing Software | Cyberspace Works",
+    description:
+      "Create professional, tax-compliant invoices in seconds with CyberInvoice. Automate GST calculations, track outstanding client dues, and manage business bills smoothly.",
+    url: "https://cyberspaceworks.com/products/cyberinvoice-gst-billing-software",
+    siteName: "Cyberspace Works",
+    type: "website",
+    locale: "en_US",
+  },
+
+
+
+};
 
 export default function LandingPage() {
   return <LandingPageContent />

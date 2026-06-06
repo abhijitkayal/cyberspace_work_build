@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import { LandingPageContent } from './landing-page-content'
 
+
+
 // Metadata for the landing page
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cyberspaceworks.com"),
+
   title: "CyberLedger: Business Accounting & Ledger Software | Cyberspace Works",
 
   description:
@@ -20,17 +24,31 @@ export const metadata: Metadata = {
     canonical:
       "https://cyberspaceworks.com/products/cyberledger-accounting-software",
   },
-  // openGraph: {
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
-  //   type: 'website',
-  // },
+
+  openGraph: {
+    title: "CyberLedger: Business Accounting & Ledger Software | Cyberspace Works",
+    description:
+      "Maintain perfect financial clarity with CyberLedger. Track cash flow, manage double-entry bookkeeping, and generate instant balance sheets and profit & loss reports.",
+    url: "https://cyberspaceworks.com/products/cyberledger-accounting-software",
+    siteName: "Cyberspace Works",
+    type: "website",
+    locale: "en_US",
+  },
+
   // twitter: {
-  //   card: 'summary_large_image',
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
+  //   card: "summary_large_image",
+  //   title: "CyberLedger: Business Accounting & Ledger Software | Cyberspace Works",
+  //   description:
+  //     "Maintain perfect financial clarity with CyberLedger. Track cash flow, manage double-entry bookkeeping, and generate instant balance sheets and profit & loss reports.",
   // },
-}
+
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  // },
+};
+
+
 
 export default function LandingPage() {
   return <LandingPageContent />

@@ -3,7 +3,9 @@ import { LandingPageContent } from './landing-page-content'
 
 // Metadata for the landing page
 export const metadata: Metadata = {
- title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
+  metadataBase: new URL("https://cyberspaceworks.com"),
+
+  title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
 
   description:
     "Simplify your human resources operations with CyberPayroll. Automate complex salary calculations, manage employee attendance, and generate compliant payslips effortlessly.",
@@ -20,17 +22,30 @@ export const metadata: Metadata = {
     canonical:
       "https://cyberspaceworks.com/products/cyberpayroll-hr-management-software",
   },
-  // openGraph: {
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
-  //   type: 'website',
-  // },
+
+  openGraph: {
+    title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
+    description:
+      "Simplify your human resources operations with CyberPayroll. Automate complex salary calculations, manage employee attendance, and generate compliant payslips effortlessly.",
+    url: "https://cyberspaceworks.com/products/cyberpayroll-hr-management-software",
+    siteName: "Cyberspace Works",
+    type: "website",
+    locale: "en_US",
+  },
+
   // twitter: {
-  //   card: 'summary_large_image',
-  //   title: 'ShadcnStore - Modern Admin Dashboard Template',
-  //   description: 'A beautiful and comprehensive admin dashboard template built with React, Next.js, TypeScript, and shadcn/ui.',
+  //   card: "summary_large_image",
+  //   title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
+  //   description:
+  //     "Simplify your human resources operations with CyberPayroll. Automate complex salary calculations, manage employee attendance, and generate compliant payslips effortlessly.",
   // },
-}
+
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  // },
+};
+
 
 export default function LandingPage() {
   return <LandingPageContent />
