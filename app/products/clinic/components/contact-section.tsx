@@ -221,7 +221,7 @@ export function ContactSection() {
       >
         <FormControl>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select query type" />
+            <SelectValue placeholder="Free Demo Query" />
           </SelectTrigger>
         </FormControl>
 
@@ -236,6 +236,9 @@ export function ContactSection() {
 
           <SelectItem value="have-question">
             Have Question
+          </SelectItem>
+          <SelectItem value="free-demo">
+            Free Demo Query
           </SelectItem>
         </SelectContent>
       </Select>

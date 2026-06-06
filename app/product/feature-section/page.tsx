@@ -8,6 +8,8 @@ import {
   Shield,
   Database,
   BarChart3,
+  Layout,
+  BarChart,
 } from "lucide-react"
 
 export default function FeaturesSection() {
@@ -16,11 +18,11 @@ export default function FeaturesSection() {
       <BentoGrid>
         {/* Card 1 */}
         <BentoCard
-          name="GST Billing"
-          description="Manage invoices and GST billing easily."
+          name=" Immersive UI & Intuitive Experience"
+          description="Experience software that feels second nature. We design clean, minimalist glassmorphic interfaces paired with thoughtful, modern typography and dark-mode aesthetics, turning complex workflows into effortless digital experiences."
           href="/products/gst"
           cta="Learn More"
-          Icon={FileText}
+          Icon={Layout}
           className="md:col-span-2"
           background={
             <div className="h-full w-full bg-cyan-500/10" />
@@ -29,8 +31,8 @@ export default function FeaturesSection() {
 
         {/* Card 2 */}
         <BentoCard
-          name="Security"
-          description="Enterprise-grade protection."
+          name="Enterprise-Grade Security"
+          description="Your data integrity is non-negotiable. Every application is fortified with end-to-end encryption, strict multi-factor authentication, and automated nightly backups to keep your business fully protected."
           href="/security"
           cta="Explore"
           Icon={Shield}
@@ -42,8 +44,8 @@ export default function FeaturesSection() {
 
         {/* Card 3 */}
         <BentoCard
-          name="Database"
-          description="Powerful data management tools."
+          name="High-Velocity Architecture"
+          description="Powered by modern relational databases and optimized indexes. Experience lightning-fast query execution, real-time inventory synchronization, and zero lag, even under massive data loads."
           href="/database"
           cta="View"
           Icon={Database}
@@ -55,11 +57,11 @@ export default function FeaturesSection() {
 
         {/* Card 4 */}
         <BentoCard
-          name="Analytics"
-          description="Track reports and business growth."
+          name="Real-Time Analytics & Growth Tracking"
+          description="Transform raw numbers into strategic growth. Access immersive, live dashboards that track your revenue metrics, customer trends, and daily operational bottlenecks with absolute clarity."
           href="/analytics"
           cta="Get Started"
-          Icon={BarChart3}
+          Icon={BarChart}
           className="md:col-span-2"
           background={
             <div className="h-full w-full bg-orange-500/10" />

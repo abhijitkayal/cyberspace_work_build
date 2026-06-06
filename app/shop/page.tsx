@@ -21,14 +21,20 @@ import {
 } from "lucide-react";
 import DotGrid from "../products/clinic/components/DotGrid";
 import styled from "styled-components";
-// import { useRouter } from "next/navigation";
 
-/* ═══════════════════════════════════════════════════════
-   CUTOUT HELPERS
-═══════════════════════════════════════════════════════ */
 
 const CUT = 32;
+function ProductSkeleton() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-black">
+  <div className="relative">
+    <div className="h-16 w-16 rounded-full border-4 border-cyan-500/20"></div>
 
+    <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-t-cyan-500"></div>
+  </div>
+</div>
+  );
+}
 function cutPath(cut = CUT) {
   return `polygon(
     ${cut}px 0%,
@@ -203,6 +209,28 @@ const CutoutCardInner = styled.div<{ $cut: number }>`
   background: #0a0a0a;
   clip-path: ${({ $cut }) => innerCutPath($cut, 1.5)};
 `;
+const CutoutCardCartButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  left: 4rem; /* beside wishlist */
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: rgba(255,255,255,.7);
+  // border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(10px);
+  transition: all 300ms;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: #00ced4;
+    color: #00ced4;
+  }
+`;
 
 const CutoutCardSpotlight = styled.div<{
   $inside: boolean;
@@ -266,6 +294,7 @@ const CutoutCardWishlistButton = styled.button<{ $active: boolean }>`
   position: absolute;
   top: 1rem;
   left: 1rem;
+
   z-index: 30;
   display: inline-flex;
   align-items: center;
@@ -274,9 +303,9 @@ const CutoutCardWishlistButton = styled.button<{ $active: boolean }>`
   height: 2rem;
  color: ${({ $active }) =>
   $active ? "#ef4444" : "rgba(255,255,255,.5)"};
-
-border: 1px solid
-  ${({ $active }) => ($active ? "#ef4444" : "rgba(255,255,255,.14)")};
+background:transparent;
+// border: 1px solid
+//   ${({ $active }) => ($active ? "#ef4444" : "rgba(255,255,255,.14)")};
   backdrop-filter: blur(10px);
   transition: all 300ms;
   cursor: pointer;
@@ -406,7 +435,7 @@ const userId =
           />
 
         
-          <CutoutCardWishlistButton
+        <CutoutCardWishlistButton
   type="button"
   $active={isWishlisted}
   onClick={(event) => {
@@ -421,12 +450,27 @@ const userId =
     });
   }}
 >
-        <Heart
-  size={14}
-  fill={isWishlisted ? "#ef4444" : "none"}
-  color={isWishlisted ? "#ef4444" : "rgba(255,255,255,0.7)"}
-/>
-          </CutoutCardWishlistButton>
+  <Heart
+    size={14}
+    fill={isWishlisted ? "#ef4444" : "none"}
+    color={isWishlisted ? "#ef4444" : "rgba(255,255,255,0.7)"}
+  />
+</CutoutCardWishlistButton>
+
+<CutoutCardCartButton
+  type="button"
+  onClick={(e) => {
+    e.stopPropagation();
+
+    addToCart?.({
+      id,
+      title,
+      price,
+    });
+  }}
+>
+  <ShoppingCart size={14} />
+</CutoutCardCartButton>
 
           <div className="relative z-20 flex h-full flex-col gap-4 p-7 bg-gray-900">
             <CornerMark
@@ -481,7 +525,7 @@ const userId =
     target="_blank"
     rel="noopener noreferrer"
     onClick={(e) => e.stopPropagation()}
-    className="text-cyan-400 hover:text-cyan-300 text-sm underline break-all"
+    className="text-cyan-400 hover:text-cyan-300 text-sm break-all"
   >
     Live Demo →
   </a>
@@ -502,16 +546,10 @@ const userId =
   $inside={mouse.inside}
   $accent={accent}
   onClick={(e) => {
-    e.stopPropagation();
-
-    addToCart?.({
-      id,
-      title,
-      price,
-    });
+    router.push(`/shop/${id}`);
   }}
 >
-                Add To Cart
+                Purchase Now
               </CutoutCardAction>
             </div>
           </div>
@@ -791,24 +829,33 @@ const addToCart = async (product: any) => {
 
 
         {/* Grid */}
-       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
- {filteredProducts.map((product: any) => (
-  <CutoutCard
-    key={product._id}
-    id={product._id} 
-    label={product.category}
-    title={product.title}
-    demo={product.demoLink}
-    description={product.shortDescription}
-    price={product.discountPrice}
-    image={product.image}
-    wishlist={wishlist}
-    wishlistDB={wishlistDB}
-    toggleWishlist={toggleWishlist}
-    addToCart={addToCart}
-    
-  />
-))}
+     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+  {fetching ? (
+    Array.from({ length: 3 }).map((_, index) => (
+      <ProductSkeleton key={index} />
+    ))
+  ) : filteredProducts.length > 0 ? (
+    filteredProducts.map((product: any) => (
+      <CutoutCard
+        key={product._id}
+        id={product._id}
+        label={product.category}
+        title={product.title}
+        demo={product.demoLink}
+        description={product.shortDescription}
+        price={product.discountPrice}
+        image={product.image}
+        wishlist={wishlist}
+        wishlistDB={wishlistDB}
+        toggleWishlist={toggleWishlist}
+        addToCart={addToCart}
+      />
+    ))
+  ) : (
+    <div className="col-span-full text-center py-20 text-white/60">
+      No products found
+    </div>
+  )}
 </div>
       </div>
 

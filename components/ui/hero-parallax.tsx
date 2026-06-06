@@ -638,7 +638,7 @@ export const Header = () => {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="text-2xl md:text-7xl font-bold text-white tracking-tight no-scrollbar"
       >
-        The Ultimate <br /> development studio
+        The Ultimate <br /> <span className="text-cyan-400">Software Solutions</span>
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 24 }}
@@ -646,9 +646,7 @@ export const Header = () => {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
         className="max-w-2xl text-base md:text-xl mt-8 text-neutral-400"
       >
-        We build beautiful products with the latest technologies and frameworks.
-        We are a team of passionate developers and designers that love to build
-        amazing products.
+       We build robust softwares with the latest technologies and frameworks to boost your business needs and elevate your finances to the top.
       </motion.p>
     </div>
   );
