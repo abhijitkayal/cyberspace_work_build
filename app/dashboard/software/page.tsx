@@ -504,7 +504,7 @@ export default function SoftwareShowcase() {
             tag="v2.4"
             accent="#0f766e"
               icon={<SquareKanban className="size-3" />}
-              href="/products/project"
+              href="/products/cyberprojects-project-management-software"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -518,7 +518,7 @@ export default function SoftwareShowcase() {
             tag="v4.0"
             accent="#0e7490"
               icon={<ReceiptIndianRupee className="size-3" />}
-              href="/products/gst&billing"
+              href="/products/cyberinvoice-gst-billing-software"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -532,7 +532,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#0369a1"
               icon={<NotebookTabs className="size-3" />}
-              href="/products/tally"
+              href="/products/cyberledger-accounting-software"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -545,7 +545,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#1d4ed8"
               icon={<IdCardLanyard className="size-3" />}
-              href="/products/hrms"
+              href="/products/cyberpayroll-hr-management-software"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -568,7 +568,7 @@ export default function SoftwareShowcase() {
             tag="v2.4"
             accent="#4338ca"
               icon={<ShoppingBag className="size-3" />}
-              href="/products/store"
+              href="/products/cyberretail-store-management-system"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -582,7 +582,7 @@ export default function SoftwareShowcase() {
             tag="v4.0"
             accent="#6d28d9"
               icon={<Stethoscope className="size-3" />}
-              href="/products/clinic"
+              href="/products/cyberclinic-clinic-management-system"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -596,7 +596,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#7e22ce"
               icon={<Pill className="size-3" />}
-              href="/products/pharmacy"
+              href="/products/cyberpharma-pharmacy-management-system"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />
@@ -609,7 +609,7 @@ export default function SoftwareShowcase() {
             tag="v2.0"
             accent="#38bdf8"
               icon={<ChefHat className="size-3" />}
-              href="/products/restaurant"
+              href="/products/cyberdine-restaurant-management-system"
               onWishlist={() => console.log("Wishlist CyberProjects")}
   onAddToCart={() => console.log("Add CyberProjects")}
           />

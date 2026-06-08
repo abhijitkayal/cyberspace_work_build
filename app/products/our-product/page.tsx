@@ -7,10 +7,10 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import Antigravity from '../Antigravity';
+
 import { useRouter } from "next/navigation";
 import { ChefHat, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ReceiptText, ShoppingBag, SquareKanban, Stethoscope } from "lucide-react";
-import OurServicesWithWires from "./OurServices";
+
 
 /* ═══════════════════════════════════════════════════════
    CUTOUT HELPERS
@@ -302,11 +302,11 @@ function CutoutCard({
             <div className="flex flex-1 flex-col gap-3">
               <div className="flex">
                {icon && (
-    <span className="flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5 text-cyan-500">
+    <span className="flex items-center justify-center size-7 text-cyan-500">
       {icon}
     </span>
   )}
-              <h3 className="text-xl ml-2 font-semibold text-white">
+              <h3 className="text-xl font-semibold text-white">
                 {title}
               </h3>
               </div>
@@ -349,7 +349,7 @@ function CutoutCard({
 export default function SoftwareShowcase() {
   const router = useRouter();
   return (
-    <div id="products" className="relative min-h-screen overflow-hidden bg-transparent">
+    <div id="products" className="relative min-h-screen overflow-hidden bg-black">
       {/* Background */}
       {/* <div className="absolute inset-0 z-0">
         <Antigravity
@@ -393,13 +393,7 @@ export default function SoftwareShowcase() {
 
         {/* Grid */}
         <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
-          {/* <CutoutCard
-            label="RMS"
-            title="CyberDine"
-            description="Powerful double-entry accounting with GST filing and bank reconciliation."
-            tag="v5.3"
-            accent="#047857"
-          /> */}
+          
 
           <CutoutCard
             label="Project Management Software"
@@ -441,13 +435,7 @@ export default function SoftwareShowcase() {
           />
         </div>
          <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
-          {/* <CutoutCard
-            label="RMS"
-            title="CyberDine"
-            description="Powerful double-entry accounting with GST filing and bank reconciliation."
-            tag="v5.3"
-            accent="#2dd4bf"
-          /> */}
+         
 
           <CutoutCard
             label="Store Management System"
@@ -488,39 +476,6 @@ export default function SoftwareShowcase() {
               href="/products/cyberdine-restaurant-management-system"
           />
         </div>
-        {/* <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4">
-          <CutoutCard
-            label="RMS"
-            title="CyberDine"
-            description="Powerful double-entry accounting with GST filing and bank reconciliation."
-            tag="v5.3"
-            accent="#2dd4bf"
-          />
-
-          <CutoutCard
-            label="HRMS"
-            title="PeopleCore"
-            description="Payroll, attendance, leave and employee management platform."
-            tag="v2.4"
-            accent="#34d8d8"
-          />
-
-          <CutoutCard
-            label="Store Management"
-            title="StoreSync"
-            description="Barcode billing, GST invoicing and inventory management."
-            tag="v4.0"
-            accent="#ffb830"
-          />
-
-          <CutoutCard
-            label="Hospital"
-            title="CareAxis"
-            description="Hospital ERP with billing, EMR and pharmacy integration."
-            tag="v2.0"
-            accent="#38bdf8"
-          />
-        </div> */}
       </div>
 
       {/* Animation */}

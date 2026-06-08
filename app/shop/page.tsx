@@ -19,7 +19,7 @@ import {
   ShoppingCart,
  
 } from "lucide-react";
-import DotGrid from "../products/clinic/components/DotGrid";
+import DotGrid from "../products/cyberclinic-clinic-management-system/components/DotGrid";
 import styled from "styled-components";
 
 

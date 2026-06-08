@@ -306,14 +306,14 @@ const services = [
   { name: "Research & Analytics", icon: <SiGoogleanalytics size={32} />, desc: "Delivering data-driven insights to fuel smarter decisions and business innovation.", href: "/services/research-and-analytics" },
 ];
 const products = [
-    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: " HR & payroll automation.",                  href: "/products/hrms" },
-    { name: "CyberDine",    icon: <ChefHat />,             subtext: "Cloud restaurant POS system.",          href: "/products/resturant" },
-    { name: "CyberPharma",  icon: <Pill />,                subtext: " Pharmacy inventory & billing.",    href: "/products/pharmacy" },
-    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: " Patient & EMR management.",     href: "/products/clinic" },
-    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "Retail store POS platform.",             href: "/products/store" },
-    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Corporate financial bookkeeping.",                          href: "/products/tally" },
-    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Fast GST billing & invoicing.", href: "/products/gst&billing" },
-    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "Agile team workspace planner.",            href: "/products/project" },
+    { name: "CyberPayroll", icon: <IdCardLanyard />,       subtext: " HR & payroll automation.",                  href: "/products/cyberpayroll-hr-management-software" },
+    { name: "CyberDine",    icon: <ChefHat />,             subtext: "Cloud restaurant POS system.",          href: "/products/cyberdine-restaurant-management-system" },
+    { name: "CyberPharma",  icon: <Pill />,                subtext: " Pharmacy inventory & billing.",    href: "/products/cyberpharma-pharmacy-management-system" },
+    { name: "CyberClinic",  icon: <Stethoscope />,         subtext: " Patient & EMR management.",     href: "/products/cyberclinic-clinic-management-system" },
+    { name: "CyberRetail",  icon: <ShoppingBag />,         subtext: "Retail store POS platform.",             href: "/products/cyberretail-store-management-system" },
+    { name: "CyberLedger",  icon: <NotebookTabs />,        subtext: "Corporate financial bookkeeping.",                          href: "/products/cyberledger-accounting-software" },
+    { name: "CyberInvoice", icon: <ReceiptIndianRupee />,  subtext: "Fast GST billing & invoicing.", href: "/products/cyberinvoice-gst-billing-software" },
+    { name: "CyberProjects",icon: <SquareKanban />,        subtext: "Agile team workspace planner.",            href: "/products/cyberprojects-project-management-software" },
   ]
 
 const AboutUs = () => {
