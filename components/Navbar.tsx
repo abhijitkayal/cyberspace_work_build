@@ -723,7 +723,7 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
   const isAuthenticated = status === "authenticated"
   const isActive = (href: string) => pathname === href
 
-  const hideNavbar = pathname?.startsWith("/dashboard") || pathname === "/schedule" || pathname === "/login" || pathname === "/signup"
+  const hideNavbar = pathname?.startsWith("/dashboard") || pathname === "/schedule" || pathname === "/login" || pathname === "/signup" || pathname.startsWith("/share")
 
   const items    = { left: [{ label: "About", href: "/about-us", icon: Building2 }, { label: "Services", href: "/services", icon: Info }] }
   const navitems = { left: [{ label: "Products", href: "/products", icon: Package }, { label: "Contact", href: "/contact-us", icon: Contact }] }
