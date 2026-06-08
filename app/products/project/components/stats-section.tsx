@@ -4,7 +4,9 @@ import {
   Package,
   Download,
   Users,
-  Star
+  Star,
+  TrendingUp,
+  BadgeDollarSign,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { DotBackground, GridBackground } from '@/components/lightswind/grid-dot-backgrounds'
@@ -14,28 +16,28 @@ import DotGrid from './DotGrid'
 
 const stats = [
   {
-    icon: Package,
-    value: '500+',
-    label: 'Components',
-    description: 'Ready-to-use blocks'
+    icon: TrendingUp,
+    value: '80%',
+    label: 'Growth',
+    description: 'Using this Software'
   },
   {
-    icon: Download,
-    value: '25K+',
-    label: 'Downloads',
-    description: 'Trusted worldwide'
+    icon: BadgeDollarSign,
+    value: '50%',
+    label: 'Cost-Effective',
+    description: 'In the Market'
   },
   {
     icon: Users,
-    value: '10K+',
-    label: 'Developers',
-    description: 'Active community'
+    value: '150+',
+    label: 'Customers',
+    description: 'Using this Product'
   },
   {
     icon: Star,
     value: '4.9',
     label: 'Rating',
-    description: 'User satisfaction'
+    description: 'From our Customers'
   }
 ]
 

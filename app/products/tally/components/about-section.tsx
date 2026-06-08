@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'Real-Time Double Entry Systems',
     description: 'Every transaction self-balances across corresponding asset, liability, revenue, and expense accounts without manual reconciliation.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Instant Profit & Loss Metrics',
     description: 'Pull up-to-the-minute operational performance reports, dynamic balance sheets, and cash flow trends anytime.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: ' Clutter-Free Chart of Accounts',
     description: 'Organize thousands of corporate accounts, vendor lists, and client ledgers under clean cascading folders.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: ' Airtight Internal Audit Trails',
     description: 'Track every data modification, transaction record deletion, or modification timestamped to specific backend user profiles.'
   }

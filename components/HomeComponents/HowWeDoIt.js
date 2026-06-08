@@ -176,7 +176,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 import { FaChartLine, FaTools, FaRocket } from "react-icons/fa";
-import { FiTrendingUp } from "react-icons/fi";
+import { FiCpu, FiGitBranch, FiTrendingUp,FiRefreshCw, FiActivity } from "react-icons/fi";
 import DotField from "../DotField";
 import { Activity, Brain, RefreshCw, Workflow } from "lucide-react";
 
@@ -244,9 +244,15 @@ const [mode, setMode] = useState("service");
         {/* Title */}
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold mb-4">How We Do It</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
+          {mode === "service" && ( <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
             We craft, solve, and support your tech from day one to never-let-you-down.
           </p>
+          )}
+          {mode === "product" && ( <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">
+            We build, optimize, and support your infrastructure from day one to ensure non-stop growth.
+          </p>
+          )}
+
         </div>
 
         {/* ===================== */}
@@ -421,7 +427,7 @@ const [mode, setMode] = useState("service");
             <h3 className="absolute -top-10 -left-6 md:-left-16 text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-400 to-cyan-600 px-6 lg:px-0">
               01
             </h3>
-            <Workflow className="text-4xl text-cyan-400 mb-4" />
+            <FiGitBranch className="text-5xl font-bold text-cyan-400 mb-4 " />
             <h4 className="text-lg font-semibold mb-2">
               Seamless Integration & Setup 
             </h4>
@@ -443,7 +449,7 @@ const [mode, setMode] = useState("service");
             <h3 className="absolute -top-10 -right-6 md:-right-10 text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-400 to-cyan-600 px-6 lg:px-0">
               02
             </h3>
-            <Brain className="text-4xl text-cyan-400 mb-4" />
+            <FiCpu className="text-4xl text-cyan-400 mb-4" />
             <h4 className="text-lg font-semibold mb-2">
               Intelligent Automation & Core Execution
             </h4>
@@ -465,7 +471,7 @@ const [mode, setMode] = useState("service");
             <h3 className="absolute bottom-30 -left-6 md:-left-16 text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-400 to-cyan-600 px-6 lg:px-0">
               03
             </h3>
-            <RefreshCw className="text-4xl text-cyan-400 mb-4" />
+            <FiRefreshCw className="text-4xl text-cyan-400 mb-4" />
             <h4 className="text-lg font-semibold mb-2">
               Continuous Deployment & Testing
             </h4>
@@ -486,7 +492,7 @@ const [mode, setMode] = useState("service");
             <h3 className="absolute bottom-30 -right-6 md:-right-20 text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-400 to-cyan-600 px-6 lg:px-0">
               04
             </h3>
-            <Activity className="text-4xl text-cyan-400 mb-4" />
+            <FiActivity className="text-4xl text-cyan-400 mb-4" />
             <h4 className="text-lg font-semibold mb-2">
               Proactive Monitoring & Infinite Scaling
             </h4>

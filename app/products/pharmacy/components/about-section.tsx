@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: ' Barcode-Driven Checkout',
     description: ' Process prescriptions instantly using precise universal barcode scanning linked directly to active inventory.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Batch & Expiry Alarms',
     description: 'Zero out wastage with intelligent notifications warning your team of upcoming medicine expirations months in advance.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Clean Drug Search Hierarchy',
     description: 'Instantly filter alternatives by chemical composition, salt group, or manufacturer name during high-volume hours.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Supplier Ledger Automation',
     description: 'Auto-populate purchase orders, record supplier invoices, and track outstanding vendor balances smoothly.'
   }

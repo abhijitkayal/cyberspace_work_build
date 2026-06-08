@@ -1,8 +1,8 @@
 "use client"
 
 import {
-  Package,
-  Download,
+  TrendingUp,
+  BadgeDollarSign,
   Users,
   Star
 } from 'lucide-react'
@@ -14,13 +14,13 @@ import DotGrid from './DotGrid'
 
 const stats = [
   {
-    icon: Package,
+    icon: TrendingUp,
     value: '80%',
     label: 'Growth',
     description: 'Using this Software'
   },
   {
-    icon: Download,
+    icon: BadgeDollarSign,
     value: '50%',
     label: 'Cost-Effective',
     description: ' In the Market'

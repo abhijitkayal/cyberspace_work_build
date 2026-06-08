@@ -236,10 +236,11 @@ export function ContactSection() {
           <SelectItem value="have-question">
             Have Question
           </SelectItem>
-        </SelectContent>
-         <SelectItem value="free-demo">
+          <SelectItem value="free-demo">
                     Enquiry For Demo
                   </SelectItem>
+        </SelectContent>
+         
       </Select>
 
       <FormMessage />

@@ -284,7 +284,7 @@ const user = currentUser;
   const stars = Array.from({ length: 5 });
 
   return (
-    <div className="min-h-screen bg-black text-white mt-10">
+    <div className="min-h-screen bg-gray-900 text-white mt-10">
       {/* <div className="h-[3px] w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400" /> */}
 
       <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-12">

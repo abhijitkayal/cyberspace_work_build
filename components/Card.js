@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { Star } from "lucide-react";
 
 /* =====================
    🔹 Styled Components
@@ -165,7 +166,7 @@ export default function Dashboard() {
   const cards = [
     { title: "Years of Experience", target: 8, glow: cyan, from: { x: -100, y: 0 } },
     { title: "Completed Projects", target: 500, glow: cyan, from: { x: 0, y: -100 } },
-    { title: "5⭐ Reviews", target: 100, glow: cyan, from: { x: 0, y: 100 } },
+    { title: "Reviews", target: 100, glow: cyan, from: { x: 0, y: 100 } },
     { title: "Countries Served", target: 5, glow: cyan, from: { x: 100, y: 0 } },
   ];
 
@@ -191,9 +192,15 @@ export default function Dashboard() {
                     <div className="text">
                       <Counter target={item.target} start={inView} />
                     </div>
-                    <div className="text-sm font-light tracking-wide mt-2 text-gray-300">
-                      {item.title}
-                    </div>
+                    {item.title === "Reviews" ? (
+  <div className="flex items-center gap-1">
+    <span>5</span>
+    <Star className="h-4 w-4 -mt-1 text-yellow-400" />
+    <span>Reviews</span>
+  </div>
+) : (
+  item.title
+)}
                     <div className="line topl" />
                     <div className="line leftl" />
                     <div className="line bottoml" />

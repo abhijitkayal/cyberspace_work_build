@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'One-Click Salary Calculation',
     description: 'Compile base earnings, overtime additions, allowances, and statutory deductions in seconds across your entire organization.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Airtight Attendance Metrics',
     description: 'Capture clear employee work hours, shifts, early departures, and overtime thresholds using integrated digital check-ins.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Clean Employee Document Hub',
     description: ' Maintain secure corporate directories containing clear records of official onboarding data, offer paperwork, and certification trails.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Dynamic Leave Engine',
     description: 'Configure unique corporate leave allocations, request channels, multi-level manager approvals, and automated carry-forward rules.'
   }

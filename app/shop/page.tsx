@@ -26,7 +26,7 @@ import styled from "styled-components";
 const CUT = 32;
 function ProductSkeleton() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
+    <div className="fixed inset-0 flex items-center justify-center">
   <div className="relative">
     <div className="h-16 w-16 rounded-full border-4 border-cyan-500/20"></div>
 
@@ -831,7 +831,7 @@ const addToCart = async (product: any) => {
         {/* Grid */}
      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
   {fetching ? (
-    Array.from({ length: 3 }).map((_, index) => (
+    Array.from({ length: 1 }).map((_, index) => (
       <ProductSkeleton key={index} />
     ))
   ) : filteredProducts.length > 0 ? (

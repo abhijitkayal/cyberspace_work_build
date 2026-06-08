@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: ' Instant KOT Generation ',
     description: 'Push orders from tables directly to kitchen displays or thermal printers instantly, eliminating staff transit delays.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Live Inventory Auditing',
     description: 'Real-time tracking of raw ingredients with automated low-stock alerts down to the exact gram or item count.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Intuitive Touch Billing',
     description: 'A minimalist, lighting-fast POS interface built to finalize invoices in less than three clicks.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Multi-Terminal Sync',
     description: ' Keep your front-of-house, kitchen staff, and management dashboards perfectly synchronized across devices without server delay.'
   }

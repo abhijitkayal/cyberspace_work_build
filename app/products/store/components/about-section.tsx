@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'High-Volume POS Invoicing',
     description: ' Process retail traffic efficiently. Features a clean, optimized cart interface handling returns, exchanges, and discounts in real-time.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Granular Matrix Stock Management',
     description: ' Sort and track individual products by size variants, color profiles, material types, and specific rack placement tags.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Sleek Operational Dashboards',
     description: 'Eliminate bulky interfaces. Our dark-mode layout provides instant data accessibility to your cashiers and store supervisors.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Customer Reward Engines',
     description: 'Drive repeat visits via customer profile assignment, dynamic loyalty point rules, and custom tier metrics.'
   }

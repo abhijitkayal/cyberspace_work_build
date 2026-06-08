@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'Rapid Appointment Matrix',
     description: 'Book, reschedule, or cancel patient visits across multiple medical consultants with zero scheduling conflicts.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Unified Digital Health Timelines (EMR)',
     description: 'Access holistic patient histories, historical diagnoses, vitals logs, and imaging attachments on a single, secure page.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Frictionless Prescription Pads',
     description: ' Type and generate clean, standardized print-ready digital prescriptions with integrated dosage instructions in seconds.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: ' Integrated Lab & Billing Channels',
     description: 'Push diagnosis data directly into internal pharmacy checkouts or procedure billing lines seamlessly.'
   }

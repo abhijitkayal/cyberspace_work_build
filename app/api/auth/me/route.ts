@@ -7,6 +7,16 @@ export async function GET() {
   try {
     const session = await requireAuth();
 
+if (!session) {
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Unauthorized",
+    },
+    { status: 401 }
+  );
+}
+
     await connectToDatabase();
 
     const email = session?.user?.email;

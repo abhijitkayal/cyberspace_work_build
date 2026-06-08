@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'Frictionless Task Matrix',
     description: 'Assign tasks, update project progression statuses, and categorize priority tags via lightning-fast drag-and-drop actions.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Deep Milestone & Dependency Tracking',
     description: 'Map complete development lifecycles visually to ensure team members stay aligned on blocking phases.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Minimalist Developer Sprint Boards ',
     description: ' Filter active sprint items, technical issues, and documentation attachments cleanly without UI clutter.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Resource Capacity Auditing',
     description: 'Track task distributions across team members to prevent burnout and clear delivery bottlenecks early.'
   }

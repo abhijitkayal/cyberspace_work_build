@@ -33,7 +33,7 @@ export function LandingPageContent() {
       {/* Main Content */}
       <main>
         <HeroSection />
-        <LogoCarousel />
+        {/* <LogoCarousel /> */}
         <StatsSection />
         <AboutSection />
         <FeaturesSection />

@@ -4,28 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CardDecorator } from '@/components/ui/card-decorator'
-import { Github, Code, Palette, Layout, Crown } from 'lucide-react'
+import { Github, Code, Palette, Layout, Crown,Calculator,
+  Fingerprint,
+  FolderOpen,
+  CalendarCheck2, } from 'lucide-react'
 import { DotBackground } from '@/components/lightswind/grid-dot-backgrounds'
 import DotField from '@/components/DotField'
 
 const values = [
   {
-    icon: Code,
+    icon: Calculator,
     title: 'Rapid Invoice Assembly',
     description: 'Auto-populate client metadata, saved product catalogs, and matching tax profiles instantly onto professional templates.'
   },
   {
-    icon: Palette,
+    icon: Fingerprint,
     title: 'Automated Multi-State GST Engines',
     description: 'Process CGST, SGST, and IGST breakdowns dynamically based on client point-of-sale coordinates without manual computation.'
   },
   {
-    icon: Layout,
+    icon: FolderOpen,
     title: 'Polished Glassmorphism Invoice Previews',
     description: 'View live layouts exactly how your customers will receive them on their screens before committing the file.'
   },
   {
-    icon: Crown,
+    icon: CalendarCheck2,
     title: 'Proactive Outstanding Receivables Reminders',
     description: 'Keep your cash pipelines active with automated alerts tracking unpaid balances and overdue dates.'
   }

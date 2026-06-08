@@ -21,7 +21,7 @@ export default function FeaturesSection() {
           name=" Immersive UI & Intuitive Experience"
           description="Experience software that feels second nature. We design clean, minimalist glassmorphic interfaces paired with thoughtful, modern typography and dark-mode aesthetics, turning complex workflows into effortless digital experiences."
           href="/products/gst"
-          cta="Learn More"
+          cta=""
           Icon={Layout}
           className="md:col-span-2"
           background={
@@ -34,7 +34,7 @@ export default function FeaturesSection() {
           name="Enterprise-Grade Security"
           description="Your data integrity is non-negotiable. Every application is fortified with end-to-end encryption, strict multi-factor authentication, and automated nightly backups to keep your business fully protected."
           href="/security"
-          cta="Explore"
+          cta=""
           Icon={Shield}
           className="md:col-span-1"
           background={
@@ -47,7 +47,7 @@ export default function FeaturesSection() {
           name="High-Velocity Architecture"
           description="Powered by modern relational databases and optimized indexes. Experience lightning-fast query execution, real-time inventory synchronization, and zero lag, even under massive data loads."
           href="/database"
-          cta="View"
+          cta=""
           Icon={Database}
           className="md:col-span-1"
           background={
@@ -60,7 +60,7 @@ export default function FeaturesSection() {
           name="Real-Time Analytics & Growth Tracking"
           description="Transform raw numbers into strategic growth. Access immersive, live dashboards that track your revenue metrics, customer trends, and daily operational bottlenecks with absolute clarity."
           href="/analytics"
-          cta="Get Started"
+          cta=""
           Icon={BarChart}
           className="md:col-span-2"
           background={
