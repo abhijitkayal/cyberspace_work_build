@@ -1,7 +1,4 @@
-
-
 "use client"
-
 import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -23,7 +20,6 @@ import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Drawer } from "@base-ui/react/drawer"
 import { HoverBorderGradient } from "./ui/hover-border-gradient"
-
 import {
   FaLaptopCode, FaMobileAlt, FaCode, FaPalette, FaBullhorn,
   FaBrush, FaBrain, FaPhoneAlt, FaEnvelope, FaWhatsapp,
@@ -32,8 +28,6 @@ import {
 import { SiGoogleanalytics } from "react-icons/si"
 import SiteNav from "./nav-animation"
 import AnimatedBadge from "./ui/animated-badge"
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
   .sparkle-nav__dropdown {
     position: fixed; top: 65px; left: 14vw; right: 0; width: 70vw;
@@ -722,6 +716,7 @@ const [cartError, setCartError] = useState<string | null>(null);
 const [wishlistItems, setWishlistItems] = useState<any[]>([]);
 const [isLoadingWishlist, setIsLoadingWishlist] = useState(false);
 const [wishlistError, setWishlistError] = useState<string | null>(null);
+ const [currentUser, setCurrentUser] = useState<any>(null);
 
   const pathname        = usePathname()
   const { status }      = useSession()
@@ -750,7 +745,7 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
     <div className="relative">
       <ShoppingCart />
 
-      {cartItems?.length > 0 && (
+      {cartItems.length > 0 && (
         <span className="absolute -top-1 -right-2 flex h-2.5 w-2.5">
           <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
@@ -829,6 +824,20 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
     window.addEventListener("scroll", handleScroll)
     return () => { document.removeEventListener("mousedown", handleOut); document.removeEventListener("touchstart", handleOut); window.removeEventListener("scroll", handleScroll) }
   }, [])
+  useEffect(() => {
+      const loadUser = async () => {
+    const res = await fetch("/api/auth/me");
+    const data = await res.json();
+
+    if (data.success) {
+       console.log("Checking authentication status:", data.user);
+      setCurrentUser(data.user);
+     
+    }
+  };
+
+  loadUser();
+  }, []); 
 
 useEffect(() => {
   console.log("Drawer:", drawerOpen, drawerType);
@@ -853,27 +862,29 @@ useEffect(() => {
       setCartError(null);
       
       const storedUser = localStorage.getItem("user");
+      console.log("h",currentUser._id);
 
-      if (!storedUser) {
+      if (!currentUser._id) {
         setCartError("Please log in to view your cart");
         setCartItems([]);
         return;
       }
 
       const user = JSON.parse(storedUser);
+      console.log(currentUser._id);
 
-      if (!user.id) {
+      if (!currentUser._id) {
         setCartError("Invalid user data. Please log in again.");
         setCartItems([]);
         return;
       }
 
-      const res = await fetch(`/api/cart?userId=${user.id}`);
+      const res = await fetch(`/api/cart?userId=${currentUser._id}`);
       const data = await res.json();
 
       if (data.success && data.cart) {
         // Verify userId matches
-        if (data.userId && data.userId !== user.id) {
+        if (data.userId && data.userId !== currentUser._id) {
           setCartError("User ID mismatch. Please log in again.");
           setCartItems([]);
           return;
@@ -894,35 +905,40 @@ useEffect(() => {
 
   const loadWishlist = async () => {
   try {
+    console.log("hello");
     setIsLoadingWishlist(true);
     setWishlistError(null);
 
     const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) {
+    if (!currentUser._id) {
       setWishlistError("Please log in to view your wishlist");
+      console.log("No user found in localStorage");
       setWishlistItems([]);
       return;
     }
+    console.log("bc");
 
     const user = JSON.parse(storedUser);
 
-    if (!user.id) {
+    if (!currentUser._id) {
+      console.log("User data is invalid:", currentUser);
       setWishlistError("Invalid user data. Please log in again.");
       setWishlistItems([]);
       return;
     }
-
+    console.log("Current user ID:", currentUser._id);
     const res = await fetch(`/api/wishlist`);
     const data = await res.json();
     console.log("Wishlist API response:", data);
 
     if (data.success) {
       const filteredWishlist = (data.wishlist || []).filter(
-        (item: any) => item.userId === user.id
+        (item: any) => item.userId === currentUser._id
       );
 
       setWishlistItems(filteredWishlist);
+      console.log("Filtered wishlist items:", filteredWishlist);
     } else {
       setWishlistError(data.message || "Failed to load wishlist");
       setWishlistItems([]);
