@@ -13,6 +13,7 @@ export default function ProductDetail({ product }: { product: any }) {
 
   const [currentUser, setCurrentUser] = useState<any>(null);
    const { data: session } = useSession();
+   const [imageLoading, setImageLoading] = useState(true);
 
 useEffect(() => {
   const loadUser = async () => {
@@ -175,6 +176,7 @@ console.log("product", product);
 };
 const addToCart = async () => {
   const user = currentUser;
+  console.log("currentUser in addToCart:", user);
 
 
   const res = await fetch("/api/cart", {
@@ -238,34 +240,36 @@ const handlePurchase = async () => {
 
     description: product.title,
 
- handler: async function (response: any) {
-const user = currentUser;
-
-  console.log("storedUser:", user);
-
-  // const user = storedUser
-  //   ? JSON.parse(storedUser)
-  //   : null;
-
-  console.log("user:", user);
-
+handler: async function (response) {
+  const user=currentUser;
   const verifyRes = await fetch(
     "/api/payment/verify",
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
       body: JSON.stringify({
         ...response,
-        user,
+        user: user,
         product,
       }),
     }
   );
 
-  console.log(await verifyRes.json());
-},
+  const result =
+    await verifyRes.json();
+    console.log("hhh",user);
+
+  if (result.success) {
+    alert("Payment Successful");
+
+    
+  } else {
+    alert("Payment Verification Failed");
+  }
+}
   };
 
   const paymentObject = new (window as any).Razorpay(
@@ -291,16 +295,27 @@ const user = currentUser;
 
         {/* IMAGE */}
         <div className="md:w-1/2 w-full">
-          <div className="relative rounded-2xl overflow-hidden aspect-square group">
-            <Image
-              src={product.image}
-              alt={product.title}
-              width={520}
-              height={520}
-              className="object-contain p-10 group-hover:scale-105 transition"
-            />
-          </div>
-        </div>
+  <div className="relative rounded-2xl overflow-hidden aspect-square group">
+
+    {/* Loader */}
+    {imageLoading && (
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="h-10 w-10 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+      </div>
+    )}
+
+    <Image
+      src={product.image}
+      alt={product.title}
+      width={520}
+      height={520}
+      className={`object-contain p-10 transition-all duration-300 group-hover:scale-105 ${
+        imageLoading ? "opacity-0" : "opacity-100"
+      }`}
+      onLoad={() => setImageLoading(false)}
+    />
+  </div>
+</div>
 
         {/* DETAILS */}
         <div className="md:w-1/2 w-full flex flex-col mt-10 gap-5">
@@ -328,7 +343,7 @@ const user = currentUser;
   target="_blank"
   rel="noopener noreferrer"
   onClick={(e) => e.stopPropagation()}
-  className="text-cyan-400 hover:text-cyan-300 text-sm underline break-all"
+  className="text-cyan-400 hover:text-cyan-300 text-sm break-all"
 >
   Live Demo →
 </a>
@@ -340,13 +355,13 @@ const user = currentUser;
             
             <button
   onClick={handlePurchase}
-  className="bg-blue-600 px-5 py-2 rounded-full"
+  className="bg-cyan-500 px-5 py-2 rounded-full cursor-pointer"
 >
   Purchase Now
 </button>
 
            <button
-  className={`px-5 py-2 rounded-full ${
+  className={`px-5 py-2 rounded-full cursor-pointer ${
     isInCart
       ? "bg-red-600 text-white"
       : "border border-white"
@@ -364,7 +379,7 @@ const user = currentUser;
     price: product.discountPrice,
   })
 }
-  className={`border p-3 rounded-full transition ${
+  className={`border p-3 rounded-full cursor-pointer transition ${
     isWishlisted
       ? "border-red-500 text-red-500"
       : "border-white text-white"

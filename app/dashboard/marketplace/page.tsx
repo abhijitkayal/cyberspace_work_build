@@ -33,7 +33,7 @@ export default function DashboardMarketplace() {
   const [priceRange, setPriceRange] = useState(0);
   const [image, setImage] = useState<File | null>(null);
 
-  const [view, setView] = useState<"products" | "analytics">("products");
+  const [view, setView] = useState<"products" | "analytics">("analytics");
   const [form, setForm] = useState({
     title: "", actualPrice: "", discountPrice: "",
     category: "", shortDescription: "", longDescription: "",demoLink: "", driveLink: "",
@@ -163,6 +163,10 @@ const handleSubmit = async (e: React.FormEvent) => {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap');
         * { box-sizing: border-box; }
         .mp-root { font-family: 'DM Mono', monospace; background: #0a0a0a; color: #e8e8e8; }
+        .dark .mp-root {
+  background: #0a0a0a;
+  color: #e8e8e8;
+}
         .mp-panel {
           position: fixed; top: 0; right: 0; height: 100vh;
           width: 480px; max-width: 96vw; background: #111;
@@ -205,13 +209,15 @@ const handleSubmit = async (e: React.FormEvent) => {
         .mp-pill {
           font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
           padding: 0.32rem 0.8rem; border-radius: 2px;
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--pill-border, rgba(255,255,255,0.1));
           background: transparent; cursor: pointer;
           transition: background 0.15s, color 0.15s, border-color 0.15s;
-          white-space: nowrap; color: rgba(255,255,255,0.4);
+          white-space: nowrap; color: var(--pill-color, rgba(255,255,255,0.4));
         }
-        .mp-pill.active { background: #e8e8e8; color: #0a0a0a; border-color: #e8e8e8; }
-        .mp-pill:hover:not(.active) { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.75); }
+        .mp-pill.active { background: var(--pill-active-bg, #e8e8e8); color: var(--pill-active-color, #0a0a0a); border-color: var(--pill-active-border, #e8e8e8); }
+        .mp-pill:hover:not(.active) { border-color: var(--pill-hover-border, rgba(255,255,255,0.3)); color: var(--pill-hover-color, rgba(255,255,255,0.75)); }
+        :root { --pill-border: rgba(0,0,0,0.15); --pill-color: rgba(0,0,0,0.5); --pill-active-bg: #0a0a0a; --pill-active-color: #e8e8e8; --pill-active-border: #0a0a0a; --pill-hover-border: rgba(0,0,0,0.35); --pill-hover-color: rgba(0,0,0,0.75); }
+        .dark { --pill-border: rgba(255,255,255,0.1); --pill-color: rgba(255,255,255,0.4); --pill-active-bg: #e8e8e8; --pill-active-color: #0a0a0a; --pill-active-border: #e8e8e8; --pill-hover-border: rgba(255,255,255,0.3); --pill-hover-color: rgba(255,255,255,0.75); }
         .mp-search {
           font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.04em;
           border: 1px solid rgba(255,255,255,0.1); border-radius: 2px;
@@ -267,8 +273,14 @@ const handleSubmit = async (e: React.FormEvent) => {
         .mp-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
       `}</style>
 
-      <div className="mp-root min-h-screen">
+      <div className="min-h-screen bg-background text-foreground font-[DM_Mono]">
         <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+    onClick={() => setView("analytics")}
+    className={`mp-pill ${view === "analytics" ? "active" : ""}`}
+  >
+    Analytics
+  </button>
   <button
     onClick={() => setView("products")}
     className={`mp-pill ${view === "products" ? "active" : ""}`}
@@ -276,12 +288,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     Product List
   </button>
 
-  <button
-    onClick={() => setView("analytics")}
-    className={`mp-pill ${view === "analytics" ? "active" : ""}`}
-  >
-    Analytics
-  </button>
+  
 </div>
 
 

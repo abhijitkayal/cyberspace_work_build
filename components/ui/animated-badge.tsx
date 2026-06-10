@@ -44,7 +44,7 @@ const AnimatedBadge = ({
         ease: "easeInOut",
       }}
       viewport={{ once: true }}
-      className="group relative flex max-w-fit items-center justify-center gap-3 whitespace-nowrap border border-neutral-300 rounded-full bg-white px-4 py-1.5 text-neutral-700 transition-colors dark:border-neutral-700/80 dark:bg-black dark:text-zinc-300"
+      className="group relative flex max-w-fit items-center justify-center gap-3 whitespace-nowrap border border-gray-100 text-gray-200 rounded-full bg-transparent px-4 py-1.5 transition-colors dark:border-neutral-700/80 dark:bg-black dark:text-zinc-300"
     >
       {/* <div className="pointer-events-none absolute inset-x-0 bottom-full h-20 w-[165px]">
         <svg

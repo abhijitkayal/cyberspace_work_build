@@ -170,6 +170,8 @@ function EnquiryDrawer({
   isLoadingWishlist,
   cartError,
   wishlistError,
+  onCartToggle,       // ✅ Add this
+  onWishlistToggle, 
 }: {
   open: boolean;
   setOpen: (v: boolean) => void;
@@ -183,10 +185,13 @@ function EnquiryDrawer({
 
   cartError?: string | null;
   wishlistError?: string | null;
+  onCartToggle: (item: any, isInCart: boolean) => void;      // ✅ Add this
+  onWishlistToggle: (item: any) => void;
 }) {
   const [view, setView] = useState<DrawerView>("home")
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
   const [form, setForm] = useState({ name: "", email: "",phone: "", service: "", description: "" })
+  const router = useRouter();
 
   const reset = () => {
     setView("home")
@@ -204,6 +209,7 @@ function EnquiryDrawer({
     e.preventDefault()
     setView("success")
   }
+  
 
   const inputClass = `
     w-full rounded-2xl bg-white/[0.05] border border-white/[0.09]
@@ -549,7 +555,7 @@ function EnquiryDrawer({
               )}
 
 
-         {drawerType === "wishlist" && (
+         {/* {drawerType === "wishlist" && (
   <div className="p-6">
     <h2 className="text-2xl font-bold text-white mb-4">
       Wishlist
@@ -591,6 +597,69 @@ function EnquiryDrawer({
   );
 })()}
   </div>
+)} */}
+
+{drawerType === "wishlist" && (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold text-white mb-4">Wishlist</h2>
+
+    {isLoadingWishlist ? (
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400 mb-3" />
+        <p className="text-white/60 text-sm">Loading wishlist...</p>
+      </div>
+    ) : (
+      (() => {
+        const activeWishlistItems = wishlistItems?.filter((item: any) => item.isActive);
+        return activeWishlistItems?.length === 0 ? (
+          <p className="text-white/60">No items in wishlist.</p>
+        ) : (
+          <div className="space-y-3">
+            {activeWishlistItems.map((item: any) => {
+              const isInCart = cartItems.some(
+                (c: any) => c.productId === item.productId || c.productName === item.productName
+              );
+              return (
+                <div
+                  key={item._id}
+                  className="border border-white/10 rounded-xl p-4 bg-black/40 space-y-3"
+                >
+                  {/* Product info */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-white font-medium">{item.productName}</h3>
+                      <p className="text-cyan-400 font-semibold">₹{item.productPrice}</p>
+                    </div>
+                    {/* Wishlist remove button */}
+                    <button
+                      onClick={() => onWishlistToggle(item)}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 transition-all"
+                      title="Remove from wishlist"
+                    >
+                      <Heart size={16} className="text-red-500 fill-red-500" />
+                    </button>
+                  </div>
+
+                  {/* Add to Cart / Remove from Cart */}
+                  <button
+                    onClick={() => onCartToggle(item, isInCart)}
+                    className={`w-full py-2 rounded-xl text-sm font-bold tracking-wide transition-all duration-200 flex items-center justify-center gap-2
+                      ${isInCart
+                        ? "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                        : "bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/20"
+                      }`}
+                  >
+                    <ShoppingCart size={15} />
+                    {isInCart ? "Remove from Cart" : "Add to Cart"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()
+    )}
+  </div>
 )}
  {drawerType === "cart" && (
   <div className="p-6 h-full flex flex-col">
@@ -621,52 +690,85 @@ function EnquiryDrawer({
       </div>
     ) : (
       <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-       {cartItems.map((item) => (
-  <div
-    key={item._id}
-    className="border border-white/10 rounded-xl p-4 bg-black/40"
-  >
-    <div className="space-y-3">
-      {/* Product Name */}
-      <h3 className="text-white font-semibold text-lg">
-        {item.productName}
-      </h3>
+  {cartItems.map((item: any) => {
+    const isInCart = cartItems.some(
+      (c: any) =>
+        c.productId === item.productId ||
+        c.productName === item.productName
+    );
 
-      {/* Price */}
-      <div className="flex justify-between text-sm">
-        <span className="text-white/60">Price</span>
-        <span className="text-cyan-400 font-semibold">
-          ₹{item.productPrice}
-        </span>
+    return (
+      <div
+        key={item._id}
+        className="border border-white/10 rounded-xl p-4 bg-black/40"
+      >
+        <div className="space-y-3">
+          {/* Product Name */}
+          <h3 className="text-white font-semibold text-lg">
+            {item.productName}
+          </h3>
+
+          {/* Price */}
+          <div className="flex justify-between text-sm">
+            <span className="text-white/60">Price</span>
+            <span className="text-cyan-400 font-semibold">
+              ₹{item.productPrice?.toLocaleString()}
+            </span>
+          </div>
+
+          {/* Quantity */}
+          <div className="flex justify-between text-sm">
+            <span className="text-white/60">Quantity</span>
+            <span className="text-white">
+              {item.quantity || 1}
+            </span>
+          </div>
+
+          {/* Total */}
+          <div className="border-t border-white/10 pt-3">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-white font-medium">
+                Total
+              </span>
+
+              <span className="text-green-400 font-bold text-lg">
+                ₹
+                {(
+                  (item.productPrice || 0) *
+                  (item.quantity || 1)
+                ).toLocaleString()}
+              </span>
+            </div>
+<div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => onCartToggle(item, isInCart)}
+              className={`w-full py-2 rounded-xl text-sm font-bold tracking-wide transition-all duration-200 flex items-center justify-center cursor-pointer gap-2 ${
+                isInCart
+                  ? "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                  : "bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/20"
+              }`}
+            >
+              <ShoppingCart size={15} />
+              {isInCart
+                ? "Remove from Cart"
+                : "Add to Cart"}
+            </button>
+             <button
+  onClick={() => {
+    alert("Redirecting to Shop Page...");
+    router.push(`/shop/${item.productId}`);
+  }}
+  className="bg-cyan-500 px-5 py-2 rounded-full cursor-pointer"
+>
+  Purchase
+</button>
+</div>
+          </div>
+        </div>
       </div>
-
-      {/* Quantity */}
-      <div className="flex justify-between text-sm">
-        <span className="text-white/60">Quantity</span>
-        <span className="text-white">
-          {item.quantity}
-        </span>
-      </div>
-
-      {/* Total */}
-      <div className="border-t border-white/10 pt-3 flex justify-between">
-        <span className="text-white font-medium">
-          Total
-        </span>
-
-        <span className="text-green-400 font-bold text-lg">
-          ₹{(
-            (item.productPrice || 0) *
-            (item.quantity || 1)
-          ).toLocaleString()}
-        </span>
-      </div>
-    </div>
-  </div>
-))}
-
-        
-      </div>
+    );
+  })}
+</div>
     )}
   </div>
 )}
@@ -699,6 +801,7 @@ function EnquiryDrawer({
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 const Navbar = ({ className, ...props }: { className?: string; [key: string]: unknown }) => {
+  const router = useRouter();
   const [isLeftMenuOpen, setIsLeftMenuOpen]   = useState(false)
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -850,6 +953,7 @@ useEffect(() => {
     if (drawerType === "wishlist") {
       console.log("Loading wishlist...");
       loadWishlist();
+      loadCart(); // To sync cart state with wishlist view
     }
   }
 }, [drawerOpen, drawerType]);
@@ -862,18 +966,18 @@ useEffect(() => {
       setCartError(null);
       
       const storedUser = localStorage.getItem("user");
-      console.log("h",currentUser._id);
+      console.log("h",currentUser);
 
-      if (!currentUser._id) {
+      if (!currentUser) {
         setCartError("Please log in to view your cart");
         setCartItems([]);
         return;
       }
 
       const user = JSON.parse(storedUser);
-      console.log(currentUser._id);
+      console.log(currentUser);
 
-      if (!currentUser._id) {
+      if (!currentUser) {
         setCartError("Invalid user data. Please log in again.");
         setCartItems([]);
         return;
@@ -911,7 +1015,7 @@ useEffect(() => {
 
     const storedUser = localStorage.getItem("user");
 
-    if (!currentUser._id) {
+    if (!currentUser) {
       setWishlistError("Please log in to view your wishlist");
       console.log("No user found in localStorage");
       setWishlistItems([]);
@@ -951,6 +1055,88 @@ useEffect(() => {
     setIsLoadingWishlist(false);
   }
 };
+const onCartToggle = async (item: any, isInCart: boolean) => {
+  try {
+    if (!currentUser?._id) return;
+
+    if (isInCart) {
+      // ── Remove from cart ──
+      const res = await fetch(`/api/cart`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: currentUser._id,
+          productId: item.productId || item._id,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Remove from local state instantly
+        setCartItems(prev =>
+          prev.filter(
+            (c: any) =>
+              c.productId !== (item.productId || item._id) &&
+              c.productName !== item.productName
+          )
+        );
+      }
+    } else {
+      // ── Add to cart ──
+      const res = await fetch(`/api/cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: currentUser._id,
+          productId: item.productId || item._id,
+          productName: item.productName,
+          productPrice: item.productPrice,
+          quantity: 1,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Add to local state instantly
+        setCartItems(prev => [
+          ...prev,
+          {
+            _id: data.cartItem?._id || Date.now(),
+            productId: item.productId || item._id,
+            productName: item.productName,
+            productPrice: item.productPrice,
+            quantity: 1,
+          },
+        ]);
+      }
+    }
+  } catch (error) {
+    console.error("Cart toggle error:", error);
+  }
+};
+
+const onWishlistToggle = async (item: any) => {
+  try {
+    if (!currentUser?._id) return;
+    console.log("Toggling wishlist for item:", item);
+
+    const res = await fetch(`/api/wishlist`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: currentUser._id,
+        productId: item.productId || item._id,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      // Remove from local state instantly
+      setWishlistItems(prev =>
+        prev.filter((w: any) => w._id !== item._id)
+      );
+    }
+  } catch (error) {
+    console.error("Wishlist toggle error:", error);
+  }
+};
 
 
   return (
@@ -968,6 +1154,8 @@ useEffect(() => {
   isLoadingWishlist={isLoadingWishlist}
   cartError={cartError}
   wishlistError={wishlistError}
+  onCartToggle={onCartToggle}         // ✅ Add this
+  onWishlistToggle={onWishlistToggle}
 />
 
       <header className={cn("hidden lg:flex fixed top-0 inset-x-0 z-[1001] h-16 px-0 overflow-visible", className)} {...props}>

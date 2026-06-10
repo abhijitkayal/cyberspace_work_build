@@ -1,12 +1,12 @@
 "use client";
 
 import { format, parse } from "date-fns";
-import { ArrowUpRight, DollarSign, PackageCheck, ReceiptText, RotateCcw, ShoppingBag, Users } from "lucide-react";
+import { ArrowUpRight, Briefcase, Building2, DollarSign, PackageCheck, ReceiptText, RotateCcw, ShoppingBag, Users } from "lucide-react";
 import { Area, Bar, CartesianGrid, ComposedChart, XAxis, YAxis } from "recharts";
 
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const revenueBucketRanges = ["01-05", "06-10", "11-15", "16-20", "21-25", "26-31"] as const;
@@ -90,213 +90,319 @@ function formatCurrencyTooltipValue(value: unknown) {
 
 export function KpiStrip() {
 
-  const [stats, setStats] = useState<any>(null);
+  // const [stats, setStats] = useState<any>(null);
+ const [stats, setStats] = useState<any>(null);
+ const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState([]);
-  const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+  // const [chartData, setChartData] = useState([]);
+  
 
-const completeChartData = months.map((month) => {
-  const found = stats?.chartData?.find(
-    (item: any) => item.month === month
-  );
+// const completeChartData = months.map((month) => {
+//   const found = stats?.chartData?.find(
+//     (item: any) => item.month === month
+//   );
 
-  return {
-    month,
-    sales: found?.sales || 0,
-  };
-});
+//   return {
+//     month,
+//     sales: found?.sales || 0,
+//   };
+// });
+
+
 
 useEffect(() => {
   const loadStats = async () => {
     try {
-      const res = await fetch("/api/analytics");
+      const res = await fetch("/api/software-client");
       const data = await res.json();
 
-      console.log("analytics stats", data);
-
       if (data.success) {
-        setStats(data);
+        console.log("data",data.clients);
+        setClients(data.clients);
       }
     } catch (error) {
-      console.error("Analytics Error:", error);
+      console.error(error);
     } finally {
-      setLoading(false); // ✅ Important
+      setLoading(false);
     }
   };
 
   loadStats();
 }, []);
-useEffect(() => {
-  const loadChart = async () => {
-    const res = await fetch("/api/analytics/chart");
-    const data = await res.json();
 
-    if (data.success) {
-      setChartData(data.chartData);
+
+
+const totalOrders = clients?.length || 0;
+console.log(totalOrders);
+
+const basicCount =
+  clients?.filter(
+    (item: any) =>
+      item.plan?.toLowerCase() === "basic"
+  ).length || 0;
+
+const businessCount =
+  clients?.filter(
+    (item: any) =>
+      item.plan?.toLowerCase() === "business"
+  ).length || 0;
+
+const enterpriseCount =
+  clients?.filter(
+    (item: any) =>
+      item.plan?.toLowerCase() === "enterprise"
+  ).length || 0;
+
+// Last week growth function
+const getGrowth = (plan?: string) => {
+  if (!stats) return 0;
+
+  const now = new Date();
+
+  const currentWeek = stats.filter(
+    (item: any) => {
+      const created = new Date(
+        item.createdAt
+      );
+
+      const isCurrent =
+        created >=
+        new Date(
+          now.getTime() -
+            7 * 24 * 60 * 60 * 1000
+        );
+
+      return plan
+        ? isCurrent &&
+            item.plan?.toLowerCase() ===
+              plan.toLowerCase()
+        : isCurrent;
     }
-  };
+  ).length;
 
-  loadChart();
-}, []);
+  const previousWeek = stats.filter(
+    (item: any) => {
+      const created = new Date(
+        item.createdAt
+      );
+
+      const start =
+        now.getTime() -
+        14 * 24 * 60 * 60 * 1000;
+
+      const end =
+        now.getTime() -
+        7 * 24 * 60 * 60 * 1000;
+
+      const isPrevious =
+        created >= new Date(start) &&
+        created < new Date(end);
+
+      return plan
+        ? isPrevious &&
+            item.plan?.toLowerCase() ===
+              plan.toLowerCase()
+        : isPrevious;
+    }
+  ).length;
+
+  if (previousWeek === 0)
+    return currentWeek > 0 ? 100 : 0;
+
+  return (
+    (
+      (currentWeek - previousWeek) /
+      previousWeek
+    ) *
+    100
+  ).toFixed(1);
+};
+
+const totalGrowth = getGrowth();
+const basicGrowth = getGrowth("Basic");
+const businessGrowth =
+  getGrowth("Business");
+const enterpriseGrowth =
+  getGrowth("Enterprise");
+
+const chartData = React.useMemo(() => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  return months.map((month, index) => {
+    const monthClients =
+      clients?.filter((client) => {
+        const date = new Date(client.createdAt);
+
+        return date.getMonth() === index;
+      }) || [];
+
+    return {
+      month,
+
+      basic: monthClients.filter(
+        (c) =>
+          c.plan?.toLowerCase() === "basic"
+      ).length,
+
+      business: monthClients.filter(
+        (c) =>
+          c.plan?.toLowerCase() === "business"
+      ).length,
+
+      enterprise: monthClients.filter(
+        (c) =>
+          c.plan?.toLowerCase() === "enterprise"
+      ).length,
+    };
+  });
+}, [clients]);
+
+
+//   const totalOrders = clients.length;
+
+// const basicCount = clients.filter(
+//   (item) => item.plan === "Basic"
+// ).length;
+
+// const businessCount = clients.filter(
+//   (item) => item.plan === "Business"
+// ).length;
+
+// const enterpriseCount = clients.filter(
+//   (item) => item.plan === "Enterprise"
+// ).length;
   return (
     <div className="h-full overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 xl:col-span-12">
       <div>
         <div className="grid grid-cols-1 xl:grid-cols-12">
           <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 xl:col-span-5 xl:border-r">
-            <Card className="h-full rounded-none border-0 border-border border-b ring-0 md:border-r">
-              <CardHeader>
-                <CardTitle className="font-normal text-sm">Total Sales</CardTitle>
-                <CardDescription className="text-3xl text-foreground tabular-nums leading-none tracking-tight">
-                   {loading ? (
-    <Skeleton className="h-8 w-32" />
-  ) : (
-    `₹${stats.totalSales.toLocaleString()}`
-  )}
-                </CardDescription>
-                <CardAction className="grid size-6 place-items-center rounded-sm bg-muted">
-                  <DollarSign className="size-3 text-foreground" />
-                </CardAction>
-              </CardHeader>
-              <CardContent>
-  <div className="text-sm">
-    <span
-      className={
-        Number(stats?.salesGrowth) > 0
-          ? "text-green-700 dark:text-green-300"
-          : Number(stats?.salesGrowth) < 0
-          ? "text-red-700 dark:text-red-300"
-          : "text-gray-500"
-      }
-    >
-      {Number(stats?.salesGrowth) > 0 ? "+" : ""}
-      {stats?.salesGrowth || 0}%
-    </span>
 
-    <span className="text-muted-foreground">
-      {" "}vs last week
-    </span>
-  </div>
-</CardContent>
-            </Card>
+  {/* Total Orders */}
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-sm font-normal">
+        Total Orders
+      </CardTitle>
 
-            <Card className="h-full rounded-none border-0 border-border border-b ring-0">
-              <CardHeader>
-                <CardTitle className="font-normal text-sm">Total Orders</CardTitle>
-                <CardDescription className="text-3xl text-foreground tabular-nums leading-none tracking-tight">
-                  {loading ? (
-    <Skeleton className="h-8 w-32" />
-  ) : (
-    stats?.totalOrders || 0
-  )}
-                </CardDescription>
-                <CardAction className="grid size-6 place-items-center rounded-sm bg-muted">
-                  <ShoppingBag className="size-3 text-foreground" />
-                </CardAction>
-              </CardHeader>
-              <CardContent>
-  <div className="text-sm">
-    <span
-      className={
-        Number(stats?.orderGrowth) > 0
-          ? "text-green-700 dark:text-green-300"
-          : Number(stats?.orderGrowth) < 0
-          ? "text-red-700 dark:text-red-300"
-          : "text-gray-500"
-      }
-    >
-      {Number(stats?.orderGrowth) > 0 ? "+" : ""}
-      {stats?.orderGrowth || 0}%
-    </span>
+      <CardDescription className="text-3xl text-foreground">
+        {totalOrders}
+      </CardDescription>
 
-    <span className="text-muted-foreground">
-      {" "}vs last week
-    </span>
-  </div>
-</CardContent>
-            </Card>
+      <CardAction>
+        <ShoppingBag className="size-4" />
+      </CardAction>
+    </CardHeader>
 
-            <Card className="h-full rounded-none border-0 border-border border-b ring-0 md:border-r">
-              <CardHeader>
-                <CardTitle className="font-normal text-sm">Customer Growth</CardTitle>
-                <CardDescription className="text-3xl text-foreground tabular-nums leading-none tracking-tight">
-                  {loading ? (
-    <Skeleton className="h-8 w-32" />
-  ) : (
-    stats?.uniqueCustomers || 0
-  )}
-                </CardDescription>
-                <CardAction className="grid size-6 place-items-center rounded-sm bg-muted">
-                  <Users className="size-3 text-foreground" />
-                </CardAction>
-              </CardHeader>
-              <CardContent>
-  <div className="text-sm">
-    <span
-      className={
-        Number(stats?.customerGrowth) >= 0
-          ? "text-green-700 dark:text-green-300"
-          : "text-red-700 dark:text-red-300"
-      }
-    >
-      {Number(stats?.customerGrowth) >= 0 ? "+" : ""}
-      {stats?.customerGrowth}%
-    </span>
+    <CardContent>
+      <div className="text-sm">
+        <span className="text-green-600">
+          +{totalGrowth}%
+        </span>
+        <span className="text-muted-foreground">
+          {" "}vs last week
+        </span>
+      </div>
+    </CardContent>
+  </Card>
 
-    <span className="text-muted-foreground">
-      {" "}vs last month
-    </span>
-  </div>
-</CardContent>
-            </Card>
+  {/* Basic */}
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-sm font-normal">
+        Basic Plan
+      </CardTitle>
 
-            <Card className="h-full rounded-none border-0 border-border border-b ring-0">
-              <CardHeader>
-                <CardTitle className="font-normal text-sm">Average Order</CardTitle>
-                <CardDescription className="text-3xl text-foreground tabular-nums leading-none tracking-tight">
-                  {loading ? (
-    <Skeleton className="h-8 w-32" />
-  ) : (
-    `₹${Math.round(stats?.averageOrder || 0)}`
-  )}
-                </CardDescription>
-                <CardAction className="grid size-6 place-items-center rounded-sm bg-muted">
-                  <ReceiptText className="size-3 text-foreground" />
-                </CardAction>
-              </CardHeader>
-              <CardContent>
-  <div className="text-sm">
-    <span
-      className={
-        Number(stats?.avgGrowth) > 0
-          ? "text-green-700 dark:text-green-300"
-          : Number(stats?.avgGrowth) < 0
-          ? "text-red-700 dark:text-red-300"
-          : "text-gray-500"
-      }
-    >
-      {Number(stats?.avgGrowth) > 0 ? "+" : ""}
-      {stats?.avgGrowth || 0}%
-    </span>
+      <CardDescription className="text-3xl text-foreground">
+        {basicCount}
+      </CardDescription>
 
-    <span className="text-muted-foreground">
-      {" "}vs last week
-    </span>
-  </div>
-</CardContent>
-            </Card>
+      <CardAction>
+        <Users className="size-4" />
+      </CardAction>
+    </CardHeader>
+
+    <CardContent>
+      <div className="text-sm">
+        <span className="text-green-600">
+          +{basicGrowth}%
+        </span>
+        <span className="text-muted-foreground">
+          {" "}vs last week
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+
+  {/* Business */}
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-sm font-normal">
+        Business Plan
+      </CardTitle>
+
+      <CardDescription className="text-3xl text-foreground">
+        {businessCount}
+      </CardDescription>
+
+      <CardAction>
+        <Briefcase className="size-4" />
+      </CardAction>
+    </CardHeader>
+
+    <CardContent>
+      <div className="text-sm">
+        <span className="text-green-600">
+          +{businessGrowth}%
+        </span>
+        <span className="text-muted-foreground">
+          {" "}vs last week
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+
+  {/* Enterprise */}
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-sm font-normal">
+        Enterprise Plan
+      </CardTitle>
+
+      <CardDescription className="text-3xl text-foreground">
+        {enterpriseCount}
+      </CardDescription>
+
+      <CardAction>
+        <Building2 className="size-4" />
+      </CardAction>
+    </CardHeader>
+
+    <CardContent>
+      <div className="text-sm">
+        <span className="text-green-600">
+          +{enterpriseGrowth}%
+        </span>
+        <span className="text-muted-foreground">
+          {" "}vs last week
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+
+
 
             {/* <Card className="h-full rounded-none border-0 border-border border-b ring-0 md:border-r md:border-b-0">
               <CardHeader>
@@ -337,14 +443,14 @@ useEffect(() => {
 
           <Card className="h-full rounded-none border-0 ring-0 xl:col-span-7">
             <CardHeader>
-              <CardTitle className="font-normal">Sales Overview</CardTitle>
+              <CardTitle className="font-normal"> Plan Graph</CardTitle>
               <CardAction>
                 <ArrowUpRight className="size-4" />
               </CardAction>
             </CardHeader>
 
             <CardContent>
-              {!stats?.chartData?.length? (
+              {!clients?.length? (
   <div className="h-[300px] flex items-center justify-center">
     No sales data found
   </div>
@@ -352,7 +458,7 @@ useEffect(() => {
   
 
               <ChartContainer config={revenueOverviewConfig} className="h-74 w-full">
-               <ComposedChart data={completeChartData}>
+               <ComposedChart data={chartData}>
                   <defs>
                     <filter id="sales-line-glow" x="-20%" y="-20%" width="140%" height="140%">
                       <feGaussianBlur stdDeviation="4" result="blur" />
@@ -413,19 +519,28 @@ useEffect(() => {
                     opacity={0.18}
                     radius={[6, 6, 0, 0]}
                   /> */}
-       <Area
-  dataKey="sales"
-  name="Sales"
-  stroke="var(--color-revenue)"
-  strokeWidth={2}
+      <Area
+  dataKey="basic"
+  name="Basic"
+  stroke="#06b6d4"
   fill="none"
-  type="monotone"
-  activeDot={{
-    r: 5,
-    fill: "var(--background)",
-    stroke: "var(--color-revenue)",
-    strokeWidth: 2,
-  }}
+  strokeWidth={2}
+/>
+
+<Area
+  dataKey="business"
+  name="Business"
+  stroke="#22c55e"
+  fill="none"
+  strokeWidth={2}
+/>
+
+<Area
+  dataKey="enterprise"
+  name="Enterprise"
+  stroke="#f97316"
+  fill="none"
+  strokeWidth={2}
 />
                 </ComposedChart>
               </ChartContainer>

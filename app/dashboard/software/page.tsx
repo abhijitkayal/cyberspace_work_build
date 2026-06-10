@@ -7,16 +7,12 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import DashboardAnalytics from "./dashboard/page";
 
 import { useRouter } from "next/navigation";
 import { ChefHat, Heart, IdCardLanyard, NotebookTabs, Pill, ReceiptIndianRupee, ReceiptText, ShoppingBag, ShoppingCart, SquareKanban, Stethoscope } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-
-/* ═══════════════════════════════════════════════════════
-   CUTOUT HELPERS
-═══════════════════════════════════════════════════════ */
-
 const CUT = 32;
 
 function cutPath(cut = CUT) {
@@ -46,9 +42,7 @@ function innerCutPath(
   )`;
 }
 
-/* ═══════════════════════════════════════════════════════
-   CORNER MARK
-═══════════════════════════════════════════════════════ */
+
 
 function CornerMark({
   cut,
@@ -279,11 +273,6 @@ useEffect(() => {
   }, []);
  const router = useRouter();
   return (
-   
-   
-    
- 
-// </div>
     <div
       ref={cardRef}
       onMouseMove={onMove}
@@ -303,32 +292,6 @@ useEffect(() => {
           clipPath: cutPath(cut),
         }}
       >
-        {/* Rotating Border */}
-        {/* <div
-          className="absolute inset-0 overflow-hidden"
-          style={{
-            clipPath: cutPath(cut),
-          }}
-        >
-          <div
-            className="absolute inset-[-100%]"
-            style={{
-              animation: `spin ${duration} linear infinite`,
-              background: `conic-gradient(
-                from 0deg,
-                transparent 0deg,
-                transparent 295deg,
-                ${accent}00 308deg,
-                ${accent}cc 338deg,
-                ${accent}ff 352deg,
-                #fff 358deg,
-                transparent 360deg
-              )`,
-            }}
-          />
-        </div> */}
-
-        {/* Inner Card */}
         <div
           className="relative z-10 h-full overflow-hidden bg-[#0a0a0a]"
           style={{
@@ -442,180 +405,73 @@ useEffect(() => {
   );
 }
 
-/* ═══════════════════════════════════════════════════════
-   MAIN COMPONENT
-═══════════════════════════════════════════════════════ */
-
+const softwares = [
+  "CyberProjects",
+  "CyberInvoice",
+  "CyberLedger",
+  "CyberPayroll",
+  "CyberRetail",
+  "CyberClinic",
+  "CyberPharma",
+  "CyberDine",
+];
 export default function SoftwareShowcase() {
   const router = useRouter();
+  const [activeView, setActiveView] = useState<"software" | "analytics">(
+  "analytics"
+);
   return (
     <div id="products" className="relative min-h-screen overflow-hidden bg-transparent">
-      {/* Background */}
-      {/* <div className="absolute inset-0 z-0">
-        <Antigravity
-          count={620}
-          magnetRadius={12}
-          ringRadius={4}
-          waveSpeed={0.4}
-          waveAmplitude={1}
-          particleSize={0.75}
-          lerpSpeed={0.08}
-          color="#00ced4"
-          autoAnimate
-          particleVariance={1}
-          rotationSpeed={0}
-          depthFactor={1}
-          pulseSpeed={3}
-          particleShape="capsule"
-          fieldStrength={16}
-      />
-      </div> */}
-      
-    {/* <OurServicesWithWires/> */}
+      <div className="mb-4">
+   <div className="inline-flex rounded-lg gap-2 p-1 bg-muted/50">
+  <button
+    onClick={() => setActiveView("analytics")}
+    className={`px-6 py-2 border rounded-md text-sm transition-all ${
+      activeView === "analytics"
+        ? "bg-black text-white dark:bg-white dark:text-black border-transparent"
+        : "text-muted-foreground border-border hover:text-foreground"
+    }`}
+  >
+    Analytics
+  </button>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 py-20">
-        {/* Heading */}
-        {/* <div className="mb-14 text-center">
-          <p className="mb-3 text-[10px] uppercase tracking-[0.35em] text-cyan-400/60">
-            Software Suite
-          </p>
+  <button
+    onClick={() => setActiveView("software")}
+    className={`px-6 py-2 border rounded-md text-sm transition-all ${
+      activeView === "software"
+        ? "bg-black text-white dark:bg-white dark:text-black border-transparent"
+        : "text-muted-foreground border-border hover:text-foreground"
+    }`}
+  >
+    Software
+  </button>
+</div> 
 
-          <h2 className="text-3xl sm:text-5xl font-semibold text-cyan-400 tracking-tight"
-            style={{ fontFamily: "'Syne','DM Sans',sans-serif" }}>
-            Our Products
-          </h2>
+   {/* <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+    onClick={() => setView("analytics")}
+    className={`mp-pill ${view === "analytics" ? "active" : ""}`}
+  >
+    Analytics
+  </button>
+  <button
+    onClick={() => setView("products")}
+    className={`mp-pill ${view === "products" ? "active" : ""}`}
+  >
+    Product List
+  </button>
 
-          <p className="mt-4 text-sm text-white/40">
-            Powerful software solutions for every business
-          </p>
-        </div> */}
-
-        {/* Grid */}
-        <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
-          
-
-          <CutoutCard
-            productId="cyber-projects"
-            productPrice={9999}
-            label="Project Management Software"
-            title="CyberProjects"
-            description="Payroll, attendance, leave and employee management platform."
-            tag="v2.4"
-            accent="#0f766e"
-              icon={<SquareKanban className="size-3" />}
-              href="/products/cyberprojects-project-management-software"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-
-          <CutoutCard
-            productId="cyber-invoice"
-            productPrice={9999}
-            label="GST and Billing Software"
-            title="CyberInvoice"
-            description="Barcode billing, GST invoicing and inventory management."
-            tag="v4.0"
-            accent="#0e7490"
-              icon={<ReceiptIndianRupee className="size-3" />}
-              href="/products/cyberinvoice-gst-billing-software"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-
-          <CutoutCard
-            productId="cyber-tally"
-            productPrice={9999}
-            label="Tally Software"
-            title="CyberLedger"
-            description="Hospital ERP with billing, EMR and pharmacy integration."
-            tag="v2.0"
-            accent="#0369a1"
-              icon={<NotebookTabs className="size-3" />}
-              href="/products/cyberledger-accounting-software"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-          <CutoutCard
-            productId="cyber-payroll"
-            productPrice={9999}
-            label="HR Management Software"
-            title="CyberPayroll"
-            description="Hospital ERP with billing, EMR and pharmacy integration."
-            tag="v2.0"
-            accent="#1d4ed8"
-              icon={<IdCardLanyard className="size-3" />}
-              href="/products/cyberpayroll-hr-management-software"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-        </div>
-         <div className="grid w-full gap-6 md:grid-cols-2 xl:grid-cols-4 mb-5">
-          {/* <CutoutCard
-            label="RMS"
-            title="CyberDine"
-            description="Powerful double-entry accounting with GST filing and bank reconciliation."
-            tag="v5.3"
-            accent="#2dd4bf"
-          /> */}
-
-          <CutoutCard
-            productId="cyber-store"
-            productPrice={9999}
-            label="Store Management System"
-            title="CyberRetail"
-            description="Payroll, attendance, leave and employee management platform."
-            tag="v2.4"
-            accent="#4338ca"
-              icon={<ShoppingBag className="size-3" />}
-              href="/products/cyberretail-store-management-system"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-
-          <CutoutCard
-            productId="cyber-clinic"
-            productPrice={9999}
-            label="Clinic Management System"
-            title="CyberClinic"
-            description="Barcode billing, GST invoicing and inventory management."
-            tag="v4.0"
-            accent="#6d28d9"
-              icon={<Stethoscope className="size-3" />}
-              href="/products/cyberclinic-clinic-management-system"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-
-          <CutoutCard
-            productId="cyber-pharmacy"
-            productPrice={9999}
-            label="Pharmacy Management System"
-            title="CyberPharma"
-            description="Hospital ERP with billing, EMR and pharmacy integration."
-            tag="v2.0"
-            accent="#7e22ce"
-              icon={<Pill className="size-3" />}
-              href="/products/cyberpharma-pharmacy-management-system"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-          <CutoutCard
-            productId="cyber-resturant"
-            productPrice={9999}
-            label="Resturant Management System"
-            title="CyberDine"
-            description="Hospital ERP with billing, EMR and pharmacy integration."
-            tag="v2.0"
-            accent="#38bdf8"
-              icon={<ChefHat className="size-3" />}
-              href="/products/cyberdine-restaurant-management-system"
-              onWishlist={() => console.log("Wishlist CyberProjects")}
-  onAddToCart={() => console.log("Add CyberProjects")}
-          />
-        </div>
+  
+</div> */}
+</div>
+      {activeView === "software" && (
         
-      </div>
+    <SoftwareCRM/>
+      )}
+
+ {activeView === "analytics" && (
+  <DashboardAnalytics />
+)}
 
       {/* Animation */}
       <style jsx global>{`
@@ -629,6 +485,1152 @@ export default function SoftwareShowcase() {
           }
         }
       `}</style>
+    </div>
+  );
+}
+
+
+
+// function SoftwareCRM() {
+//   const softwares = [
+//     "CyberProjects",
+//     "CyberClinic",
+//     "CyberDine",
+//     "CyberLedger",
+//     "CyberSchool",
+//     "CyberHR",
+//     "CyberInventory",
+//     "CyberCRM",
+//   ];
+
+//  const [rows, setRows] = useState(
+//   softwares.map((software) => ({
+//     software,
+//     plan: "Basic",
+//   }))
+// );
+//   const [clients, setClients] = useState<any[]>([]);
+//   const loadClients = async () => {
+//   try {
+//     const res = await fetch("/api/software-client");
+//     const data = await res.json();
+
+//     if (data.success) {
+//       setClients(data.clients);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+// useEffect(() => {
+//   loadClients();
+// }, []);
+// const updatePlan = (
+//   index: number,
+//   plan: string
+// ) => {
+//   const updated = [...rows];
+
+//   updated[index].plan = plan;
+
+//   setRows(updated);
+// };
+
+//   const [open, setOpen] = useState(false);
+//   const [editingId, setEditingId] = useState<string | null>(null);
+
+//   const [form, setForm] = useState({
+//     name: "",
+//     email: "",
+//     password: "",
+//     phone: "",
+//     contractStartDate: "",
+//     contractEndDate: "",
+    
+//     softwareName: "",
+//     tenure: "monthly",
+//     plan: "",
+//     source: "",
+//     description: "",
+//   });
+
+// //   const handleSubmit = async (
+// //   e: React.FormEvent
+// // ) => {
+// //   e.preventDefault();
+
+// //   console.log("Form data:", form);
+// //   const response = await fetch(
+// //     "/api/software-client",
+// //     {
+// //       method: "POST",
+// //       headers: {
+// //         "Content-Type":
+// //           "application/json",
+// //       },
+// //       body: JSON.stringify(form),
+// //     }
+// //   );
+
+// //   const data = await response.json();
+// //   console.log("kkdata", data);
+
+// //   if (data.success) {
+// //     alert("Client Added");
+
+// //     setOpen(false);
+
+// //     loadClients();
+// //   }
+// // };
+
+// const handleSubmit = async (
+//   e: React.FormEvent
+// ) => {
+//   e.preventDefault();
+
+//   const url = editingId
+//     ? `/api/software-client/${editingId}`
+//     : "/api/software-client";
+
+//   const method = editingId
+//     ? "PUT"
+//     : "POST";
+
+//   const response = await fetch(url, {
+//     method,
+//     headers: {
+//       "Content-Type":
+//         "application/json",
+//     },
+//     body: JSON.stringify(form),
+//   });
+
+//   const data = await response.json();
+
+//   if (data.success) {
+//     loadClients();
+
+//     setOpen(false);
+
+//     setEditingId(null);
+
+//     // RESET FORM
+//     setForm({
+//       name: "",
+//       email: "",
+//       password: "",
+//       phone: "",
+//       contractStartDate: "",
+//       contractEndDate: "",
+//       softwareName: "",
+//       tenure: "monthly",
+//       plan: "",
+//       source: "",
+//       description: "",
+//     });
+//   }
+// };
+
+//   return (
+//     <div className="p-6">
+//       <div className="mb-6">
+//         <h1 className="text-3xl font-bold">
+//           Software CRM
+//         </h1>
+//         <p className="text-muted-foreground">
+//           Manage software clients and subscriptions
+//         </p>
+//       </div>
+
+//       {/* Software Table */}
+//       <div className="overflow-x-auto rounded-xl border">
+//         <table className="w-full">
+//           <thead>
+//             <tr className="border-b bg-muted/50">
+//               <th className="p-4 text-left">
+//                 Software Name
+//               </th>
+
+//               <th className="p-4 text-left">
+//                 Plan
+//               </th>
+//                <th className="p-4 text-left">
+//                 User
+//               </th>
+
+//               <th className="p-4 text-left">
+//                 Source
+//               </th>
+
+//               <th className="p-4 text-left">
+//                 Action
+//               </th>
+//             </tr>
+//           </thead>
+
+//      <tbody>
+//   {rows.map((row, index) => {
+//     const filteredClients = clients.filter(
+//       (client) =>
+//         client.softwareName === row.software &&
+//         client.plan === row.plan
+//     );
+
+//     return (
+//       <tr
+//         key={row.software}
+//         className="border-b align-top"
+//       >
+//         {/* Software */}
+//         <td className="p-4 font-medium">
+//           {row.software}
+//         </td>
+
+//         {/* Plan */}
+//         <td className="p-4">
+//           <select
+//             value={row.plan}
+//             onChange={(e) =>
+//               updatePlan(
+//                 index,
+//                 e.target.value
+//               )
+//             }
+//             className="w-full rounded-md border px-3 py-2"
+//           >
+//             <option value="Basic">
+//               Basic
+//             </option>
+
+//             <option value="Business">
+//               Business
+//             </option>
+
+//             <option value="Enterprise">
+//               Enterprise
+//             </option>
+//           </select>
+//         </td>
+
+//         {/* Users */}
+//         <td className="p-4">
+//           <div className="space-y-2">
+//             <div className="font-semibold">
+//               {filteredClients.length} Users
+//             </div>
+
+//             {filteredClients.length >
+//             0 ? (
+//               filteredClients.map(
+//                 (
+//                   client: any
+//                 ) => (
+//                   <div
+//                     key={client._id}
+//                     className="text-sm"
+//                   >
+//                     {client.email}
+//                   </div>
+//                 )
+//               )
+//             ) : (
+//               <span className="text-muted-foreground">
+//                 No Users
+//               </span>
+//             )}
+//           </div>
+//         </td>
+
+//         {/* Source */}
+//         <td className="p-4">
+//           <div className="space-y-2">
+//             {filteredClients.length >
+//             0 ? (
+//               filteredClients.map(
+//                 (
+//                   client: any
+//                 ) => (
+//                   <div
+//                     key={
+//                       client._id +
+//                       "-source"
+//                     }
+//                     className="text-sm"
+//                   >
+//                     {client.source ||
+//                       "-"}
+//                   </div>
+//                 )
+//               )
+//             ) : (
+//               "-"
+//             )}
+//           </div>
+//         </td>
+
+//         {/* Action */}
+//         <td className="p-4">
+//   <div className="flex gap-2">
+//     <button
+//       onClick={() => {
+//         setForm({
+//           name: "",
+//           email: "",
+//           password: "",
+//           phone: "",
+//           contractStartDate: "",
+//           contractEndDate: "",
+//           softwareName: row.software,
+//           tenure: "monthly",
+//           plan: row.plan,
+//           source: "",
+//           description: "",
+//         });
+
+//         setEditingId(null);
+//         setOpen(true);
+//       }}
+//       className="rounded-lg bg-cyan-500 px-4 py-2 text-white"
+//     >
+//       Add Client
+//     </button>
+
+//     <button
+//       onClick={() => {
+//         setEditingId(filteredClients[0]?._id);
+
+//         setForm({
+//           name: filteredClients[0]?.name || "",
+//           email: filteredClients[0]?.email || "",
+//           password: filteredClients[0]?.password || "",
+//           phone: filteredClients[0]?.phone || "",
+//           contractStartDate:
+//             filteredClients[0]?.contractStartDate?.split(
+//               "T"
+//             )[0] || "",
+//           contractEndDate:
+//             filteredClients[0]?.contractEndDate?.split(
+//               "T"
+//             )[0] || "",
+//           softwareName:
+//             filteredClients[0]?.softwareName || "",
+//           tenure:
+//             filteredClients[0]?.tenure || "monthly",
+//           plan:
+//             filteredClients[0]?.plan || "",
+//           source:
+//             filteredClients[0]?.source || "",
+//           description:
+//             filteredClients[0]?.description || "",
+//         });
+
+//         setOpen(true);
+//       }}
+//       disabled={!filteredClients.length}
+//       className="rounded-lg bg-amber-500 px-4 py-2 text-white"
+//     >
+//       Edit
+//     </button>
+//   </div>
+// </td>
+//       </tr>
+//     );
+//   })}
+// </tbody>
+//         </table>
+//       </div>
+
+//       {/* Add Client Modal */}
+//       {open && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+//           <div className="w-full max-w-4xl rounded-xl bg-white p-6 text-black">
+//             <div className="mb-6 flex items-center justify-between">
+//               <h2 className="text-2xl font-bold">
+//                 Add Client
+//               </h2>
+
+//               <button
+//                 onClick={() =>
+//                   setOpen(false)
+//                 }
+//                 className="text-xl"
+//               >
+//                 ✕
+//               </button>
+//             </div>
+
+//             <form
+//               onSubmit={handleSubmit}
+//               className="grid grid-cols-1 gap-4 md:grid-cols-2"
+//             >
+//               {/* Name */}
+//               <input
+//                 type="text"
+//                 placeholder="Client Name"
+//                 className="rounded border p-3"
+//                 value={form.name}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     name: e.target.value,
+//                   })
+//                 }
+//                 required
+//               />
+
+//               {/* Email */}
+//               <input
+//                 type="email"
+//                 placeholder="Email"
+//                 className="rounded border p-3"
+//                 value={form.email}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     email:
+//                       e.target.value,
+//                   })
+//                 }
+//                 required
+//               />
+
+//               {/* Password */}
+//               <input
+//                 type="password"
+//                 placeholder="Password"
+//                 className="rounded border p-3"
+//                 value={form.password}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     password:
+//                       e.target.value,
+//                   })
+//                 }
+//                 required
+//               />
+
+//               {/* Phone */}
+//               <input
+//                 type="text"
+//                 placeholder="Phone Number"
+//                 className="rounded border p-3"
+//                 value={form.phone}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     phone:
+//                       e.target.value,
+//                   })
+//                 }
+//                 required
+//               />
+
+//               {/* Contract Start */}
+//               <div>
+//                 <label className="mb-1 block text-sm font-medium">
+//                   Contract Start Date
+//                 </label>
+
+//                 <input
+//                   type="date"
+//                   className="w-full rounded border p-3"
+//                   value={
+//                     form.contractStartDate
+//                   }
+//                   onChange={(e) =>
+//                     setForm({
+//                       ...form,
+//                       contractStartDate:
+//                         e.target.value,
+//                     })
+//                   }
+//                 />
+//               </div>
+
+//               {/* Contract End */}
+//               <div>
+//                 <label className="mb-1 block text-sm font-medium">
+//                   Contract End Date
+//                 </label>
+
+//                 <input
+//                   type="date"
+//                   className="w-full rounded border p-3"
+//                   value={
+//                     form.contractEndDate
+//                   }
+//                   onChange={(e) =>
+//                     setForm({
+//                       ...form,
+//                       contractEndDate:
+//                         e.target.value,
+//                     })
+//                   }
+//                 />
+//               </div>
+
+//               {/* Status */}
+              
+
+//               {/* Product */}
+//               <select
+//                 className="rounded border p-3"
+//                 value={form.softwareName}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     softwareName:
+//                       e.target.value,
+//                     plan: "",
+//                     source: "",
+//                   })
+//                 }
+//               >
+//                 <option value="">
+//                   Select Product
+//                 </option>
+
+//                 {softwares.map(
+//                   (software) => (
+//                     <option
+//                       key={software}
+//                       value={software}
+//                     >
+//                       {software}
+//                     </option>
+//                   )
+//                 )}
+//               </select>
+
+//               {/* Plan */}
+//               {form.softwareName && (
+//                 <select
+//                   className="rounded border p-3"
+//                   value={form.plan}
+//                   onChange={(e) =>
+//                     setForm({
+//                       ...form,
+//                       plan:
+//                         e.target.value,
+//                     })
+//                   }
+//                 >
+//                   <option value="">
+//                     Select Plan
+//                   </option>
+
+//                   <option value="Basic">
+//                     Basic
+//                   </option>
+
+//                   <option value="Business">
+//                     Business
+//                   </option>
+
+//                   <option value="Enterprise">
+//                     Enterprise
+//                   </option>
+//                 </select>
+//               )}
+//               {form.plan && (<select
+//                 className="rounded border p-3"
+//                 value={form.tenure}
+//                 onChange={(e) =>
+//                   setForm({
+//                     ...form,
+//                     tenure:
+//                       e.target.value,
+//                   })
+//                 }
+//               >
+//                 <option value="monthly">
+//                   Monthly
+//                 </option>
+
+//                 <option value="yearly">
+//                   Yearly
+//                 </option>
+
+//                 <option value="lifetime">
+//                   Lifetime
+//                 </option>
+//               </select>
+//               )}
+
+//               {/* Source */}
+//               {form.plan && (
+//                 <input
+//                   type="text"
+//                   placeholder="Lead Source"
+//                   className="rounded border p-3"
+//                   value={form.source}
+//                   onChange={(e) =>
+//                     setForm({
+//                       ...form,
+//                       source:
+//                         e.target.value,
+//                     })
+//                   }
+//                 />
+//               )}
+
+//               {/* Notes */}
+//               {form.plan && (
+//                 <textarea
+//                   rows={4}
+//                   placeholder="Notes"
+//                   className="rounded border p-3 md:col-span-2"
+//                 />
+//               )}
+
+//               <button
+//                 type="submit"
+//                 className="rounded-lg bg-cyan-500 py-3 text-white hover:bg-cyan-600 md:col-span-2"
+//               >
+//                 Save Client
+//               </button>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+import {
+  UserPlus,
+  Pencil,
+  X,
+  Users,
+  ChevronRight,
+  Package,
+} from "lucide-react";
+
+// const softwares = [
+//   "CyberProjects",
+//   "CyberClinic",
+//   "CyberDine",
+//   "CyberLedger",
+//   "CyberSchool",
+//   "CyberHR",
+//   "CyberInventory",
+//   "CyberCRM",
+// ];
+
+const emptyForm = {
+  name: "",
+  email: "",
+  password: "",
+  phone: "",
+  contractStartDate: "",
+  contractEndDate: "",
+  softwareName: "",
+  tenure: "monthly",
+  plan: "",
+  source: "",
+  description: "",
+};
+
+ function SoftwareCRM() {
+  const [rows, setRows] = useState(
+    softwares.map((software) => ({ software, plan: "Basic" }))
+  );
+  const [clients, setClients] = useState<any[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState({ ...emptyForm });
+
+  const loadClients = async () => {
+    try {
+      const res = await fetch("/api/software-client");
+      const data = await res.json();
+      if (data.success) setClients(data.clients);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadClients();
+  }, []);
+
+  const updatePlan = (index: number, plan: string) => {
+    const updated = [...rows];
+    updated[index].plan = plan;
+    setRows(updated);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const url = editingId
+      ? `/api/software-client/${editingId}`
+      : "/api/software-client";
+    const method = editingId ? "PUT" : "POST";
+    const response = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const data = await response.json();
+    if (data.success) {
+      loadClients();
+      closeDrawer();
+    }
+  };
+
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    setEditingId(null);
+    setForm({ ...emptyForm });
+  };
+
+  const openAdd = (software: string, plan: string) => {
+    setForm({ ...emptyForm, softwareName: software, plan });
+    setEditingId(null);
+    setDrawerOpen(true);
+  };
+
+  const openEdit = (client: any) => {
+    setEditingId(client._id);
+    setForm({
+      name: client.name || "",
+      email: client.email || "",
+      password: client.password || "",
+      phone: client.phone || "",
+      contractStartDate: client.contractStartDate?.split("T")[0] || "",
+      contractEndDate: client.contractEndDate?.split("T")[0] || "",
+      softwareName: client.softwareName || "",
+      tenure: client.tenure || "monthly",
+      plan: client.plan || "",
+      source: client.source || "",
+      description: client.description || "",
+    });
+    setDrawerOpen(true);
+  };
+
+  return (
+    // Root: supports both light and dark via Tailwind's dark: prefix
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans transition-colors duration-300">
+      {/* Page Header */}
+      <div className="border-b border-black/10 dark:border-white/10 px-8 py-6">
+        <div className="flex items-center gap-3 mb-1">
+          <Package className="w-6 h-6 opacity-60" />
+          <h1 className="text-2xl font-bold tracking-tight">Software CRM</h1>
+        </div>
+        <p className="text-sm text-black/40 dark:text-white/40 ml-9">
+          Manage software clients and subscriptions
+        </p>
+      </div>
+
+      {/* Table */}
+      <div className="px-8 py-6">
+        <div className="rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.04]">
+                {["Software", "Plan", "Users", "Lead Source", "Actions"].map((h) => (
+                  <th
+                    key={h}
+                    className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-widest text-black/40 dark:text-white/40"
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+              {rows.map((row, index) => {
+                const filtered = clients.filter(
+                  (c) => c.softwareName === row.software && c.plan === row.plan
+                );
+
+                return (
+                  <tr
+                    key={row.software}
+                    className="align-top hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                  >
+                    {/* Software name */}
+                    <td className="px-5 py-4 font-semibold tracking-tight">
+                      {row.software}
+                    </td>
+
+                    {/* Plan selector */}
+                    <td className="px-5 py-4">
+                      <select
+                        value={row.plan}
+                        onChange={(e) => updatePlan(index, e.target.value)}
+                        className="
+                          rounded-lg border border-black/15 dark:border-white/15
+                          bg-transparent px-3 py-1.5 text-sm
+                          text-black dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20
+                          appearance-none pr-7 cursor-pointer
+                        "
+                        style={{ backgroundImage: "none" }}
+                      >
+                        {["Basic", "Business", "Enterprise"].map((p) => (
+                          <option key={p} value={p} className="bg-white dark:bg-black">
+                            {p}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    {/* Users */}
+                    <td className="px-5 py-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-black/50 dark:text-white/50">
+                          <Users className="w-3.5 h-3.5" />
+                          {filtered.length} {filtered.length === 1 ? "user" : "users"}
+                        </div>
+                        {filtered.length > 0 ? (
+                          filtered.map((c: any) => (
+                            <button
+                              key={c._id}
+                              onClick={() => openEdit(c)}
+                              className="block text-sm text-black dark:text-white hover:underline underline-offset-2 text-left"
+                            >
+                              {c.email}
+                            </button>
+                          ))
+                        ) : (
+                          <span className="text-xs text-black/30 dark:text-white/30 italic">
+                            No users yet
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Source */}
+                    <td className="px-5 py-4">
+                      <div className="space-y-1.5">
+                        {filtered.length > 0 ? (
+                          filtered.map((c: any) => (
+                            <div key={c._id + "-src"} className="text-sm text-black/60 dark:text-white/60">
+                              {c.source || (
+                                <span className="text-black/30 dark:text-white/30 italic">—</span>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <span className="text-black/30 dark:text-white/30">—</span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2">
+                        {/* Add Client */}
+                        <button
+                          onClick={() => openAdd(row.software, row.plan)}
+                          title="Add client"
+                          className="
+                            flex items-center gap-1.5 rounded-lg
+                            bg-black dark:bg-white
+                            text-white dark:text-black
+                            px-3 py-1.5 text-xs font-semibold
+                            hover:opacity-80 transition-opacity
+                          "
+                        >
+                          <UserPlus className="w-3.5 h-3.5" />
+                          Add
+                        </button>
+
+                        {/* Edit */}
+                        <button
+                          onClick={() => filtered[0] && openEdit(filtered[0])}
+                          disabled={!filtered.length}
+                          title="Edit first client"
+                          className="
+                            flex items-center gap-1.5 rounded-lg
+                            border border-black/20 dark:border-white/20
+                            px-3 py-1.5 text-xs font-semibold
+                            hover:bg-black/5 dark:hover:bg-white/5
+                            disabled:opacity-30 disabled:cursor-not-allowed
+                            transition-colors
+                          "
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                          Edit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Drawer backdrop */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/30 dark:bg-black/60 backdrop-blur-sm transition-opacity"
+          onClick={closeDrawer}
+        />
+      )}
+
+      {/* Right-side Drawer */}
+      <div
+        className={`
+          fixed top-0 right-0 z-50 h-full w-full max-w-md
+          bg-white dark:bg-[#0a0a0a]
+          border-l border-black/10 dark:border-white/10
+          shadow-2xl flex flex-col
+          transform transition-transform duration-300 ease-in-out
+          ${drawerOpen ? "translate-x-0" : "translate-x-full"}
+        `}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-black/10 dark:border-white/10">
+          <div>
+            <h2 className="text-lg font-bold tracking-tight">
+              {editingId ? "Edit Client" : "Add Client"}
+            </h2>
+            <p className="text-xs text-black/40 dark:text-white/40 mt-0.5">
+              {editingId ? "Update client details below" : "Fill in details to register a new client"}
+            </p>
+          </div>
+          <button
+            onClick={closeDrawer}
+            className="rounded-full p-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Drawer form */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+          {/* Section: Identity */}
+          <SectionLabel icon={<ChevronRight className="w-3 h-3" />} label="Client Info" />
+
+          <Field label="Full Name">
+            <Input
+              placeholder="Jane Smith"
+              value={form.name}
+              onChange={(v) => setForm({ ...form, name: v })}
+              required
+            />
+          </Field>
+
+          <Field label="Email">
+            <Input
+              type="email"
+              placeholder="jane@company.com"
+              value={form.email}
+              onChange={(v) => setForm({ ...form, email: v })}
+              required
+            />
+          </Field>
+
+          <Field label="Password">
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={(v) => setForm({ ...form, password: v })}
+              required
+            />
+          </Field>
+
+          <Field label="Phone">
+            <Input
+              placeholder="+1 555 000 0000"
+              value={form.phone}
+              onChange={(v) => setForm({ ...form, phone: v })}
+              required
+            />
+          </Field>
+
+          {/* Section: Contract */}
+          <SectionLabel icon={<ChevronRight className="w-3 h-3" />} label="Contract" />
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Start Date">
+              <Input
+                type="date"
+                value={form.contractStartDate}
+                onChange={(v) => setForm({ ...form, contractStartDate: v })}
+              />
+            </Field>
+            <Field label="End Date">
+              <Input
+                type="date"
+                value={form.contractEndDate}
+                onChange={(v) => setForm({ ...form, contractEndDate: v })}
+              />
+            </Field>
+          </div>
+
+          {/* Section: Subscription */}
+          <SectionLabel icon={<ChevronRight className="w-3 h-3" />} label="Subscription" />
+
+          <Field label="Product">
+            <select
+              value={form.softwareName}
+              onChange={(e) => setForm({ ...form, softwareName: e.target.value, plan: "", source: "" })}
+              className={selectCls}
+            >
+              <option value="">Select product</option>
+              {softwares.map((s) => (
+                <option key={s} value={s} className="bg-white dark:bg-black">{s}</option>
+              ))}
+            </select>
+          </Field>
+
+          {form.softwareName && (
+            <Field label="Plan">
+              <select
+                value={form.plan}
+                onChange={(e) => setForm({ ...form, plan: e.target.value })}
+                className={selectCls}
+              >
+                <option value="">Select plan</option>
+                {["Basic", "Business", "Enterprise"].map((p) => (
+                  <option key={p} value={p} className="bg-white dark:bg-black">{p}</option>
+                ))}
+              </select>
+            </Field>
+          )}
+
+          {form.plan && (
+            <>
+              <Field label="Billing Cycle">
+                <select
+                  value={form.tenure}
+                  onChange={(e) => setForm({ ...form, tenure: e.target.value })}
+                  className={selectCls}
+                >
+                  {["monthly", "yearly", "lifetime"].map((t) => (
+                    <option key={t} value={t} className="bg-white dark:bg-black capitalize">{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                  ))}
+                </select>
+              </Field>
+
+              <Field label="Lead Source">
+                <Input
+                  placeholder="e.g. Referral, LinkedIn, Cold call"
+                  value={form.source}
+                  onChange={(v) => setForm({ ...form, source: v })}
+                />
+              </Field>
+
+              <Field label="Notes">
+                <textarea
+                  rows={3}
+                  placeholder="Any additional notes..."
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  className={`${inputCls} resize-none`}
+                />
+              </Field>
+            </>
+          )}
+        </form>
+
+        {/* Drawer footer */}
+        <div className="px-6 py-4 border-t border-black/10 dark:border-white/10 flex gap-3">
+          <button
+            type="button"
+            onClick={closeDrawer}
+            className="
+              flex-1 rounded-xl border border-black/15 dark:border-white/15
+              py-2.5 text-sm font-semibold
+              hover:bg-black/5 dark:hover:bg-white/5
+              transition-colors
+            "
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="crm-form"
+            onClick={handleSubmit as any}
+            className="
+              flex-1 rounded-xl
+              bg-black dark:bg-white
+              text-white dark:text-black
+              py-2.5 text-sm font-semibold
+              hover:opacity-80 transition-opacity
+            "
+          >
+            {editingId ? "Save Changes" : "Add Client"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Small helpers ────────────────────────────────────────────────────────────
+
+const inputCls = `
+  w-full rounded-lg border border-black/15 dark:border-white/15
+  bg-transparent px-3 py-2 text-sm
+  text-black dark:text-white
+  placeholder:text-black/30 dark:placeholder:text-white/30
+  focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20
+  transition
+`;
+
+const selectCls = `
+  w-full rounded-lg border border-black/15 dark:border-white/15
+  bg-white dark:bg-black px-3 py-2 text-sm
+  text-black dark:text-white
+  focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20
+  transition appearance-none cursor-pointer
+`;
+
+function Input({
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  required,
+}: {
+  type?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      className={inputCls}
+    />
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-xs font-semibold uppercase tracking-wider text-black/40 dark:text-white/40">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function SectionLabel({ label, icon }: { label: string; icon: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 pt-2">
+      <span className="text-black/30 dark:text-white/30">{icon}</span>
+      <span className="text-xs font-bold uppercase tracking-widest text-black/40 dark:text-white/40">
+        {label}
+      </span>
+      <div className="flex-1 h-px bg-black/8 dark:bg-white/8" />
     </div>
   );
 }

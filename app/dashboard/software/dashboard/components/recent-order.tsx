@@ -61,7 +61,7 @@ const [loading, setLoading] = React.useState(true);
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id,
+    getRowId: (row) => row._id,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -96,12 +96,12 @@ const [loading, setLoading] = React.useState(true);
 React.useEffect(() => {
   const fetchOrders = async () => {
     try {
-      const res = await fetch("/api/analytics/purchase");
+      const res = await fetch("/api/software-client");
       const data = await res.json();
 
       if (data.success) {
-        console.log("Fetched orders:", data.orders);
-        setOrders(data.orders);
+        console.log("Fetched orders:", data.clients);
+        setOrders(data.clients);
       }
     } catch (error) {
       console.error(error);

@@ -134,8 +134,7 @@ export const recentOrdersColumns: ColumnDef<OrderRow>[] = [
     header: "Status",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <PaymentBadge status={row.original.payment} />
-        <FulfillmentBadge status={row.original.fulfillment} />
+        {row.original.status}
       </div>
     ),
     filterFn: (row, _columnId, value) => {
@@ -166,36 +165,36 @@ export const recentOrdersColumns: ColumnDef<OrderRow>[] = [
   {
     accessorKey: "total",
     header: () => <div className="w-28">Total</div>,
-    cell: ({ row }) => <div className="w-28 tabular-nums">{row.original.total}</div>,
+    cell: ({ row }) => <div className="w-28 tabular-nums">{row.original.amount}</div>,
   },
   {
     accessorKey: "date",
     header: () => <div className="w-44">Date</div>,
     cell: ({ row }) => <div className="w-44 text-muted-foreground">{formatOrderDate(row.original.date)}</div>,
   },
-  {
-    id: "actions",
-    header: () => <div className="flex w-full justify-end">Actions</div>,
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className="flex w-full justify-end">
-            <Button aria-label="Open order actions" size="icon-sm" variant="ghost">
-              <MoreHorizontal />
-            </Button>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuLabel>Order Actions</DropdownMenuLabel>
-          <DropdownMenuGroup>
-            <DropdownMenuItem>View order</DropdownMenuItem>
-            <DropdownMenuItem>Contact customer</DropdownMenuItem>
-            <DropdownMenuItem>Copy order ID</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-    enableHiding: false,
-    enableSorting: false,
-  },
+  // {
+  //   id: "actions",
+  //   header: () => <div className="flex w-full justify-end">Actions</div>,
+  //   cell: () => (
+  //     <DropdownMenu>
+  //       <DropdownMenuTrigger asChild>
+  //         <div className="flex w-full justify-end">
+  //           <Button aria-label="Open order actions" size="icon-sm" variant="ghost">
+  //             <MoreHorizontal />
+  //           </Button>
+  //         </div>
+  //       </DropdownMenuTrigger>
+  //       <DropdownMenuContent align="end" className="w-40">
+  //         <DropdownMenuLabel>Order Actions</DropdownMenuLabel>
+  //         <DropdownMenuGroup>
+  //           <DropdownMenuItem>View order</DropdownMenuItem>
+  //           <DropdownMenuItem>Contact customer</DropdownMenuItem>
+  //           <DropdownMenuItem>Copy order ID</DropdownMenuItem>
+  //         </DropdownMenuGroup>
+  //       </DropdownMenuContent>
+  //     </DropdownMenu>
+  //   ),
+  //   enableHiding: false,
+  //   enableSorting: false,
+  // },
 ];
