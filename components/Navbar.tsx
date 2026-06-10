@@ -945,12 +945,12 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
 // Replace your existing useEffect for drawer loading with these two:
 
 // 1. Load data on mount once currentUser is set
-useEffect(() => {
-  if (currentUser?._id) {
-    loadCart();
-    loadWishlist();
-  }
-}, [currentUser]); // runs whenever currentUser changes (i.e., after auth loads)
+// useEffect(() => {
+//   if (currentUser?._id) {
+//     loadCart();
+//     loadWishlist();
+//   }
+// }, [currentUser]); 
 
 // 2. Refresh when drawer opens (keep this for freshness)
 useEffect(() => {
