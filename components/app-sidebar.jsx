@@ -198,7 +198,8 @@ export function AppSidebar({
         label: "Business",
         items: [
           { title: "Billing", url: scopedPath("billing"), icon: <ReceiptIcon /> },
-          { title: "Marketplace", url: "/dashboard/marketplace", icon: <ShoppingCart /> },
+          { title: "Marketplace", url: "/dashboard/client/marketplace", icon: <ShoppingCart /> },
+          { title: "Software", url: "/dashboard/client/software", icon: <Table2 /> },
           { title: "Quotation", url: quotationPath, icon: <BookA /> },
           { title: "Payments", url: scopedPath("payment"), icon: <WalletCards /> },
         ],

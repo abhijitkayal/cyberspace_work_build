@@ -1165,6 +1165,7 @@ const emptyForm = {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(form);
     const url = editingId
       ? `/api/software-client/${editingId}`
       : "/api/software-client";
@@ -1175,6 +1176,7 @@ const emptyForm = {
       body: JSON.stringify(form),
     });
     const data = await response.json();
+    console.log(data);
     if (data.success) {
       loadClients();
       closeDrawer();

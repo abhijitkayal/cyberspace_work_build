@@ -942,70 +942,57 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
   loadUser();
   }, []); 
 
+// Replace your existing useEffect for drawer loading with these two:
+
+// 1. Load data on mount once currentUser is set
 useEffect(() => {
-  console.log("Drawer:", drawerOpen, drawerType);
+  if (currentUser?._id) {
+    loadCart();
+    loadWishlist();
+  }
+}, [currentUser]); // runs whenever currentUser changes (i.e., after auth loads)
 
-  if (drawerOpen) {
-    if (drawerType === "cart") {
-      loadCart();
-    }
-
+// 2. Refresh when drawer opens (keep this for freshness)
+useEffect(() => {
+  if (drawerOpen && currentUser?._id) {
+    if (drawerType === "cart") loadCart();
     if (drawerType === "wishlist") {
-      console.log("Loading wishlist...");
       loadWishlist();
-      loadCart(); // To sync cart state with wishlist view
+      loadCart();
     }
   }
 }, [drawerOpen, drawerType]);
 
   if (hideNavbar) return null
 
-  const loadCart = async () => {
-    try {
-      setIsLoadingCart(true);
-      setCartError(null);
-      
-      const storedUser = localStorage.getItem("user");
-      console.log("h",currentUser);
+const loadCart = async () => {
+  try {
+    setIsLoadingCart(true);
+    setCartError(null);
 
-      if (!currentUser) {
-        setCartError("Please log in to view your cart");
-        setCartItems([]);
-        return;
-      }
-
-      const user = JSON.parse(storedUser);
-      console.log(currentUser);
-
-      if (!currentUser) {
-        setCartError("Invalid user data. Please log in again.");
-        setCartItems([]);
-        return;
-      }
-
-      const res = await fetch(`/api/cart?userId=${currentUser._id}`);
-      const data = await res.json();
-
-      if (data.success && data.cart) {
-        // Verify userId matches
-        if (data.userId && data.userId !== currentUser._id) {
-          setCartError("User ID mismatch. Please log in again.");
-          setCartItems([]);
-          return;
-        }
-        setCartItems(data.cart);
-      } else {
-        setCartError(data.message || "Failed to load cart");
-        setCartItems([]);
-      }
-    } catch (error) {
-      console.error("Cart load error:", error);
-      setCartError("Error loading cart. Please try again.");
+    if (!currentUser?._id) {           // ← use optional chaining, skip localStorage
+      setCartError("Please log in to view your cart");
       setCartItems([]);
-    } finally {
-      setIsLoadingCart(false);
+      return;
     }
-  };
+
+    const res = await fetch(`/api/cart?userId=${currentUser._id}`);
+    const data = await res.json();
+
+    if (data.success && data.cart) {
+      setCartItems(data.cart);
+    } else {
+      setCartError(data.message || "Failed to load cart");
+      setCartItems([]);
+    }
+  } catch (error) {
+    console.error("Cart load error:", error);
+    setCartError("Error loading cart. Please try again.");
+    setCartItems([]);
+  } finally {
+    setIsLoadingCart(false);
+  }
+};
 
   const loadWishlist = async () => {
   try {
@@ -1032,7 +1019,7 @@ useEffect(() => {
       return;
     }
     console.log("Current user ID:", currentUser._id);
-    const res = await fetch(`/api/wishlist`);
+    const res = await fetch(`/api/wishlist?userId=${currentUser._id}`);
     const data = await res.json();
     console.log("Wishlist API response:", data);
 
