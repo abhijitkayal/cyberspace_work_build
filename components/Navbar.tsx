@@ -942,6 +942,38 @@ const [wishlistError, setWishlistError] = useState<string | null>(null);
   loadUser();
   }, []); 
 
+  // ---------------------------------------------------------------------
+  // Periodically refresh cart and wishlist so the badge glows immediately
+  // after an item is added from the shop (even when the drawer is closed).
+  // The interval runs only when a user is authenticated.
+  // ---------------------------------------------------------------------
+  useEffect(() => {
+    if (!currentUser?._id) return;
+
+    const interval = setInterval(() => {
+      // Refresh both lists – errors are handled inside the loaders.
+      loadCart();
+      loadWishlist();
+    }, 10_000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, [currentUser?._id]);
+
+  // ---------------------------------------------------------------------
+  // Expose helper functions on the window object so other parts of the
+  // application (e.g., the shop page) can trigger an immediate refresh of
+  // the cart and wishlist badges without opening the drawer.
+  // ---------------------------------------------------------------------
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    (window as any).__refreshCart = () => {
+      if (currentUser?._id) loadCart();
+    };
+    (window as any).__refreshWishlist = () => {
+      if (currentUser?._id) loadWishlist();
+    };
+  }, [currentUser?._id]);
+
 // Replace your existing useEffect for drawer loading with these two:
 
 // 1. Load data on mount once currentUser is set
@@ -1024,12 +1056,18 @@ const loadCart = async () => {
     console.log("Wishlist API response:", data);
 
     if (data.success) {
+      // Preserve the `isActive` flag that the API returns (or defaults to false).
+      // The badge visibility relies on this flag, so we must not overwrite it.
       const filteredWishlist = (data.wishlist || []).filter(
         (item: any) => item.userId === currentUser._id
       );
 
       setWishlistItems(filteredWishlist);
       console.log("Filtered wishlist items:", filteredWishlist);
+      // Notify other components (e.g., shop page) that the wishlist has changed
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("wishlist-updated"));
+      }
     } else {
       setWishlistError(data.message || "Failed to load wishlist");
       setWishlistItems([]);
@@ -1058,7 +1096,7 @@ const onCartToggle = async (item: any, isInCart: boolean) => {
       });
       const data = await res.json();
       if (data.success) {
-        // Remove from local state instantly
+        // Remove from local state instantly and refresh any external UI (shop page)
         setCartItems(prev =>
           prev.filter(
             (c: any) =>
@@ -1066,6 +1104,12 @@ const onCartToggle = async (item: any, isInCart: boolean) => {
               c.productName !== item.productName
           )
         );
+        // Notify other components that the cart has changed so the badge stops glowing
+        if (typeof window !== "undefined") {
+          (window as any).__refreshCart?.();
+          // Emit a custom event for pages that maintain their own cart state (e.g., shop page)
+          window.dispatchEvent(new Event('cart-updated'));
+        }
       }
     } else {
       // ── Add to cart ──
@@ -1081,8 +1125,8 @@ const onCartToggle = async (item: any, isInCart: boolean) => {
         }),
       });
       const data = await res.json();
-      if (data.success) {
-        // Add to local state instantly
+        if (data.success) {
+        // Add to local state instantly and refresh external UI
         setCartItems(prev => [
           ...prev,
           {
@@ -1093,6 +1137,11 @@ const onCartToggle = async (item: any, isInCart: boolean) => {
             quantity: 1,
           },
         ]);
+        if (typeof window !== "undefined") {
+          (window as any).__refreshCart?.();
+          // Emit event for other components to sync
+          window.dispatchEvent(new Event('cart-updated'));
+        }
       }
     }
   } catch (error) {
@@ -1119,6 +1168,10 @@ const onWishlistToggle = async (item: any) => {
       setWishlistItems(prev =>
         prev.filter((w: any) => w._id !== item._id)
       );
+      // Notify other components that the wishlist changed
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("wishlist-updated"));
+      }
     }
   } catch (error) {
     console.error("Wishlist toggle error:", error);

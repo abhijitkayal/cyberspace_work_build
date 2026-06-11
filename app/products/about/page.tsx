@@ -76,7 +76,7 @@ export default function AboutPage() {
             marginRight: 'auto',
             marginBottom: '50px',   // ← scroll distance before next card starts
           }}
-          className="h-130 rounded-[2rem] border border-cyan-400 bg-cyan-500 p-8 md:p-12 shadow-[0_0_40px_rgba(34,211,238,0.12)] backdrop-blur-md"
+          className="h-130 rounded-[2rem] border  bg-gradient-to-br from-cyan-900 via-black via-70% to-teal-900 p-8 md:p-12 shadow-[0_0_40px_rgba(34,211,238,0.12)] backdrop-blur-md"
         >
          <div className="flex h-full flex-col justify-center">
   <div className="flex items-center gap-3">

@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useRef } from "react"
 import createGlobe, { type COBEOptions } from "cobe"
 import { useMotionValue, useSpring } from "motion/react"
@@ -6,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 const MOVEMENT_DAMPING = 1400
 
-const GLOBE_CONFIG: any = {
+const GLOBE_CONFIG: COBEOptions = {
   width: 800,
   height: 800,
   onRender: () => {},
@@ -89,7 +90,7 @@ export function Globe({
         state.width = widthRef.current * 2
         state.height = widthRef.current * 2
       },
-    } as any)
+    })
 
     setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0)
     return () => {
@@ -101,7 +102,7 @@ export function Globe({
   return (
     <div
       className={cn(
-        "absolute inset-0 mx-auto aspect-square w-full max-w-150",
+        "absolute inset-0 mx-auto aspect-square w-[300px] max-w-90",
         className
       )}
     >

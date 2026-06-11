@@ -17,7 +17,7 @@ import {
   Search,
   Heart,
   ShoppingCart,
- 
+  X,
 } from "lucide-react";
 import DotGrid from "../products/cyberclinic-clinic-management-system/components/DotGrid";
 import styled from "styled-components";
@@ -164,6 +164,8 @@ interface CardProps {
   wishlistDB?: any[];
   toggleWishlist?: any;
   addToCart?: any;
+  removeFromCart?: any;
+  isInCart?: (productId:any)=>boolean;
   image?: string;
 }
 interface Product {
@@ -302,7 +304,7 @@ const CutoutCardWishlistButton = styled.button<{ $active: boolean }>`
   width: 2rem;
   height: 2rem;
  color: ${({ $active }) =>
-  $active ? "#ef4444" : "rgba(255,255,255,.5)"};
+  $active ? "#ef4444" : "transparent"};
 background:transparent;
 // border: 1px solid
 //   ${({ $active }) => ($active ? "#ef4444" : "rgba(255,255,255,.14)")};
@@ -336,6 +338,8 @@ function CutoutCard({
   wishlistDB,
   toggleWishlist,
   addToCart,
+  removeFromCart,
+  isInCart,
 }: CardProps){
   const cardRef =
     useRef<HTMLDivElement>(null);
@@ -395,6 +399,9 @@ const isWishlisted = wishlistDB?.some(
     }));
   }, []);
 
+  // Determine if this product is already in the cart
+  const inCart = isInCart ? isInCart(id) : false;
+
   return (
     <CutoutCardShell
       ref={cardRef}
@@ -451,26 +458,35 @@ const userId =
   }}
 >
   <Heart
-    size={14}
-    fill={isWishlisted ? "#ef4444" : "none"}
-    color={isWishlisted ? "#ef4444" : "rgba(255,255,255,0.7)"}
-  />
+      size={14}
+      fill={isWishlisted ? "#ef4444" : "none"}
+      // When not wish‑listed, show only the outline (no fill) with a subtle color.
+      color={isWishlisted ? "#ef4444" : "rgba(255,255,255,0.7)"}
+    />
 </CutoutCardWishlistButton>
 
-<CutoutCardCartButton
-  type="button"
-  onClick={(e) => {
-    e.stopPropagation();
-
-    addToCart?.({
-      id,
-      title,
-      price,
-    });
-  }}
->
-  <ShoppingCart size={14} />
-</CutoutCardCartButton>
+{inCart ? (
+  <CutoutCardCartButton
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      removeFromCart?.({ id, title, price });
+    }}
+  >
+    {/* X icon indicates removal */}
+    <X size={14} />
+  </CutoutCardCartButton>
+) : (
+  <CutoutCardCartButton
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      addToCart?.({ id, title, price });
+    }}
+  >
+    <ShoppingCart size={14} />
+  </CutoutCardCartButton>
+)}
 
           <div className="relative z-20 flex h-full flex-col gap-4 p-7 bg-gray-900">
             <CornerMark
@@ -626,23 +642,90 @@ const userId =
   user1?.id ||
   user?.id;
 
-useEffect(() => {
-  const loadWishlist = async () => {
-    if (!userId) return;
+// ---------------------------------------------------------------------
+// Load the wishlist for the current user. Defined at component scope so it
+// can be reused by the initial effect and the global "wishlist-updated"
+// listener.
+// ---------------------------------------------------------------------
+const loadWishlist = async () => {
+  if (!userId) return;
+  const res = await fetch(`/api/wishlist/toggle?userId=${userId}`);
+  const data = await res.json();
+  if (data.success) {
+    setWishlistDB(data.wishlist);
+  }
+};
+const loadCart = async () => {
+  if (!userId) return;
 
+  try {
     const res = await fetch(
-      `/api/wishlist/toggle?userId=${userId}`
+      `/api/cart?userId=${userId}`
     );
 
     const data = await res.json();
 
     if (data.success) {
-      setWishlistDB(data.wishlist);
+      setCart(data.cart || []);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Listen for external cart updates (e.g., from the Navbar drawer) and refresh the local cart state.
+useEffect(() => {
+  const handler = () => {
+    // Re-fetch the cart to keep UI in sync with the server.
+    loadCart();
+  };
+  if (typeof window !== "undefined") {
+    window.addEventListener("cart-updated", handler);
+  }
+  return () => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("cart-updated", handler);
     }
   };
+}, []);
+
+useEffect(() => {
+  if (!userId) return;
 
   loadWishlist();
+  loadCart();
 }, [userId]);
+const isInCart = (productId: string) => {
+  return cart.some(
+    (item) =>
+      String(item.productId) ===
+      String(productId)
+  );
+};
+
+  // ---------------------------------------------------------------------
+  // Listen for global "wishlist-updated" events dispatched by Navbar.
+  // When the user removes an item from the drawer, Navbar updates its
+  // state and emits the event. Refresh the local `wishlistDB` here so the
+  // heart icon on this page reflects the current state (blank when not
+  // wishlisted).
+  // ---------------------------------------------------------------------
+  useEffect(() => {
+    const handler = () => {
+      // Re‑load the wishlist from the server to get the latest `isActive`
+      // flags. Errors are silently ignored – the UI will simply keep the
+      // previous state.
+      loadWishlist();
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("wishlist-updated", handler);
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("wishlist-updated", handler);
+      }
+    };
+  }, []);
 // const user1 =
 //   typeof window !== "undefined"
 //     ? JSON.parse(localStorage.getItem("user") || "null")
@@ -728,11 +811,22 @@ console.log("product", product);
             : item
         );
       }
-
-      return [...prev, data.wishlist];
+        // The API may return the newly created wishlist entry without an
+        // explicit `isActive` flag. By default a newly added item should be
+        // active, so we force the flag to `true` here.
+        const newItem = {
+          ...(data.wishlist || {}),
+          isActive: true,
+        };
+        return [...prev, newItem];
     });
+    // Refresh the navbar badge immediately
+    if (typeof window !== "undefined") {
+      (window as any).__refreshWishlist?.();
+    }
   }
 };
+// Add an item to the cart (POST request) and update local state
 const addToCart = async (product: any) => {
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -742,7 +836,7 @@ const addToCart = async (product: any) => {
     return;
   }
 
-  const quantity = 1; // or pass dynamic quantity
+  const quantity = 1; // could be made dynamic later
 
   const res = await fetch("/api/cart", {
     method: "POST",
@@ -763,8 +857,60 @@ const addToCart = async (product: any) => {
 
   if (data.success) {
     console.log("Added to cart");
+    // Optimistically update local cart state. Ensure each cart entry has a `productId`
+    // field that matches the product's `id`. This aligns with the `isInCart` helper
+    // which checks `item.productId`. If the API returns a cartItem we use it; otherwise
+    // we construct a minimal object containing the necessary fields.
+    const newCartItem = data.cartItem ?? {
+      productId: product.id,
+      title: product.title,
+      price: product.price,
+    };
+    setCart((prev) => [...prev, newCartItem]);
+    if (typeof window !== "undefined") {
+      (window as any).__refreshCart?.();
+    }
   }
 };
+
+// Remove an item from the cart (DELETE request) and update local state
+// Accept a `product` argument (the product object from the UI) and use its `id`
+// field to identify the cart item to delete.
+const removeFromCart = async (product: any) => {
+  const user = currentUser;
+  console.log("currentUser in removeFromCart:", user);
+
+  if (!userId) return;
+
+  const res = await fetch("/api/cart", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: userId,
+      // The product object uses `id` (not `_id`) throughout the component.
+      productId: product.id,
+    }),
+  });
+
+  const data = await res.json();
+  console.log("removeFromCart response:", data);
+
+  if (data.success) {
+    // Update the local `cart` state (not `cartItems`).
+    setCart((prev) =>
+      prev.filter(
+        (item) => String(item.productId) !== String(product.id)
+      )
+    );
+  }
+};
+
+// Helper to check if a product is already in the cart
+// const isInCart = (productId: any) => {
+//   return cart.some((c) => c.productId === productId);
+// };
 
   return (
     <div id="products" className="relative min-h-screen overflow-hidden bg-black">
@@ -836,7 +982,7 @@ const addToCart = async (product: any) => {
     ))
   ) : filteredProducts.length > 0 ? (
     filteredProducts.map((product: any) => (
-      <CutoutCard
+        <CutoutCard
         key={product._id}
         id={product._id}
         label={product.category}
@@ -849,6 +995,8 @@ const addToCart = async (product: any) => {
         wishlistDB={wishlistDB}
         toggleWishlist={toggleWishlist}
         addToCart={addToCart}
+        removeFromCart={removeFromCart}
+        isInCart={isInCart}
       />
     ))
   ) : (

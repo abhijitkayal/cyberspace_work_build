@@ -102,7 +102,9 @@ const loadRazorpay = () => {
     document.body.appendChild(script);
   });
 };
-const removeFromCart = async () => {
+// Remove an item from the cart (DELETE request) and update local state.
+// Accept a `product` argument (the product object from the UI) and use its `id`.
+const removeFromCart = async (product: any) => {
   const user = currentUser;
   console.log("currentUser in removeFromCart:", user);
 
@@ -115,6 +117,7 @@ const removeFromCart = async () => {
     },
     body: JSON.stringify({
       userId: userId,
+      // This component uses `product._id` as the identifier.
       productId: product._id,
     }),
   });
@@ -125,8 +128,7 @@ const removeFromCart = async () => {
   if (data.success) {
     setCartItems((prev) =>
       prev.filter(
-        (item) =>
-          String(item.productId) !== String(product._id)
+        (item) => String(item.productId) !== String(product._id)
       )
     );
   }
@@ -174,10 +176,10 @@ console.log("product", product);
     });
   }
 };
-const addToCart = async () => {
+// Updated to accept a product argument so the button can pass the current product.
+const addToCart = async (p: any) => {
   const user = currentUser;
   console.log("currentUser in addToCart:", user);
-
 
   const res = await fetch("/api/cart", {
     method: "POST",
@@ -186,23 +188,25 @@ const addToCart = async () => {
     },
     body: JSON.stringify({
       userId: userId,
-      productId: product._id,
-      productName: product.title,
-      productPrice: product.discountPrice,
+      productId: p._id,
+      productName: p.title,
+      productPrice: p.discountPrice,
       quantity: qty,
     }),
   });
   const data = await res.json();
 
- if (data.success) {
-  setCartItems((prev) => [
-    ...prev,
-    {
-      productId: product._id,
-      quantity: qty,
-    },
-  ]);
-}
+  if (data.success) {
+    setCartItems((prev) => [
+      ...prev,
+      {
+        productId: p._id,
+        productName: p.title,
+        productPrice: p.discountPrice,
+        quantity: qty,
+      },
+    ]);
+  }
 };
 const handlePurchase = async () => {
   const res = await loadRazorpay();
@@ -366,7 +370,8 @@ handler: async function (response) {
       ? "bg-red-600 text-white"
       : "border border-white"
   }`}
-  onClick={isInCart ? removeFromCart : addToCart}
+  // Pass the current product to the cart handlers.
+  onClick={isInCart ? () => removeFromCart(product) : () => addToCart(product)}
 >
   {isInCart ? "Remove from Cart" : "Add to Cart"}
 </button>
