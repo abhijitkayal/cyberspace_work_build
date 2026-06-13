@@ -9,11 +9,13 @@ import {
   Package,
   Crown,
   Layout,
-  Palette
+  Palette,
+  Scroll
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Image3D } from './image-3d'
+import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
@@ -64,8 +66,8 @@ const secondaryFeatures = [
 export function FeaturesSection() {
   return (
     <section id="features" className="py-24 sm:py-32 bg-black">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+       
         <div className="mx-auto max-w-2xl text-center mb-16">
           <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
@@ -76,16 +78,16 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        {/* First Feature Section */}
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
-          {/* Left Image */}
+      
+        {/* <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
+          
           <Image3D
             lightSrc="/Screenshot 2026-05-29 100006.png"
             darkSrc="/Screenshot 2026-05-29 100006.png"
             alt="Analytics dashboard"
             direction="left"
           />
-          {/* Right Content */}
+         
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
@@ -126,10 +128,9 @@ export function FeaturesSection() {
           </div>
         </div>
 
-        {/* Second Feature Section - Flipped Layout */}
+      
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16">
-          {/* Left Content */}
-          <div className="space-y-6 order-2 lg:order-1">
+               <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Patient Engagement Communications
@@ -169,7 +170,7 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Right Image */}
+          
           <Image3D
             lightSrc="/Screenshot 2026-05-29 100006.png"
             darkSrc="/Screenshot 2026-05-29 100006.png"
@@ -177,8 +178,72 @@ export function FeaturesSection() {
             direction="right"
             className="order-1 lg:order-2"
           />
-        </div>
-      </div>
+        </div> */}
+      </div> 
+      <StickyScrollRevealDemo />
     </section>
   )
 }
+
+
+
+// "use client";
+// import React from "react";
+// import { StickyScroll } from "../../../../components/ui/sticky-scroll-reveal";
+
+
+// const content = [
+//   {
+//     title: "Collaborative Editing",
+//     description:
+//       "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
+//     content: (
+//       <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] text-white">
+//         Collaborative Editing
+//       </div>
+//     ),
+//   },
+//   {
+//     title: "Real time changes",
+//     description:
+//       "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
+//     content: (
+//       <div className="flex h-full w-full items-center justify-center text-white">
+//         <img
+//           src="/linear.webp"
+//           width={300}
+//           height={300}
+//           className="h-full w-full object-cover"
+//           alt="linear board demo"
+//         />
+//       </div>
+//     ),
+//   },
+//   {
+//     title: "Version control",
+//     description:
+//       "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+//     content: (
+//       <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] text-white">
+//         Version control
+//       </div>
+//     ),
+//   },
+//   {
+//     title: "Running out of content",
+//     description:
+//       "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+//     content: (
+//       <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] text-white">
+//         Running out of content
+//       </div>
+//     ),
+//   },
+// ];
+// export default function StickyScrollRevealDemo() {
+//   return (
+//     <div className="w-full py-4">
+//       <StickyScroll content={content} />
+//     </div>
+//   );
+// }

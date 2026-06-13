@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Image3D } from './image-3d'
+import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
@@ -76,16 +77,16 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        {/* First Feature Section */}
+{/* 
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
-          {/* Left Image */}
+
           <Image3D
             lightSrc="/Screenshot 2026-05-29 100006.png"
             darkSrc="/Screenshot 2026-05-29 100006.png"
             alt="Analytics dashboard"
             direction="left"
           />
-          {/* Right Content */}
+   
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
@@ -126,9 +127,8 @@ export function FeaturesSection() {
           </div>
         </div>
 
-        {/* Second Feature Section - Flipped Layout */}
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16">
-          {/* Left Content */}
+
           <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
@@ -168,7 +168,7 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Right Image */}
+    
           <Image3D
             lightSrc="/Screenshot 2026-05-29 100006.png"
             darkSrc="/Screenshot 2026-05-29 100006.png"
@@ -176,8 +176,9 @@ export function FeaturesSection() {
             direction="right"
             className="order-1 lg:order-2"
           />
-        </div>
+        </div> */}
       </div>
+      <StickyScrollRevealDemo />
     </section>
   )
 }

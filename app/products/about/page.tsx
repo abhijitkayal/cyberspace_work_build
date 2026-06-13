@@ -80,9 +80,9 @@ export default function AboutPage() {
         >
          <div className="flex h-full flex-col justify-center">
   <div className="flex items-center gap-3">
-    <c.icon className="h-5 w-5 text-black" />
+    <c.icon className="h-5 w-5 text-white" />
 
-    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-black">
+    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white">
       {c.label}
     </p>
   </div>
