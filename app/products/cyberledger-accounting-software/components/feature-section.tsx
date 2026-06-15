@@ -77,7 +77,7 @@ export function FeaturesSection() {
           </p>
         </div>
 
-{/*       
+       
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
      
           <Image3D
@@ -178,9 +178,9 @@ export function FeaturesSection() {
             direction="right"
             className="order-1 lg:order-2"
           />
-        </div> */}
+        </div> 
       </div>
-      <StickyScrollRevealDemo />
+      {/* <StickyScrollRevealDemo /> */}
     </section>
   )
 }
