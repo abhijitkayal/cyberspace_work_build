@@ -8,7 +8,7 @@ import {
   ImageCaption, ImageResize, ImageUpload, BlockQuote,
   FontSize, FontColor,
 } from "ckeditor5";
-// import "ckeditor5/ckeditor5.css";
+import "ckeditor5/dist/ckeditor5.css";
 
 interface Props {
   value: string;
