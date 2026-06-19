@@ -32,6 +32,11 @@ html, body, #__next {
   overflow-x: hidden;
 }
 
+/* Enable smooth scrolling for anchor navigation */
+html {
+  scroll-behavior: smooth;
+}
+
 html {
   color-scheme: light;
 }
@@ -453,3 +458,85 @@ html.lenis body {
     @apply font-sans;
   }
 }
+
+/* ─────────────────────────────────────────
+   BLOG CONTENT TYPOGRAPHY
+   Adjust heading and paragraph sizes for HTML content
+   rendered via dangerouslySetInnerHTML.
+   Uses Tailwind @apply for consistency.
+   ───────────────────────────────────────── */
+
+.blog-content h1 {
+  @apply text-5xl md:text-6xl font-bold mb-4;
+}
+
+.blog-content h2 {
+  @apply text-4xl md:text-5xl font-bold mb-3;
+}
+
+.blog-content p {
+  @apply text-base md:text-[20px]  font-light leading-relaxed mb-4;
+}
+
+.blog-content ul,
+.blog-content ol {
+  @apply list-disc list-inside mb-4;
+}
+
+.blog-content strong {
+  @apply font-semibold;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose table,
+.prose th,
+.prose td {
+  border: 1px solid #d1d5db;
+}
+
+.prose th,
+.prose td {
+  padding: 12px;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+.blog-content h1 {
+  font-size: 6rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.blog-content h2 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+.blog-content h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+  padding-left: 2rem;
+}
+
+.blog-content ol {
+  list-style-type: decimal;
+  padding-left: 2rem;
+}
+
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+

@@ -49,8 +49,8 @@ const ProductSchema = new Schema<IProduct>({
   category:         { type: String },
   rating:           { type: Number, default: 0 },
   reviewCount:      { type: Number, default: 0 },
-  demoLink:         { type: String, default: "" },  // ✅ add this
-  driveLink:        { type: String, default: "" },  // ✅ add this
+  demoLink:         { type: String, default: "" }, 
+  driveLink:        { type: String, default: "" },  
 });
 
 const Product: Model<IProduct> =

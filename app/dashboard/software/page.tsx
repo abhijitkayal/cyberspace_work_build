@@ -490,616 +490,6 @@ export default function SoftwareShowcase() {
 }
 
 
-
-// function SoftwareCRM() {
-//   const softwares = [
-//     "CyberProjects",
-//     "CyberClinic",
-//     "CyberDine",
-//     "CyberLedger",
-//     "CyberSchool",
-//     "CyberHR",
-//     "CyberInventory",
-//     "CyberCRM",
-//   ];
-
-//  const [rows, setRows] = useState(
-//   softwares.map((software) => ({
-//     software,
-//     plan: "Basic",
-//   }))
-// );
-//   const [clients, setClients] = useState<any[]>([]);
-//   const loadClients = async () => {
-//   try {
-//     const res = await fetch("/api/software-client");
-//     const data = await res.json();
-
-//     if (data.success) {
-//       setClients(data.clients);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
-// useEffect(() => {
-//   loadClients();
-// }, []);
-// const updatePlan = (
-//   index: number,
-//   plan: string
-// ) => {
-//   const updated = [...rows];
-
-//   updated[index].plan = plan;
-
-//   setRows(updated);
-// };
-
-//   const [open, setOpen] = useState(false);
-//   const [editingId, setEditingId] = useState<string | null>(null);
-
-//   const [form, setForm] = useState({
-//     name: "",
-//     email: "",
-//     password: "",
-//     phone: "",
-//     contractStartDate: "",
-//     contractEndDate: "",
-    
-//     softwareName: "",
-//     tenure: "monthly",
-//     plan: "",
-//     source: "",
-//     description: "",
-//   });
-
-// //   const handleSubmit = async (
-// //   e: React.FormEvent
-// // ) => {
-// //   e.preventDefault();
-
-// //   console.log("Form data:", form);
-// //   const response = await fetch(
-// //     "/api/software-client",
-// //     {
-// //       method: "POST",
-// //       headers: {
-// //         "Content-Type":
-// //           "application/json",
-// //       },
-// //       body: JSON.stringify(form),
-// //     }
-// //   );
-
-// //   const data = await response.json();
-// //   console.log("kkdata", data);
-
-// //   if (data.success) {
-// //     alert("Client Added");
-
-// //     setOpen(false);
-
-// //     loadClients();
-// //   }
-// // };
-
-// const handleSubmit = async (
-//   e: React.FormEvent
-// ) => {
-//   e.preventDefault();
-
-//   const url = editingId
-//     ? `/api/software-client/${editingId}`
-//     : "/api/software-client";
-
-//   const method = editingId
-//     ? "PUT"
-//     : "POST";
-
-//   const response = await fetch(url, {
-//     method,
-//     headers: {
-//       "Content-Type":
-//         "application/json",
-//     },
-//     body: JSON.stringify(form),
-//   });
-
-//   const data = await response.json();
-
-//   if (data.success) {
-//     loadClients();
-
-//     setOpen(false);
-
-//     setEditingId(null);
-
-//     // RESET FORM
-//     setForm({
-//       name: "",
-//       email: "",
-//       password: "",
-//       phone: "",
-//       contractStartDate: "",
-//       contractEndDate: "",
-//       softwareName: "",
-//       tenure: "monthly",
-//       plan: "",
-//       source: "",
-//       description: "",
-//     });
-//   }
-// };
-
-//   return (
-//     <div className="p-6">
-//       <div className="mb-6">
-//         <h1 className="text-3xl font-bold">
-//           Software CRM
-//         </h1>
-//         <p className="text-muted-foreground">
-//           Manage software clients and subscriptions
-//         </p>
-//       </div>
-
-//       {/* Software Table */}
-//       <div className="overflow-x-auto rounded-xl border">
-//         <table className="w-full">
-//           <thead>
-//             <tr className="border-b bg-muted/50">
-//               <th className="p-4 text-left">
-//                 Software Name
-//               </th>
-
-//               <th className="p-4 text-left">
-//                 Plan
-//               </th>
-//                <th className="p-4 text-left">
-//                 User
-//               </th>
-
-//               <th className="p-4 text-left">
-//                 Source
-//               </th>
-
-//               <th className="p-4 text-left">
-//                 Action
-//               </th>
-//             </tr>
-//           </thead>
-
-//      <tbody>
-//   {rows.map((row, index) => {
-//     const filteredClients = clients.filter(
-//       (client) =>
-//         client.softwareName === row.software &&
-//         client.plan === row.plan
-//     );
-
-//     return (
-//       <tr
-//         key={row.software}
-//         className="border-b align-top"
-//       >
-//         {/* Software */}
-//         <td className="p-4 font-medium">
-//           {row.software}
-//         </td>
-
-//         {/* Plan */}
-//         <td className="p-4">
-//           <select
-//             value={row.plan}
-//             onChange={(e) =>
-//               updatePlan(
-//                 index,
-//                 e.target.value
-//               )
-//             }
-//             className="w-full rounded-md border px-3 py-2"
-//           >
-//             <option value="Basic">
-//               Basic
-//             </option>
-
-//             <option value="Business">
-//               Business
-//             </option>
-
-//             <option value="Enterprise">
-//               Enterprise
-//             </option>
-//           </select>
-//         </td>
-
-//         {/* Users */}
-//         <td className="p-4">
-//           <div className="space-y-2">
-//             <div className="font-semibold">
-//               {filteredClients.length} Users
-//             </div>
-
-//             {filteredClients.length >
-//             0 ? (
-//               filteredClients.map(
-//                 (
-//                   client: any
-//                 ) => (
-//                   <div
-//                     key={client._id}
-//                     className="text-sm"
-//                   >
-//                     {client.email}
-//                   </div>
-//                 )
-//               )
-//             ) : (
-//               <span className="text-muted-foreground">
-//                 No Users
-//               </span>
-//             )}
-//           </div>
-//         </td>
-
-//         {/* Source */}
-//         <td className="p-4">
-//           <div className="space-y-2">
-//             {filteredClients.length >
-//             0 ? (
-//               filteredClients.map(
-//                 (
-//                   client: any
-//                 ) => (
-//                   <div
-//                     key={
-//                       client._id +
-//                       "-source"
-//                     }
-//                     className="text-sm"
-//                   >
-//                     {client.source ||
-//                       "-"}
-//                   </div>
-//                 )
-//               )
-//             ) : (
-//               "-"
-//             )}
-//           </div>
-//         </td>
-
-//         {/* Action */}
-//         <td className="p-4">
-//   <div className="flex gap-2">
-//     <button
-//       onClick={() => {
-//         setForm({
-//           name: "",
-//           email: "",
-//           password: "",
-//           phone: "",
-//           contractStartDate: "",
-//           contractEndDate: "",
-//           softwareName: row.software,
-//           tenure: "monthly",
-//           plan: row.plan,
-//           source: "",
-//           description: "",
-//         });
-
-//         setEditingId(null);
-//         setOpen(true);
-//       }}
-//       className="rounded-lg bg-cyan-500 px-4 py-2 text-white"
-//     >
-//       Add Client
-//     </button>
-
-//     <button
-//       onClick={() => {
-//         setEditingId(filteredClients[0]?._id);
-
-//         setForm({
-//           name: filteredClients[0]?.name || "",
-//           email: filteredClients[0]?.email || "",
-//           password: filteredClients[0]?.password || "",
-//           phone: filteredClients[0]?.phone || "",
-//           contractStartDate:
-//             filteredClients[0]?.contractStartDate?.split(
-//               "T"
-//             )[0] || "",
-//           contractEndDate:
-//             filteredClients[0]?.contractEndDate?.split(
-//               "T"
-//             )[0] || "",
-//           softwareName:
-//             filteredClients[0]?.softwareName || "",
-//           tenure:
-//             filteredClients[0]?.tenure || "monthly",
-//           plan:
-//             filteredClients[0]?.plan || "",
-//           source:
-//             filteredClients[0]?.source || "",
-//           description:
-//             filteredClients[0]?.description || "",
-//         });
-
-//         setOpen(true);
-//       }}
-//       disabled={!filteredClients.length}
-//       className="rounded-lg bg-amber-500 px-4 py-2 text-white"
-//     >
-//       Edit
-//     </button>
-//   </div>
-// </td>
-//       </tr>
-//     );
-//   })}
-// </tbody>
-//         </table>
-//       </div>
-
-//       {/* Add Client Modal */}
-//       {open && (
-//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-//           <div className="w-full max-w-4xl rounded-xl bg-white p-6 text-black">
-//             <div className="mb-6 flex items-center justify-between">
-//               <h2 className="text-2xl font-bold">
-//                 Add Client
-//               </h2>
-
-//               <button
-//                 onClick={() =>
-//                   setOpen(false)
-//                 }
-//                 className="text-xl"
-//               >
-//                 ✕
-//               </button>
-//             </div>
-
-//             <form
-//               onSubmit={handleSubmit}
-//               className="grid grid-cols-1 gap-4 md:grid-cols-2"
-//             >
-//               {/* Name */}
-//               <input
-//                 type="text"
-//                 placeholder="Client Name"
-//                 className="rounded border p-3"
-//                 value={form.name}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     name: e.target.value,
-//                   })
-//                 }
-//                 required
-//               />
-
-//               {/* Email */}
-//               <input
-//                 type="email"
-//                 placeholder="Email"
-//                 className="rounded border p-3"
-//                 value={form.email}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     email:
-//                       e.target.value,
-//                   })
-//                 }
-//                 required
-//               />
-
-//               {/* Password */}
-//               <input
-//                 type="password"
-//                 placeholder="Password"
-//                 className="rounded border p-3"
-//                 value={form.password}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     password:
-//                       e.target.value,
-//                   })
-//                 }
-//                 required
-//               />
-
-//               {/* Phone */}
-//               <input
-//                 type="text"
-//                 placeholder="Phone Number"
-//                 className="rounded border p-3"
-//                 value={form.phone}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     phone:
-//                       e.target.value,
-//                   })
-//                 }
-//                 required
-//               />
-
-//               {/* Contract Start */}
-//               <div>
-//                 <label className="mb-1 block text-sm font-medium">
-//                   Contract Start Date
-//                 </label>
-
-//                 <input
-//                   type="date"
-//                   className="w-full rounded border p-3"
-//                   value={
-//                     form.contractStartDate
-//                   }
-//                   onChange={(e) =>
-//                     setForm({
-//                       ...form,
-//                       contractStartDate:
-//                         e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               {/* Contract End */}
-//               <div>
-//                 <label className="mb-1 block text-sm font-medium">
-//                   Contract End Date
-//                 </label>
-
-//                 <input
-//                   type="date"
-//                   className="w-full rounded border p-3"
-//                   value={
-//                     form.contractEndDate
-//                   }
-//                   onChange={(e) =>
-//                     setForm({
-//                       ...form,
-//                       contractEndDate:
-//                         e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               {/* Status */}
-              
-
-//               {/* Product */}
-//               <select
-//                 className="rounded border p-3"
-//                 value={form.softwareName}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     softwareName:
-//                       e.target.value,
-//                     plan: "",
-//                     source: "",
-//                   })
-//                 }
-//               >
-//                 <option value="">
-//                   Select Product
-//                 </option>
-
-//                 {softwares.map(
-//                   (software) => (
-//                     <option
-//                       key={software}
-//                       value={software}
-//                     >
-//                       {software}
-//                     </option>
-//                   )
-//                 )}
-//               </select>
-
-//               {/* Plan */}
-//               {form.softwareName && (
-//                 <select
-//                   className="rounded border p-3"
-//                   value={form.plan}
-//                   onChange={(e) =>
-//                     setForm({
-//                       ...form,
-//                       plan:
-//                         e.target.value,
-//                     })
-//                   }
-//                 >
-//                   <option value="">
-//                     Select Plan
-//                   </option>
-
-//                   <option value="Basic">
-//                     Basic
-//                   </option>
-
-//                   <option value="Business">
-//                     Business
-//                   </option>
-
-//                   <option value="Enterprise">
-//                     Enterprise
-//                   </option>
-//                 </select>
-//               )}
-//               {form.plan && (<select
-//                 className="rounded border p-3"
-//                 value={form.tenure}
-//                 onChange={(e) =>
-//                   setForm({
-//                     ...form,
-//                     tenure:
-//                       e.target.value,
-//                   })
-//                 }
-//               >
-//                 <option value="monthly">
-//                   Monthly
-//                 </option>
-
-//                 <option value="yearly">
-//                   Yearly
-//                 </option>
-
-//                 <option value="lifetime">
-//                   Lifetime
-//                 </option>
-//               </select>
-//               )}
-
-//               {/* Source */}
-//               {form.plan && (
-//                 <input
-//                   type="text"
-//                   placeholder="Lead Source"
-//                   className="rounded border p-3"
-//                   value={form.source}
-//                   onChange={(e) =>
-//                     setForm({
-//                       ...form,
-//                       source:
-//                         e.target.value,
-//                     })
-//                   }
-//                 />
-//               )}
-
-//               {/* Notes */}
-//               {form.plan && (
-//                 <textarea
-//                   rows={4}
-//                   placeholder="Notes"
-//                   className="rounded border p-3 md:col-span-2"
-//                 />
-//               )}
-
-//               <button
-//                 type="submit"
-//                 className="rounded-lg bg-cyan-500 py-3 text-white hover:bg-cyan-600 md:col-span-2"
-//               >
-//                 Save Client
-//               </button>
-//             </form>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 import {
   UserPlus,
   Pencil,
@@ -1109,16 +499,7 @@ import {
   Package,
 } from "lucide-react";
 
-// const softwares = [
-//   "CyberProjects",
-//   "CyberClinic",
-//   "CyberDine",
-//   "CyberLedger",
-//   "CyberSchool",
-//   "CyberHR",
-//   "CyberInventory",
-//   "CyberCRM",
-// ];
+
 
 const emptyForm = {
   name: "",
@@ -1163,25 +544,61 @@ const emptyForm = {
     setRows(updated);
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log(form);
+  //   const url = editingId
+  //     ? `/api/software-client/${editingId}`
+  //     : "/api/software-client";
+  //   const method = editingId ? "PUT" : "POST";
+  //   const response = await fetch(url, {
+  //     method,
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(form),
+  //   });
+  //   const data = await response.json();
+  //   console.log(data);
+  //   if (data.success) {
+  //     loadClients();
+  //     closeDrawer();
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(form);
-    const url = editingId
-      ? `/api/software-client/${editingId}`
-      : "/api/software-client";
-    const method = editingId ? "PUT" : "POST";
-    const response = await fetch(url, {
-      method,
+  e.preventDefault();
+
+  const url = editingId
+    ? `/api/software-client/${editingId}`
+    : "/api/software-client";
+
+  const method = editingId ? "PUT" : "POST";
+
+  const response = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form),
+  });
+
+  const data = await response.json();
+
+  if (data.success) {
+    // Second API call
+    const secondResponse = await fetch("https://pharma-managebasic-wgi8.vercel.app/api/auth/register", {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        tenantId: data.client._id, // example
+        email: form.email,
+      }),
     });
-    const data = await response.json();
-    console.log(data);
-    if (data.success) {
+
+    const secondData = await secondResponse.json();
+
+    if (secondData.success) {
       loadClients();
       closeDrawer();
     }
-  };
+  }
+};
 
   const closeDrawer = () => {
     setDrawerOpen(false);

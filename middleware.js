@@ -17,6 +17,11 @@ function isProjectRoute(pathname) {
 function isPublicShopRoute(pathname) {
   return pathname === "/shop" || pathname.startsWith("/shop/");
 }
+// Blog pages should be accessible without authentication.
+function isPublicBlogRoute(pathname) {
+  // Match the base /blog route as well as any nested blog routes like /blog/slug
+  return pathname === "/blog" || pathname.startsWith("/blog/");
+}
 function isPublicServiceRoute(pathname) {
   return pathname === "/services" || pathname.startsWith("/services/");
 }
@@ -63,6 +68,7 @@ export async function middleware(request) {
   isPublicServiceRoute(pathname) ||
   isPubliccontactRoute(pathname)||
   isPublicaboutRoute(pathname) ||
+  isPublicBlogRoute(pathname)||
   isPublicproductRoute(pathname);
 
   if (!pathname.startsWith("/api") && !authRoutes.has(pathname) && !isPublicRoute && !isProjectRoute(pathname) && pathname !== "/") {
