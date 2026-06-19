@@ -219,7 +219,7 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <Link
-              href={roleHomePath}
+              href="/"
               className="flex items-center gap-4 rounded-lg p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-0"
             >
               {businessLogoUrl ? (
