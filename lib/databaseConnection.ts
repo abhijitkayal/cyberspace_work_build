@@ -8,7 +8,7 @@ export const cyberProjectsDB =
   );
   export const cyberProjectDBBasic =
   mongoose.createConnection(
-    "mongodb+srv://HACK:giDCgxy2d3HiO7IE@hackethic.ozjloba.mongodb.net/project-management-basic?retryWrites=true&w=majority&appName=HACKETHIC"
+    "mongodb+srv://soumen:BBsfT5dbIoLCFqOz@dead.abjt7ko.mongodb.net/project_management-basic?appName=dead"
   );
 
 export const cyberLedgerDB =

@@ -527,38 +527,53 @@ export async function POST(req: Request) {
         : BUSINESS_DB_MAP[body.softwareName as keyof typeof BUSINESS_DB_MAP];
 
     if (targetDB) {
+      // const isCyberPharmaOrClinicBasic =
+      //   (body.softwareName === "CyberPharma" ||
+      //     body.softwareName === "CyberClinic") &&
+      //   body.plan === "Basic";
+
       const isCyberPharmaOrClinicBasic =
-        (body.softwareName === "CyberPharma" ||
-          body.softwareName === "CyberClinic") &&
-        body.plan === "Basic";
+  (body.softwareName === "CyberPharma" ||
+    body.softwareName === "CyberClinic") &&
+  body.plan === "Basic";
 
-      if (isCyberPharmaOrClinicBasic) {
-        // Route to external register API for CyberPharma/CyberClinic Basic
-        try {
-          const registerResponse = await fetch(
-            "https://pharma-managebasic-wgi8.vercel.app/api/auth/register",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: body.name,
-                email: body.email,
-                password: body.password,
-                phone: body.phone,
-                role: "admin",
-                plan: body.plan,
-                contractStartDate: body.contractStartDate,
-                contractEndDate: body.contractEndDate,
-              }),
-            }
-          );
+if (isCyberPharmaOrClinicBasic) {
+  const registerUrl =
+    body.softwareName === "CyberPharma"
+      ? "https://cyberpharmabasic.cyberspaceworks.com/api/auth/register"
+      : "https://cyberclinicbasic.cyberspaceworks.com/api/auth/register";
 
-          const registerData = await registerResponse.json();
-          console.log("External Register API Response:", registerData);
-        } catch (error) {
-          console.error("External Register API Error:", error);
-        }
-      } else {
+  try {
+    const registerResponse = await fetch(registerUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        phone: body.phone,
+        role: "admin",
+        plan: body.plan,
+        contractStartDate: body.contractStartDate,
+        contractEndDate: body.contractEndDate,
+      }),
+    });
+
+    const registerData = await registerResponse.json();
+
+    console.log(
+      `${body.softwareName} Register Response:`,
+      registerData
+    );
+  } catch (error) {
+    console.error(
+      `${body.softwareName} Register Error:`,
+      error
+    );
+  }
+} else {
         // Normal flow for all other software/plan combos
         const ProductUser =
           targetDB.models.User ||
@@ -582,6 +597,10 @@ export async function POST(req: Request) {
         if (body.softwareName === "CyberDine" && body.plan === "Basic") {
           role = "manager";
         }
+        const branchName = `BRANCH-${Math.random()
+  .toString(36)
+  .substring(2, 8)
+  .toUpperCase()}`;
 
         await ProductUser.create({
           name: body.name,
@@ -591,6 +610,8 @@ export async function POST(req: Request) {
           role: role,
           phone: body.phone,
           tenantId: tenantId,
+          branchName: branchName,
+          branch:branchName,
           softwareName: body.softwareName,
           plan: body.plan,
           contractStartDate: body.contractStartDate,

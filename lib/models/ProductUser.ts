@@ -14,6 +14,8 @@ export const ProductUserSchema =
   type: Schema.Types.ObjectId,
   // ref: "Tenant"
 },
+branchName:String,
+branch:String,
       role:String,
       plan: String,
       contractStartDate: Date,
