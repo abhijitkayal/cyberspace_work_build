@@ -13,6 +13,7 @@ import { AnimatedBeam } from "@/components/ui/animated-beam"
 import { Contact } from "lucide-react";
 import { size } from "zod";
 import { BackgroundBeams } from "./ui/background-beams";
+import Logo from "../public/logo2 copy.png"
 
 const Circle = forwardRef<
   HTMLDivElement,
@@ -77,7 +78,14 @@ export default function AnimatedBeamMultipleOutputDemo({
         </div>
         <div className="flex flex-col justify-center ">
           <Circle ref={div6Ref} className="size-16 ">
-            <FaPalette className="h-8 w-8 text-black" />
+            {/* <FaPalette className="h-8 w-8 text-black" /> */}
+            <Image
+  src="/logo2 copy.png"
+  alt="Logo"
+  width={32}
+  height={32}
+  className="h-8 w-8"
+/>
           </Circle>
         </div>
         <div className="flex flex-col justify-center text-cyan-400">
