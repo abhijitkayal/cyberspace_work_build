@@ -69,28 +69,57 @@ export async function POST(req) {
     const publicId = `uploads/${Date.now()}_${sanitizedName || "document"}`;
 
     // KEY FIX: Use resource_type "image" for PDFs so Cloudinary serves application/pdf
+    // const result = await new Promise((resolve, reject) => {
+    //   const stream = cloudinary.uploader.upload_stream(
+    //     {
+    //       resource_type: "image",
+    //       public_id: publicId,
+    //       format: "pdf",
+    //       pages: true,
+    //     },
+    //     (error, result) => {
+    //       if (error) reject(error);
+    //       else resolve(result);
+    //     }
+    //   );
+    //   stream.end(buffer);
+    // });
     const result = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          public_id: publicId,
-          format: "pdf",
-          pages: true,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      stream.end(buffer);
-    });
+  const stream = cloudinary.uploader.upload_stream(
+    {
+      resource_type: "image",
+      public_id: publicId,
+      format: "jpg",
+      pages: true,
+    },
+    (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    }
+  );
 
-    return Response.json({
-      url: result.secure_url,
-      publicId: result.public_id,
-      resourceType: result.resource_type,
-      format: result.format,
-    });
+  stream.end(buffer);
+});
+
+console.log(result);
+
+return Response.json({
+  url: result.secure_url,
+  publicId: result.public_id,
+  resourceType: result.resource_type,
+  format: result.format,
+});
+
+    // return Response.json({
+    //   url: result.secure_url,
+    //   publicId: result.public_id,
+    //   resourceType: result.resource_type,
+    //   format: result.format,
+    // });
+//     return Response.json({
+//   url: result.secure_url,
+//   publicId: result.public_id,
+// });
   } catch (error) {
     console.error("Upload error:", error);
     return Response.json(

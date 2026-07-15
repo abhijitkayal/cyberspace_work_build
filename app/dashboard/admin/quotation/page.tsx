@@ -12,26 +12,23 @@ function getDownloadUrl(q: any): string | null {
   const url: string = q.fileUrl
   const normalizedUrl = url.toLowerCase()
 
-  // Already a PDF — return as-is
   if (normalizedUrl.includes(".pdf") || normalizedUrl.includes("f_pdf")) return url
 
-  // Raw uploads (including PDF files) should not be transformed through image pipeline
   if (normalizedUrl.includes("/raw/upload/")) return url
 
-  // Cloudinary URL — inject fl_attachment,f_pdf transformation to force PDF download
-  // e.g. https://res.cloudinary.com/demo/image/upload/v123/file.docx
-  //   → https://res.cloudinary.com/demo/image/upload/fl_attachment,f_pdf/v123/file.docx
+  
   if (normalizedUrl.includes("cloudinary.com") && normalizedUrl.includes("/image/upload/")) {
     // Insert transformation after /upload/
-    return url.replace("/upload/", "/upload/fl_attachment,f_pdf/")
+    return url.replace("/upload/", "/upload/")
   }
 
-  // Fallback: return as-is and let the browser handle it
+
   return url
 }
 
 async function handleDownloadPDF(q: any, setDownloading: (id: string | null) => void) {
   const downloadUrl = getDownloadUrl(q)
+  console.log("Download URL:", downloadUrl)
 
   if (!downloadUrl) {
     alert("No file attached to this quotation.")
@@ -43,6 +40,7 @@ async function handleDownloadPDF(q: any, setDownloading: (id: string | null) => 
   try {
     const link = document.createElement("a")
     link.href = downloadUrl
+    console.log("Downloading from URL:", downloadUrl)
     link.target = "_blank"
     link.rel = "noopener noreferrer"
     document.body.appendChild(link)
@@ -303,7 +301,7 @@ export default function QuotationPage() {
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M12 2v13M7 11l5 5 5-5"/><path d="M4 18h16"/>
                               </svg>
-                              Download PDF
+                              Download Quotation
                             </>
                           )}
                         </button>
