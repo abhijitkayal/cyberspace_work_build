@@ -45,11 +45,10 @@ export function AboutSection() {
             About 
           </Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-6">
-            Built for developers, by developers
+            Build for the businesses, by the developers
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            We&apos;re passionate about creating the best marketplace for shadcn/ui components and templates.
-            Our mission is to accelerate development and help developers build beautiful admin interfaces faster.
+            We’ve surveyed the market, conducted in-depth research, addressed the issues businesses face with related software, and developed this product to provide greater convenience and faster business growth.
           </p>
         </div>
 
@@ -72,7 +71,7 @@ export function AboutSection() {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-16 text-center">
+        {/* <div className="mt-16 text-center">
           <div className="flex items-center justify-center gap-2 mb-6">
             <span className="text-muted-foreground">❤️ Made with love for the developer community</span>
           </div>
@@ -89,7 +88,7 @@ export function AboutSection() {
               </a>
             </Button>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   )

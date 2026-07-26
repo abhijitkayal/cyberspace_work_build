@@ -7,29 +7,26 @@ import { LandingPageContent } from './landing-page-content'
 export const metadata: Metadata = {
   metadataBase: new URL("https://cyberspaceworks.com"),
 
-  title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
+  title: "CyberPharma: Pharmacy Billing & Inventory Software | Cyberspace Works",
 
   description:
-    "Simplify your human resources operations with CyberPayroll. Automate complex salary calculations, manage employee attendance, and generate compliant payslips effortlessly.",
+    "Take control of your medical retail store with CyberPharma. Track drug batch numbers, manage inventory expiry alerts, and generate tax-compliant digital invoices instantly.",
 
   keywords: [
-    "HR management software",
-    "automated payroll system",
-    "HRMS platform",
-    "employee attendance tracker",
-    "salary slip generator",
+   
+    "pharmacy management system", "pharmacy billing software", "medical store stock tracker", "chemist inventory app", "pharmaceutical retail software"
   ],
 
   alternates: {
     canonical:
-      "https://cyberspaceworks.com/products/cyberpayroll-hr-management-software",
+      "https://cyberspaceworks.com/products/cyberpharma-pharmacy-management-system",
   },
 
   openGraph: {
-    title: "CyberPayroll: Automated HRMS & Payroll Software | Cyberspace Works",
+    title: "CyberPharma: Pharmacy Billing & Inventory Software | Cyberspace Works",
     description:
-      "Simplify your human resources operations with CyberPayroll. Automate complex salary calculations, manage employee attendance, and generate compliant payslips effortlessly.",
-    url: "https://cyberspaceworks.com/products/cyberpayroll-hr-management-software",
+      "Take control of your medical retail store with CyberPharma. Track drug batch numbers, manage inventory expiry alerts, and generate tax-compliant digital invoices instantly.",
+    url: "https://cyberspaceworks.com/products/cyberpharma-pharmacy-management-system",
     siteName: "Cyberspace Works",
     type: "website",
     locale: "en_US",

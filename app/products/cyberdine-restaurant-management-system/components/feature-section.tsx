@@ -112,7 +112,7 @@ export function FeaturesSection() {
               ))}
             </ul>
 
-            <div className="flex flex-col sm:flex-row gap-4 pe-4 pt-2">
+            {/* <div className="flex flex-col sm:flex-row gap-4 pe-4 pt-2">
               <Button size="lg" className="cursor-pointer">
                 <a href="https://shadcnstore.com/templates" className='flex items-center'>
                   Browse Templates
@@ -124,7 +124,7 @@ export function FeaturesSection() {
                   View Components
                 </a>
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -156,7 +156,7 @@ export function FeaturesSection() {
               ))}
             </ul>
 
-            <div className="flex flex-col sm:flex-row gap-4 pe-4 pt-2">
+            {/* <div className="flex flex-col sm:flex-row gap-4 pe-4 pt-2">
               <Button size="lg" className="cursor-pointer">
                 <a href="#" className='flex items-center'>
                   View Documentation
@@ -168,7 +168,7 @@ export function FeaturesSection() {
                   GitHub Repository
                 </a>
               </Button>
-            </div>
+            </div> */}
           </div>
 
         

@@ -241,7 +241,7 @@ export default function RootLayout({ children }) {
   const isSoftwareDashboardRoute = pathname?.startsWith("/software-dashboard");
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -296,6 +296,12 @@ export default function RootLayout({ children }) {
   />
         
 
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap"
+          rel="stylesheet"
+        />
         <link rel="icon" type="image/png" href="/logo2.png" />
 
         {/* ✅ Canonical REMOVED from here — each page controls its own canonical
