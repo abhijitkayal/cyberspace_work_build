@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "🏦",
+    title: 'Bank Feed Matching',
+    description: ' Automatically match internal ledger entries against live bank and payment gateway records.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "⚡",
+    title: 'Instant Discrepancy Flags',
+    description: 'Catch mismatched amounts or missing transactions the moment they appear, not at month-end.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "📆",
+    title: 'Daily Cash Position',
+    description: 'See a real-time, reconciled view of cash on hand across all accounts and entities.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "🧾",
+    title: ' Audit Trail Logging',
+    description: 'Every match, adjustment, and override is timestamped and logged for clean audit reviews.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "🤝",
+    title: 'Vendor Split Payouts',
+    description: ' Automatically divide payments across multiple vendors or partners per agreed splits.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "💸",
+    title: 'Operational Fee Handling',
+    description: 'Deduct platform, processing, or service fees automatically before settlement'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "🏢",
+    title: 'Corporate Partner Adjustments',
+    description: ' Handle complex multi-entity account adjustments without manual spreadsheet work.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "📊",
+    title: 'Settlement History Reports',
+    description: ' Pull a full ledger of past settlements per vendor or partner for reconciliation or disputes.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">📒 Finance Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to keep your books airtight
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+           CyberLedger connects bank reconciliation, vendor settlements, and multi-party ledgers in one platform — built so nothing slips through at month-end close
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export function FeaturesSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
      
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberledger.png"
+            darkSrc="/cyberledger.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -172,8 +172,8 @@ export function FeaturesSection() {
 
        
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberledger.png"
+            darkSrc="/cyberledger.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

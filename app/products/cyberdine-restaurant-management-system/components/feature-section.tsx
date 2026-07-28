@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "🪑",
+    title: 'Live Floor View',
+    description: 'See every tables status — open, seated, or reserved — updated in real time from a single visual layout.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "📅",
+    title: 'Reservation Sync',
+    description: 'Bookings flow straight into your floor plan, so hosts always know whats coming before guests walk in.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "⏱️",
+    title: 'Wait Time Estimator',
+    description: 'Predict turnaround per table based on course pace and party size to keep queues short and guests happy.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "📈",
+    title: 'Occupancy Analytics',
+    description: 'Track peak hours, table turnover rate, and seating efficiency to plan staffing and layout smarter.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "🍽️",
+    title: 'Recipe-to-Inventory Mapping',
+    description: 'Link every dish to its exact ingredients, so each sale automatically deducts the right stock quantities.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "💰",
+    title: 'Real-Time Food Cost %',
+    description: ' See live cost-per-plate and margin per dish as ingredient prices and portions change.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "📦",
+    title: 'Stock Variance Alerts',
+    description: ' Catch shrinkage, waste, or over-portioning early with automated variance reports against expected usage.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon:"🔔",
+    title: 'Low-Stock Notifications',
+    description: ' Get notified before you run out of key ingredients, with reorder suggestions based on usage trends.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">🍴 Restaurant Operations Suite</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to run a smoother, faster kitchen
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+             CyberDine connects your seating, orders, and inventory in real time — so your team spends less time firefighting and more time serving great food.
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export function FeaturesSection() {
          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
        
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberdine.png"
+            darkSrc="/cyberdine.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -91,11 +91,12 @@ export function FeaturesSection() {
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Smart Table & Seating Matrix
+
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Track live table status, reservation bookings, and course progression visually. Minimize customer wait times and maximize floor occupancy smoothly.
 
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -137,9 +138,9 @@ export function FeaturesSection() {
                 Recipe Costing & Inventory Control
 
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Link menu dishes directly to raw inventory consumption. Track and monitor food cost variances, and preserve your restaurant margins.
-                              </p>
+                              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -155,26 +156,12 @@ export function FeaturesSection() {
                 </li>
               ))}
             </ul>
-
-            {/* <div className="flex flex-col sm:flex-row gap-4 pe-4 pt-2">
-              <Button size="lg" className="cursor-pointer">
-                <a href="#" className='flex items-center'>
-                  View Documentation
-                  <ArrowRight className="ms-2 size-4" aria-hidden="true" />
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="cursor-pointer">
-                <a href="https://github.com/silicondeck/shadcn-dashboard-landing-template" target="_blank" rel="noopener noreferrer">
-                  GitHub Repository
-                </a>
-              </Button>
-            </div> */}
           </div>
 
         
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberdine.png"
+            darkSrc="/cyberdine.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

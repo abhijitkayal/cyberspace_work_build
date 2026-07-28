@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "🛒",
+    title: 'Quote-to-Bill Conversion',
+    description: ' Turn a customer quote or held cart directly into a final line-item bill at checkout, no re-entry needed.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "🧾",
+    title: 'Itemized Receipt Generation',
+    description: ' Print or send digital receipts with full line-item breakdowns, taxes, and discounts applied instantly.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "💳",
+    title: 'Multi-Payment Support',
+    description: ' Accept cash, card, and digital wallet payments in a single transaction without switching systems.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "🔖",
+    title: 'Discount & Promo Handling',
+    description: 'Apply coupons, bulk discounts, or loyalty pricing automatically at the register.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "🔁",
+    title: 'Store Credit Accounts',
+    description: ' Let regular customers run a tab or store account, billed on a schedule you set.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "🎟️",
+    title: 'Loyalty & Membership Billing',
+    description: ' Automate recurring charges for store memberships or subscription-style customer plans.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "📊",
+    title: 'Purchase History Lookup',
+    description: 'Pull up any customers past bills instantly for returns, exchanges, or reorders'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "🧾",
+    title: 'Auto-Generated Monthly Statements',
+    description: ' Send customers a consolidated bill for all their purchases across a billing period.'
   }
 ]
 
@@ -68,12 +68,13 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">🧾 Invoicing Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+           Everything you need to run checkout smoothly
+
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+             CyberInvoice connects quotes, in-store billing, and recurring customer accounts in one platform — built to keep every checkout counter fast and accurate.
           </p>
         </div>
 

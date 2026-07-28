@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "📦",
+    title: 'Real-Time Inventory Sync',
+    description: 'Every sale and dispense updates stock instantly, so counts stay accurate across all counters.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "⚠️",
+    title: 'Threshold Alerts',
+    description: ' Get notified the moment critical medications drop below safe stock levels.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon:"🔄",
+    title: 'Auto-Replenishment Drafts',
+    description: 'Draft reorder sheets automatically when items hit their reorder point — no manual stock checks needed.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "🌡️",
+    title: 'Expiry & Batch Tracking',
+    description: ' Track batch numbers and expiry dates to flag near-expiry stock before it becomes unsellable.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "👨‍⚕️",
+    title: 'Doctor & Patient Records',
+    description: ' Log prescriber details, patient history, and dosage instructions tied to every prescription filled.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "🔒",
+    title: 'Controlled Substance Logs',
+    description: ' Track restricted and scheduled drugs with tamper-proof records built for regulatory audits.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "📋",
+    title: 'Digital Prescription Verification',
+    description: 'Cross-check prescriptions against patient history and drug interactions before dispensing. '
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "📑",
+    title: 'Audit-Ready Compliance Reports',
+    description: 'Generate regulatory reports in one click, formatted to your local pharmacy boards requirements.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">💊 Pharmacy & Clinic Suite</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to run a safer, faster pharmacy
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+            From prescriptions to stock control, manage your pharmacy and clinic workflows in one connected platform built for accuracy and compliance.
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export function FeaturesSection() {
          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
 
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberpharma.png"
+            darkSrc="/cyberpharma.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -91,9 +91,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Tight Stock Tracking & Safety Reorders
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Never run out of critical life-saving medications. Set threshold alerts that automatically draft replenishment sheets when items drop low.
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -134,9 +134,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Prescriptions & Regulatory Controls
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Seamlessly log doctor details, client information, and critical restricted drug records for regulatory audit compliance without slow workflows
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -169,8 +169,8 @@ export function FeaturesSection() {
           </div>
 
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberpharma.png"
+            darkSrc="/cyberpharma.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

@@ -19,47 +19,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "📅",
+    title: 'Live Appointment Scheduling',
+    description: ' See every doctors calendar in real time, with drag-and-drop rescheduling for walk-ins and cancellations.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "🚶",
+    title: 'Walk-In vs Appointment Tracking',
+    description: 'Separate advance bookings from walk-ins in one queue view, so front desk staff always know whos next.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
+    icon: "⏱️",
+    title: 'Wait Time Transparency',
     description: 'Copy-paste components that just work out of the box.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "📊",
+    title: 'Doctor Utilization Reports',
+    description: 'Track appointment load per doctor to balance schedules and reduce burnout.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "🔔",
+    title: 'Automated Reminders',
+    description: 'Send SMS or email reminders for upcoming appointments, reducing no-shows automatically.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "💊",
+    title: 'Prescription Renewal Alerts',
+    description: 'Notify patients when its time to renew a prescription — no manual follow-up calls needed.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "🩻",
+    title: 'Health Test Follow-Ups',
+    description: 'Trigger reminders for overdue screenings or test results to improve care continuity.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "📱",
+    title: 'Two-Way Messaging',
+    description: ' Let patients confirm, reschedule, or ask quick questions directly through the notification thread.'
   }
 ]
 
@@ -69,12 +69,13 @@ export function FeaturesSection() {
        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
        
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">🩺 Clinic Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to run a modern medical practice
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+             CyberClinic brings scheduling, patient communication, and clinical records together in one platform — built to reduce front-desk chaos and keep patients engaged.
+
           </p>
         </div>
 
@@ -82,8 +83,8 @@ export function FeaturesSection() {
        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
           
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberclinic.png"
+            darkSrc="/cyberclinic.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -93,9 +94,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Smart Doctor Calendars & Queues
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                  Reduce waiting room fatigue. Let your front desk track active walk-ins versus advance appointments via a live queue tracker.
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -135,10 +136,10 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Patient Engagement Communications
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                  Improve clinical adherence with automatic notification triggers for upcoming follow-up appointments, prescription renewals, or health tests.
 
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -172,8 +173,8 @@ export function FeaturesSection() {
 
           
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberclinic.png"
+            darkSrc="/cyberclinic.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

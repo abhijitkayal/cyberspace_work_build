@@ -88,9 +88,9 @@ export function ContactSection() {
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Need help or have suggestion or questions?
           </h2>
-          <p className="text-lg text-muted-foreground">
+          {/* <p className="text-lg text-muted-foreground">
             Our team is here to help you get the most out of ShadcnStore. Choose the best way to reach out to us.
-          </p>
+          </p> */}
         </div>
 
         <div className="grid gap-8 lg:grid-cols-1">

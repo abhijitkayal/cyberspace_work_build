@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "📤",
+    title: 'Receipt Upload & OCR',
+    description: ' Employees snap or upload receipts on the go — amounts, dates, and categories are auto-extracted, no manual entry needed.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "✅",
+    title: 'Multi-Level Approvals',
+    description: 'Route claims through manager and finance sign-off with configurable approval chains and audit trails.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "🔄",
+    title: 'Payroll Sync',
+    description: ' Approved reimbursements and bonuses merge automatically into the active payroll run — no double entry.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "📊",
+    title: 'Spend Visibility',
+    description: ' Real-time dashboards show pending, approved, and paid claims by department, employee, or expense type.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "🧾",
+    title: 'Regional Tax Rules',
+    description: ' Pre-configured tax slabs and statutory rates by state/country, updated automatically as regulations change.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "🛡️",
+    title: 'Insurance & Benefits Mapping',
+    description: ' Auto-calculate PF, ESI, gratuity, and insurance contributions based on employee category and salary structure.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "📅",
+    title: 'Audit-Ready Records',
+    description: ' Every deduction is timestamped and logged, so compliance audits and statutory filings take minutes, not days.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "⚙️",
+    title: 'Configurable Compliance Engine',
+    description: 'Adjust deduction logic per entity or jurisdiction without code changes — built for multi-location payroll teams.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">📊 HR & Payroll Suite</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to run payroll with confidence
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+          <p className="text-md text-muted-foreground">
+             CyberPayroll brings employee management, expense reimbursements, statutory deductions, and compliance audits together in one connected platform — built to save your HR team hours every month.
           </p>
         </div>
 
@@ -92,9 +92,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                  Variable Reimbursement & Bonus Trackers
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                  Allow team members to upload corporate expense receipts directly. Review, approve, and merge approved payouts into active payroll generation lists cleanly.
-                               </p>
+                               </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -134,9 +134,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Statutory Deductions & Audits
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Ensure your books stay clear. Automatically process regular tax deductions, insurance percentages, and professional tax rules based on regional regulations.
-                              </p>
+                              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">

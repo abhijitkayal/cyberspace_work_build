@@ -140,7 +140,7 @@ export function HeroSection() {
 
               {/* Dark mode dashboard image */}
               <Image
-                src="/Screenshot 2026-05-29 100006.png"
+                src="/cyberledger.png"
                 alt="Dashboard Preview - Dark Mode"
                 width={1200}
                 height={800}

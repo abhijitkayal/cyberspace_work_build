@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "📊",
+    title: 'Gantt Chart Timelines',
+    description: 'Visualize every task, dependency, and milestone on a single interactive timeline.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "🗂️",
+    title: 'Backlog & Sprint Management',
+    description: 'Organize work into backlogs, sprints, and structured feature tests built for engineering teams.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "📄",
+    title: 'Client Handover Documentation',
+    description: 'Generate clean, formal handover docs directly from completed project work.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "👥",
+    title: 'Employee & Resource Allocation',
+    description: ' Assign team members to tasks and track workload across the whole delivery pipeline.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "📝",
+    title: 'Built-In Grids',
+    description: 'Spreadsheet-style Grids live inside your workspace — no exporting to external sheets.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "📓",
+    title: 'Built-In Notes',
+    description: ' Docs-style Notes attach directly to task cards, keeping specs and feedback in context.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "🎨",
+    title: 'Design & Asset Linking',
+    description: 'Attach mockups, code links, and files right where the related task lives.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "✅",
+    title: 'In-Context Approvals',
+    description: 'Collect feedback and sign-off on deliverables without leaving the task card.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">📋 Platform Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+           Everything you need to run projects end to end
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+            CyberProjects brings task delivery, team management, billing, and vendor coordination into one workspace — with Gantt timelines, Grids, and Notes built in.
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export function FeaturesSection() {
          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
   
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberprojects.png"
+            darkSrc="/cyberprojects.png"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -92,9 +92,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Integrated Agile Delivery Systems
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                 Perfect for engineering structures. Manage backlogs, run structured feature tests, and handle formal handover documentation for clients transparently.
-                              </p>
+                              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -135,9 +135,9 @@ export function FeaturesSection() {
               <h3 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
                 Centralized Workflow and Documents
               </h3>
-              <p className="text-muted-foreground text-base text-pretty">
+              {/* <p className="text-muted-foreground text-base text-pretty">
                  Keep contextual feedback where it belongs. Centralize assets, design mockups, code links, and performance approvals inside the specific task cards using our in platform Notes and Grids.
-              </p>
+              </p> */}
             </div>
 
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -171,8 +171,8 @@ export function FeaturesSection() {
 
       
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberprojects.png"
+            darkSrc="/cyberprojects.png"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"

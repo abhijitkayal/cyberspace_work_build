@@ -503,6 +503,8 @@ const plans = [
 "Basic Support",
 "Unlimited Users",
 "Future Updates",
+"15 Days Free Trial",
+"24X7 Support",
 
 
     ],

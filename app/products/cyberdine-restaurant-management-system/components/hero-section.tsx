@@ -44,23 +44,7 @@ export function HeroSection() {
   />
 </div>
       </div>
-      {/* <div className="flex justify-between absolute top-0 left-0 w-full p-4 mt-10 z-10">
-  <div>
-    <ul className="flex gap-4">
-      <li>home</li>
-      <li>about</li>
-      <li>contact</li>
-    </ul>
-  </div>
-
-  <div>
-    <ul className="flex gap-4">
-      <li>login</li>
-      <li>signup</li>
-      <li>profile</li>
-    </ul>
-  </div>
-</div> */}
+    
 
 <div className="fixed top-0 w-full px-4 pt-4 pb-1 mt-10 z-10 bg-black
       backdrop-blur-xl
@@ -128,7 +112,7 @@ export function HeroSection() {
             <div className="relative rounded-xl border bg-card shadow-2xl">
               {/* Light mode dashboard image */}
               <Image
-                src="/Screenshot 2026-05-29 100006.png"
+                src="/cyberdine.png"
                 alt="Dashboard Preview - Light Mode"
                 width={1200}
                 height={800}
@@ -138,7 +122,7 @@ export function HeroSection() {
 
               {/* Dark mode dashboard image */}
               <Image
-                src="/Screenshot 2026-05-29 100006.png"
+                src="/cyberdine.png"
                 alt="Dashboard Preview - Dark Mode"
                 width={1200}
                 height={800}

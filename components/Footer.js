@@ -831,7 +831,7 @@ const Footer = () => {
 
           <div>
             <h3 className="text-base sm:text-lg font-semibold mb-3 text-black">
-              Services
+              Products
             </h3>
             <ul className="space-y-2 text-slate-900 text-sm sm:text-base">
               {[
