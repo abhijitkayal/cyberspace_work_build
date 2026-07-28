@@ -18,47 +18,47 @@ import StickyScrollRevealDemo from '@/components/sticky-scroll-reveal-demo'
 
 const mainFeatures = [
   {
-    icon: Package,
-    title: 'Curated Component Library',
-    description: 'Hand-picked blocks and templates for quality and reliability.'
+    icon: "🏬",
+    title: 'Cross-Branch Visibility',
+    description: ' See live stock counts across every warehouse and storefront from a single dashboard.'
   },
   {
-    icon: Crown,
-    title: 'Free & Premium Options',
-    description: 'Start free, upgrade to premium collections when you need more.'
+    icon: "🔄",
+    title: 'Instant Transfer Requests',
+    description: 'Request and approve stock transfers between branches in a few clicks, no phone calls needed.'
   },
   {
-    icon: Layout,
-    title: 'Ready-to-Use Templates',
-    description: 'Copy-paste components that just work out of the box.'
+    icon: "📉",
+    title: 'Low-Stock Detection',
+    description: 'Get flagged automatically when any locations inventory dips below its safe threshold.'
   },
   {
-    icon: Zap,
-    title: 'Regular Updates',
-    description: 'New blocks and templates added weekly to keep you current.'
+    icon: "📊",
+    title: 'Store-Level Reporting',
+    description: ' Compare stock turnover and sell-through rates across locations to spot underperformers early.'
   }
 ]
 
 const secondaryFeatures = [
   {
-    icon: BarChart3,
-    title: 'Multiple Frameworks',
-    description: 'React, Next.js, and Vite compatibility for flexible development.'
+    icon: "📅",
+    title: 'Payment Due Tracking',
+    description: ' See every upcoming supplier payment date in one calendar, so nothing slips through the cracks.'
   },
   {
-    icon: Palette,
-    title: 'Modern Tech Stack',
-    description: 'Built with shadcn/ui, Tailwind CSS, and TypeScript.'
+    icon: "🚚",
+    title: 'Incoming Shipment Log',
+    description: 'Track shipments in transit with expected arrival dates tied to each purchase order.'
   },
   {
-    icon: Users,
-    title: 'Responsive Design',
-    description: 'Mobile-first components for all screen sizes and devices.'
+    icon: "🤝",
+    title: 'Vendor Friction Reduction',
+    description: 'Auto-generate settlement summaries and payment confirmations to keep supplier relationships smooth.'
   },
   {
-    icon: Database,
-    title: 'Developer-Friendly',
-    description: 'Clean code, well-documented, easy integration and customization.'
+    icon: "📈",
+    title: 'Supplier Performance History',
+    description: 'Track delivery timeliness and order accuracy per supplier to inform future sourcing decisions.'
   }
 ]
 
@@ -68,12 +68,12 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center mb-16">
-          <Badge variant="outline" className="mb-4">Marketplace Features</Badge>
+          <Badge variant="outline" className="mb-4">🛒 Retail Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything you need to build amazing web applications
+            Everything you need to run multi-store retail operations
           </h2>
           <p className="text-lg text-muted-foreground">
-            Our marketplace provides curated blocks, templates, landing pages, and admin dashboards to help you build professional applications faster than ever.
+            CyberRetail connects stock levels, supplier payments, and cross-branch transfers in one platform — built to keep every location in sync.
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export function FeaturesSection() {
        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8 xl:gap-16 mb-24">
   
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberretail.jpeg"
+            darkSrc="/cyberretail.jpeg"
             alt="Analytics dashboard"
             direction="left"
           />
@@ -169,8 +169,8 @@ export function FeaturesSection() {
           </div>
 
           <Image3D
-            lightSrc="/Screenshot 2026-05-29 100006.png"
-            darkSrc="/Screenshot 2026-05-29 100006.png"
+            lightSrc="/cyberretail.jpeg"
+            darkSrc="/cyberretail.jpeg"
             alt="Performance dashboard"
             direction="right"
             className="order-1 lg:order-2"
